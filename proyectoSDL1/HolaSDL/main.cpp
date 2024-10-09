@@ -5,7 +5,6 @@
 #include <iostream>
 
 using namespace std;
-
 using uint = unsigned int;
 
 void firstTest()
@@ -70,6 +69,7 @@ void firstTest()
 
 		//bucle
 		bool exit = false;
+		bool pause = false;
 		while (!exit) {
 
 			startTime = SDL_GetTicks();
@@ -77,8 +77,8 @@ void firstTest()
 			salida_perro.x += 10;
 			if (salida_perro.x > int(winWidth)) salida_perro.x = -salida_perro.w;
 
-			salida_hel.x -= 10;
-			if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth);
+			//salida_hel.x -= 10;
+			//if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth);
 
 			
 			rect_perro.x = rect_perro.w * int(((SDL_GetTicks() / TIME_PER_FRAME) % 6));
@@ -89,8 +89,26 @@ void firstTest()
 			SDL_RenderCopy(renderer, tHel, &rect_hel, &salida_hel); //dibujar hel
 			SDL_RenderPresent(renderer);
 
+			// gestion de eventos 
+
 			while (SDL_PollEvent(&event) && !exit) {
-				if (event.type == SDL_QUIT) exit = true;
+				if (event.type == SDL_QUIT) exit = true; // salir
+				else if (event.type == SDL_KEYDOWN) {
+					if (event.key.keysym.sym == SDLK_h) { // pausa helicoptero
+						// no está parado -> vamos a pararlo
+						if (pause) {
+							salida_hel.x -= 0;
+							if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth);
+							pause = true;
+						}
+						// esta parado -> vamos a encenderlo
+						else {
+							salida_hel.x -= 10;
+							if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth);
+							pause = false;
+						}
+					}
+				}
 			}
 
 			frameTime = SDL_GetTicks() - startTime;
