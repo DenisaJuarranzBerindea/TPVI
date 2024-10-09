@@ -82,7 +82,7 @@ void firstTest()
 
 			
 			rect_perro.x = rect_perro.w * int(((SDL_GetTicks() / TIME_PER_FRAME) % 6));
-			rect_hel.x = rect_hel.w * int(((SDL_GetTicks() / TIME_PER_FRAME) % 5));
+			//rect_hel.x = rect_hel.w * int(((SDL_GetTicks() / TIME_PER_FRAME) % 5));
 
 			SDL_RenderCopy(renderer, tCesped, nullptr, nullptr); //dibujar cesped
 			SDL_RenderCopy(renderer, tPerro, &rect_perro, &salida_perro); //dibujar perro
@@ -96,15 +96,19 @@ void firstTest()
 				else if (event.type == SDL_KEYDOWN) {
 					if (event.key.keysym.sym == SDLK_h) { // pausa helicoptero
 						// no está parado -> vamos a pararlo
-						if (pause) {
+						if (!pause) {
 							salida_hel.x -= 0;
 							if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth);
+
+							rect_hel.x = rect_hel.w * int(((SDL_GetTicks()) % 5));
 							pause = true;
 						}
 						// esta parado -> vamos a encenderlo
 						else {
 							salida_hel.x -= 10;
 							if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth);
+
+							rect_hel.x = rect_hel.w * int(((SDL_GetTicks() / TIME_PER_FRAME) % 5));
 							pause = false;
 						}
 					}
