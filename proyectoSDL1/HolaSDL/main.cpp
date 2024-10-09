@@ -77,6 +77,7 @@ void firstTest()
 			salida_perro.x += 10;
 			if (salida_perro.x > int(winWidth)) salida_perro.x = -salida_perro.w;
 
+			//// lo gestionamos en los eventos de teclado
 			//salida_hel.x -= 10;
 			//if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth);
 
@@ -93,23 +94,24 @@ void firstTest()
 
 			while (SDL_PollEvent(&event) && !exit) {
 				if (event.type == SDL_QUIT) exit = true; // salir
-				else if (event.type == SDL_KEYDOWN) {
-					if (event.key.keysym.sym == SDLK_h) { // pausa helicoptero
+				else if (event.type == SDL_KEYDOWN) { // evento de teclado
+					if (event.key.keysym.sym == SDLK_h) { // pausa helicoptero (tecla h)
 						// no está parado -> vamos a pararlo
 						if (!pause) {
-							salida_hel.x -= 0;
-							if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth);
-
-							rect_hel.x = rect_hel.w * int(((SDL_GetTicks()) % 5));
 							pause = true;
+							salida_hel.x -= 0; //No avanza
+							if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth); //Esto creo que no hace falta, pq está parado
+
+							rect_hel.x = rect_hel.w * int(((SDL_GetTicks()) % 5)); //Para el frame
 						}
 						// esta parado -> vamos a encenderlo
 						else {
-							salida_hel.x -= 10;
-							if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth);
-
-							rect_hel.x = rect_hel.w * int(((SDL_GetTicks() / TIME_PER_FRAME) % 5));
 							pause = false;
+							salida_hel.x -= 10; //Avanza
+							if (salida_hel.x < -salida_hel.w) salida_hel.x = int(winWidth); //Sale y entra bien en pantalla
+
+							rect_hel.x = rect_hel.w * int(((SDL_GetTicks() / TIME_PER_FRAME) % 5)); //Cambia el frame
+
 						}
 					}
 				}
