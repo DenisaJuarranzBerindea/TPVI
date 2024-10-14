@@ -2,6 +2,7 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "Game.h"
 #include <iostream>
 
 using namespace std;
