@@ -8,7 +8,6 @@
 
 // Nuestras clases
 #include "Texture.h"
-#include "Dog.h"
 
 using uint = unsigned int;
 
@@ -21,8 +20,8 @@ public:
 	// Identificadores de las texturas
 	enum TextureName {
 		BACKGROUND,
-		DOG,
-		HELICOPTER,
+		/*DOG,*/
+		//HELICOPTER,
 		NUM_TEXTURES,  // Truco C++: número de texturas definidas
 	};
 
@@ -37,7 +36,8 @@ private:
 	bool seguir;
 
 	// Objetos del juego
-	Dog* perro;
+	int mapOffset = 0;
+
 
 public:
 	void run();
@@ -52,6 +52,9 @@ public:
 	static constexpr uint WIN_WIDTH = 800;
 	static constexpr uint WIN_HEIGHT = 600;
 	static constexpr uint FRAME_RATE = 50;
+
+	//section
+	int getMapOffset();
 
 	Game();
 	~Game();
