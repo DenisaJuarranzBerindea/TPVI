@@ -1,6 +1,7 @@
 #include <string>
 
 #include "Game.h"
+#include "Tilemap.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ const string textureRoot = "../assets/";
 
 // Especificación de las texturas del juego
 const array<TextureSpec, Game::NUM_TEXTURES> textureSpec{
-	TextureSpec{"/maps/world1.png", 1, 1},
+	{"/imgs/background.png", 9, 7},
 
 };
 
