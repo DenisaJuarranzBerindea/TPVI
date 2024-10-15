@@ -68,15 +68,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Game.h" />
+    <ClInclude Include="..\Texture.h" />
+    <ClInclude Include="..\Tilemap.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\Game.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\Texture.cpp" />
-    <ClCompile Include="Tilemap.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Game.h" />
-    <ClInclude Include="..\Texture.h" />
-    <ClInclude Include="Tilemap.h" />
+    <ClCompile Include="..\Tilemap.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
