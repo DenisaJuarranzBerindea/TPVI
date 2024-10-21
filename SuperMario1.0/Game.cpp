@@ -18,7 +18,7 @@ const string textureRoot = "../assets/";
 
 // Especificación de las texturas del juego
 const array<TextureSpec, Game::NUM_TEXTURES> textureSpec{
-	{"/imgs/background.png", 9, 7},
+	{"imgs/background.png", 9, 7},
 
 };
 
@@ -124,3 +124,25 @@ Game::handleEvents()
 
 
 int Game::getMapOffset() { return mapOffset; }
+
+/*void Game::loadMap() {
+	istream file("world1.txt");
+
+	string line;
+	getline(file, line);
+
+	stringstream lineStream(line);
+	
+	char tipo;
+	lineStream >> tipo;
+
+	switch (tipo) {
+		case 'M':
+			player = Player(this, lineStream);
+			break;
+		case 'B':
+			break;
+		//un case por tipo
+		default:
+	}
+}*/
