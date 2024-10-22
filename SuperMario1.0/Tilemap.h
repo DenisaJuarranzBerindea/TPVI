@@ -15,7 +15,7 @@ public:
 
 private: 
 
-	Tilemap::Tilemap(const string& fichero) {
+	Tilemap(const string& fichero) {
 		ifstream input(fichero);
 
 		if (!input) return;
