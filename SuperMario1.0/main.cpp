@@ -1,8 +1,17 @@
+#include "checkML.h"
+
+#include "SDL.h"
+#include "SDL_image.h"
+
 #include <iostream>
+#include <Windows.h>
+#include <vector>
 
 #include "Game.h"
 
 using namespace std;
+
+using uint = unsigned int;
 
 int main(int argc, char* argv[])
 {
@@ -16,3 +25,4 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+

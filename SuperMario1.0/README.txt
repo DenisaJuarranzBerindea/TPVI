@@ -1,21 +1,56 @@
-# Plantilla para proyectos con SDL en Visual Studio
+# Información sobre la Práctica SUPER MARIO V1.0 (Semientrega el 29/10)
 
-Instrucciones
--------------
+- Solo 1 Nivel.
+- Enemigos Goomba y Koopa
+- UI en consola (vidas restantes, ganar/perder)
+- Animación solo en personajes y bloques sorpresa
+- NO TIEMPO, NO PUNTOS.
 
-* Al añadir un proyecto a la solución recuerda añadir la página de propiedades ProyectosSDL.props al nuevo proyecto: en el menú Ver -> Otras ventanas -> Administrador de propiedades -> Agregar hoja de propiedades existente, busca el archivo ProyectosSDL.props para incorporarlo. Sin hacer esto es posible que el compilador no encuentre la biblioteca SDL o se produzcan otros errores de compilación.
+# Diseño por clases:
 
-* Si quieres añadir una nueva biblioteca, copia su directorio en la solución y añade los nuevos elementos al archivo ProyectoSDL.props: IncludePath, LibraryPath, AdditionalDependencies y LocalDebuggerEnvironment.
+- class Texture (dada en clase)
+- class Vector2D (solo .h):
+	https://github.com/ElkMonster/Point2D/blob/master/Point2D.cpp
+	Representa vectores o puntos en 2 dimensiones (propiedades tipo T x, y)
+	Constructora
+	Getters/Setters de x e y
+	operador+ Suma(), operador- Resta(), producto escalar()
+	Template para el USING Vector2D (T2, DIAPO 21)
+- class Tilemap
+	Dibuja escenario. Accede a Texture. 
+	Puntero a textura del bg. 
+	Matriz [][] para el mapa. 
+	Constructora - lee el csv.
+	Métodos: Render, Update y Hit
+- class Block
+	Contiene Point2D, enum tipo(), enum acción(), puntero textura, puntero juego.
+	Constructora
+	Métodos: render, update, hit.
+- class Goomba
+	Contiene Point2D, dirección (point2D), puntero textura, puntero juego.
+	Constructora
+	Métodos: render, update, hit
+- class Koopa
+	Contiene Point2D, dirección (point2D), puntero textura, puntero juego.
+	Constructora
+	Métodos: render, update, hit
+	*Se ampliará en V2.0
+- class Mushroom
+	Contiene Point2D, dirección (point2D), puntero textura, puntero juego. 
+- class Player
+	Contiene Point2D, dirección (point2D), puntero textura, puntero juego, int vidas, aspecto (bool SuperMario)
+	Constructora
+	Métodos: render, update, hit, handleEvents
+- class Game
+	Contiene tamaño ventana, mapOffset, punteros a ventana y a renderer, punteros a gameElems (Point2D), bool exit, array tecturas. 
+	Constantes
+	Métodos públicos: inicio y destrucción, run
+	Métodos privados: render, update, handleEvents
+	Getter: getMapOffset
+	Collides
 
-* Los proyectos se deberían ejecutar sin problemas desde Visual Studio, pero los programas compilados que quedan en la carpeta bin (*Debug.exe y *Release.exe) al ejecutarse directamente mostrarán un mensaje de error indicando que la biblioteca SDL2.dll u otras no están disponibles. Esto se puede evitar copiando los archivos .dll en SDL2* a la carpeta bin del proyecto.
-
-* Para la comprobación de fugas de memoria, incluye el archivo "checkML.h" en todos los archivos .cpp del proyecto antes que cualquier otro #include. Las fugas detectadas aparecerán en la consola del depurador de Visual Studio. El archivo checkML.h puede producir un error si la versión del estándar de C++ es anterior a C++17. En tal caso accede a las propiedades del proyecto y selecciona esa versión del estándar.
 
 
-Bibliotecas
------------
 
-* SDL2 2.28.2
-* SDL2_image 2.6.3
 
-Más información sobre las bibliotecas en https://www.libsdl.org/.
+
