@@ -21,34 +21,34 @@ const array<TextureSpec, Game::NUM_TEXTURES> textureSpec{
 
 };
 
-//Game::Game() : randomGenerator(time(nullptr)), exit(false)
-//{
-//	int winX, winY; // Posici�n de la ventana
-//	winX = winY = SDL_WINDOWPOS_CENTERED;
-//
-//	// Inicializaci�n del sistema, ventana y renderer
-//	SDL_Init(SDL_INIT_EVERYTHING);
-//
-//	// ERRORES DE SDL
-//	try
-//	{
-//		// crea la ventana
-//		window = SDL_CreateWindow("Super Mario", winX, winY, WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_SHOWN);
-//
-//		// crea el renderer para la ventana
-//		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-//
-//		if (window == nullptr || renderer == nullptr)
-//			throw "Error cargando ventana de juego o renderer"s;
-//	}
-//	catch (...)
-//	{
-//		cout << "Error cargando ventana de juego o renderer";
-//		EndGame();
-//	}
-//
-//	init();
-//}
+Game::Game() /*: randomGenerator(time(nullptr)), exit(false)*/
+{
+	int winX, winY; // Posici�n de la ventana
+	winX = winY = SDL_WINDOWPOS_CENTERED;
+
+	// Inicializaci�n del sistema, ventana y renderer
+	SDL_Init(SDL_INIT_EVERYTHING);
+
+	// ERRORES DE SDL
+	try
+	{
+		// crea la ventana
+		window = SDL_CreateWindow("Super Mario", winX, winY, WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_SHOWN);
+
+		// crea el renderer para la ventana
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+		if (window == nullptr || renderer == nullptr)
+			throw "Error cargando ventana de juego o renderer"s;
+	}
+	catch (...)
+	{
+		cout << "Error cargando ventana de juego o renderer";
+		EndGame();
+	}
+
+	init();
+}
 
 Game::~Game()
 {
@@ -77,36 +77,39 @@ void Game::init()
 }
 
 // Carga texturas, mapa y objetos
-//void Game::loadTextures()
-//{
-//	try {
-//	    //bucle para rellenar el array de texturas
-//		for (int i = 0; i < NUM_TEXTURES; i++) {
-//
-//			 crea la textura con el url, width y height
-//			Texture* tex = new Texture(renderer,
-//				(textureRoot + textureSpec[i].name).c_str(),
-//				textureSpec[i].numRows,
-//				textureSpec[i].numColumns);
-//
-//			 la mete en el array
-//			textures[i] = tex;
-//
-//			if (textures[i] == nullptr)
-//			{
-//				cout << "Textura null";
-//			}
-//		}
-//	}
-//	catch (...) {
-//		std::cout << "Textura no encontrada";
-//		EndGame();
-//	}
-//}
+void Game::loadTextures()
+{
+	try {
+	    //bucle para rellenar el array de texturas
+		for (int i = 0; i < NUM_TEXTURES; i++) {
+
+			//crea la textura con el url, width y height
+			Texture* tex = new Texture(renderer,
+				(textureRoot + textureSpec[i].name).c_str(),
+				textureSpec[i].numRows,
+				textureSpec[i].numColumns);
+
+			//la mete en el array
+			textures[i] = tex;
+
+			if (textures[i] == nullptr)
+			{
+				cout << "Textura null";
+			}
+		}
+	}
+	catch (...) {
+		std::cout << "Textura no encontrada";
+		EndGame();
+	}
+}
 
 void Game::loadMap()
 {
-
+	const string map = "../assets/maps/world1.csv";
+	Tilemap mapa(map);
+	mapa.renderMapa();
+	
 }
 
 // Loop del juego
@@ -187,15 +190,13 @@ void Game::collides()
 
 }
 
-
-int Game::getMapOffset() { return mapOffset; }
-
 /*void Game::loadMap() {
 	istream file("world1.txt");
 
 	string line;
 	getline(file, line);
-
+	
+	//para leer colisiones (a futuro), utilizar STRINGSTREAM //#include <sstream>
 	stringstream lineStream(line);
 	
 	char tipo;
@@ -224,6 +225,4 @@ void Game::playerLife()
 	//cout << "VIDAS RESTANTES: " <<  << endl;
 }
 
-// Getters y Setters
-int Game::getMapOffset() { return mapOffset; }
-
+int Game::getMapOffset() { return Game::mapOffset; }

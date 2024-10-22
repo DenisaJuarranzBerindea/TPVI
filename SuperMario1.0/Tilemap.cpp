@@ -1,17 +1,49 @@
 #include "Tilemap.h"
-#include "Texture.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "Game.h"
 
 using namespace std;
 
-void Tilemap::leeMapa(const string& fichero) {
+void Tilemap::renderMapa() {
+	constexpr int TILE_MAP = 32;
+	constexpr int WINDOW_WIDTH = 18;
+	constexpr int WINDOW_HEIGHT = 16;
+	constexpr int TILE_SIDE = 16;
+
+	int x0 = g->getMapOffset() / TILE_MAP;
+
+	SDL_Rect rect;
+	rect.w = TILE_SIDE;
+	rect.h = TILE_SIDE;
+
+	for (int i = 0; i < WINDOW_WIDTH; ++i) {
+		for (int j = 0; j < WINDOW_HEIGHT; ++j) {
+			int indice = mapaV[x0 + i][j];
+			int fx = indice % 9;
+			int fy = indice / 9;
+
+			rect.x = i * TILE_SIDE;
+			rect.y = j * TILE_SIDE;
+
+			if (indice != -1) {
+				background->renderFrame(rect, fy, fx);
+			}
+			else {
+				SDL_SetRenderDrawColor(g->getRenderer(), 138, 132, 255, 255);
+				fx = 0; fy = 0; //fondo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				background->renderFrame(rect, fy, fx);
+			}
+		}
+	}
+}
+
+Tilemap::Tilemap(const string& fichero) {
 	ifstream input(fichero);
 
 	if (!input) return;
-
-	while (!input) {
+	while (!cin) {
 		char cAux = ',';
 		int c = 0;
 		vector<int> aux;
@@ -22,41 +54,9 @@ void Tilemap::leeMapa(const string& fichero) {
 		}
 		mapaV.push_back(aux);
 	}
+
+	background = g->getTexture(Game::TextureName::BACKGROUND);
 }
 
-void Tilemap::renderMapa() {
-
-}
 
 
-/*
-
-vector<vector<int>> indices;
-int mapOffset;
-constexpr int TILE_MAP = 32;
-constexpr int WINDOW_WIDTH = 18;
-constexpr int WINDOW_HEIGHT = 16;
-Texture* background;
-
-int x0 = mapOffset / TILE_MAP;
-
-SDL_Rect rect;
-rect.w = TILE_SIDE;
-rect.h = TILE_SIDE;
-
-for (int i = 0; i < WINDOW_WIDTH; ++i){
-	for (int j = 0; j < WINDOW_HEIGHT; ++j){
-		int indice = indices[x0 + i][j];
-		int fx = indice % 9;
-		int fy = indice / 9;
-		
-		rect.x = i*TILE_SIDE;
-		rect.y = j*TILE_SIDE;
-
-		background->renderFrame(rect, fx, fy);
-	}
-}
-
-//para leer colisiones (a futuro), utilizar STRINGSTREAM //#include <sstream>
-
-*/

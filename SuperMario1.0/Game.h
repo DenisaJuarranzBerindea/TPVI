@@ -12,12 +12,14 @@
 #include "SDL_image.h"
 
 // Nuestras clases
+#include <iostream>
 #include <array>
 #include <vector>
 #include <fstream>
 #include <random>
 #include <time.h>
 #include "Texture.h"
+#include "Tilemap.h"
 //#include "Vector2D.h"
 
 /*#include "Player.h"
@@ -90,9 +92,7 @@ public:
 	void collides();
 
 	// getters
-	uint getWinWidth() { return WIN_HEIGHT; }
-	uint getWinHeight() { return WIN_HEIGHT; }
-	int getMapOffset() { return mapOffset; }
+	int getMapOffset();
 	Texture* getTexture(TextureName name) const;
 	SDL_Renderer* getRenderer() { return renderer; }
 	bool GetExit() { return exit; }
