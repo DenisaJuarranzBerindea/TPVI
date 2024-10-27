@@ -17,12 +17,13 @@
 #include <vector>
 #include <fstream>
 #include <random>
+#include <string>
 #include <time.h>
 #include "Texture.h"
 #include "Tilemap.h"
-//#include "Vector2D.h"
+/*#include "Vector2D.h"
 
-/*#include "Player.h"
+#include "Player.h"
 #include "Block.h"
 #include "Goomba.h"
 #include "Mushroom.h"
@@ -35,28 +36,19 @@ using uint = unsigned int;
 //
 class Game
 {
-public:
-	// Identificadores de las texturas
-	enum TextureName {
-		BACKGROUND,
-		NUM_TEXTURES,  // Truco C++: número de texturas definidas
-	};
-
-private:
-
 	// Ventana de la SDL (se destruirá en el destructor)
 	SDL_Window* window = nullptr;
 	// Renderizador de la SDL (para dibujar)
 	SDL_Renderer* renderer = nullptr;
 
 	// Constante globales
-	static constexpr uint WIN_WIDTH = 800;  // ancho ventana
-	static constexpr uint WIN_HEIGHT = 600; // alto ventana
 	const int FRAME_RATE = 50;
 	const int TIME_BY_FRAME = 1 / FRAME_RATE;
 
-	// Array con todas las texturas del juego
-	std::array<Texture*, NUM_TEXTURES> textures;
+	//En tiles
+	static constexpr int TILE_SIDE = 32; 
+	static constexpr int TILE_WINDOW_WIDTH = 18;
+	static constexpr int TILE_WINDOW_HEIGHT = 16;
 
 	// Interruptor para terminar el juego
 	bool exit;
@@ -70,6 +62,21 @@ private:
 
 
 public:
+	// Identificadores de las texturas
+	enum TextureName {
+		BACKGROUND,
+		MARIO,
+		NUM_TEXTURES,  // Truco C++: número de texturas definidas
+	};
+
+private:
+
+	// Array con todas las texturas del juego
+	std::array<Texture*, NUM_TEXTURES> textures;
+
+	static constexpr uint WIN_WIDTH = TILE_SIDE * TILE_WINDOW_WIDTH;  // ancho ventana
+	static constexpr uint WIN_HEIGHT = TILE_SIDE * TILE_WINDOW_HEIGHT; // alto ventana
+
 
 	//Constructora
 	Game();
