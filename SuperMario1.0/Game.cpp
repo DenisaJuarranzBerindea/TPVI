@@ -117,7 +117,6 @@ void Game::loadMap()
 	const string map = "../assets/maps/world1.csv";
 	mapa = new Tilemap(map, this);
 	cout << "Tilemap creado" << " (fichero Game.cpp)" << endl;
-	mapa->renderMapa();
 	
 }
 
@@ -169,6 +168,7 @@ void Game::render() const
 
 	// Pinta los objetos del juego
 	//textures[0]->render(); // esto renderiza la textura de background.png
+	mapa->renderMapa();
 	//player->render();
 	//mushroom->render();
 	//koopa->render();

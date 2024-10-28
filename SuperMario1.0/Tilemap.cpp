@@ -10,7 +10,7 @@ using namespace std;
 void Tilemap::renderMapa() {
 
 	static constexpr int TILE_MAP = 32;
-	static constexpr int TILE_SIDE = 16;
+	static constexpr int TILE_SIDE = 32;
 	static constexpr int WIN_WIDTH = 18;
 	static constexpr int WIN_HEIGHT = 16;
 
@@ -28,12 +28,9 @@ void Tilemap::renderMapa() {
 
 
 	//ZONA DE PRUEBAS (hace lo mismo que el bucle pero solo tres casos, cuando funcione esto aplicar al bucle)
-	// DUDA PRINCIPAL: cómo utilizar renderFrame y si hay que utilizar una textura
-	// nueva background (líneas 34-36), o background_spritesheet (Texture*, inicializada en el constructor)
+	// DUDA PRINCIPAL: cï¿½mo utilizar renderFrame
 //----------------------------------------------------------------------------------------------------
-	SDL_Surface* background_surface = SDL_CreateRGBSurface(0, 16, 210, 0, 138, 132, 255, 255);
-	SDL_Texture* background_texture = SDL_CreateTextureFromSurface(g->getRenderer(), background_surface);
-	Texture* background = new Texture(g->getRenderer(), background_texture, 16, 210);
+	
 	//background_spritesheet = g->getTexture(Game::TextureName::BACKGROUND); //ya inicializada
 
 	//(6, 9) -> 40, renderizando: 4, 4 (o sea, indice / 9, indice % 9)
@@ -41,46 +38,42 @@ void Tilemap::renderMapa() {
 	rect.y = 6 * TILE_SIDE;
 	int indice = 40;
 	background_spritesheet->renderFrame(rect, indice / 9, indice % 9);
-	//background->renderFrame(rect, indice / 9, indice % 9);
 
 	//(6, 10) -> 41, renderizando: 4, 5
 	rect.x = 10 * TILE_SIDE;
 	rect.y = 6 * TILE_SIDE;
 	indice = 41;
 	background_spritesheet->renderFrame(rect, indice / 9, indice % 9);
-	//background->renderFrame(rect, indice / 9, indice % 9);
 
 	//(6, 11) -> 42, renderizando: 4, 6
 	rect.x = 11 * TILE_SIDE;
 	rect.y = 6 * TILE_SIDE;
 	indice = 42;
 	background_spritesheet->renderFrame(rect, indice / 9, indice % 9);
-	//background->renderFrame(rect, indice / 9, indice % 9);
 //----------------------------------------------------------------------------------------------------
 
-	//for (int i = 0; i < WIN_WIDTH+1; ++i) { //mas anchura de la necesaria, a proposito
-	//	for (int j = 0; j < WIN_HEIGHT; ++j) {
-	//		cout << "(" << x0 + i << ", " << j << ") -> ";
-	//		int indice = mapaV[j][x0+i]; //esto es el elemento del csv
-	//		cout << indice;
-	//		int fx = indice % 9; //esto es la fila del spritesheet
-	//		int fy = indice / 9; //esto es la columna del spritesheet
-	//
-	//		rect.x = -d0 + i * TILE_SIDE; //la posicion del rect a dibujar, indice por pixeles del tile
-	//		rect.y = j * TILE_SIDE;
-	//
-	//		if (indice != -1) {
-	//			background->renderFrame(rect, fy, fx);
-	//			cout << ", renderizando: " << fy << ", " << fx << endl;
-	//		}
-	//		else {
-	//			fx = 0; fy = 0;
-	//			background->renderFrame(rect, fy, fx);
-	//			cout << ", renderizando: " << fy << ", " << fx << endl;
-	//		}
-	//	}
-	//}
-
+	for (int i = 0; i < WIN_HEIGHT; ++i) { //mas anchura de la necesaria, a proposito
+		for (int j = 0; j < WIN_WIDTH + 1; ++j) {
+			cout << "(" << x0 + i << ", " << j << ") -> ";
+			int indice = mapaV[x0+i][j]; //esto es el elemento del csv
+			cout << indice;
+			int fx = indice % 9; //esto es la fila del spritesheet
+			int fy = indice / 9; //esto es la columna del spritesheet
+	
+			rect.x = -d0 + i * TILE_SIDE; //la posicion del rect a dibujar, indice por pixeles del tile
+			rect.y = j * TILE_SIDE;
+	
+			if (indice != -1) {
+				background_spritesheet->renderFrame(rect, fy, fx);
+				cout << ", renderizando: " << fy << ", " << fx << endl;
+			}
+			else {
+				fx = 0; fy = 0;
+				background_spritesheet->renderFrame(rect, fy, fx);
+				cout << ", renderizando: " << fy << ", " << fx << endl;
+			}
+		}
+	}
 	cout << "Renderizado" << endl;
 }
 
