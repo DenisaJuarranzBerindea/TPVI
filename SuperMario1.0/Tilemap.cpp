@@ -7,9 +7,38 @@
 
 using namespace std;
 
+Tilemap::Tilemap(const string& fichero, Game* game) {
+	g = game;
+
+	ifstream input(fichero);
+	if (!input) return;
+
+	string line;
+	while (getline(input, line)) {
+		vector<int> aux;
+		stringstream ss(line);
+		int c;
+		while (ss >> c) {
+			aux.push_back(c);
+			if (ss.peek() == ',') ss.ignore();
+		}
+		mapaV.push_back(aux);
+	}
+
+	// Debug, imprime cada elemento del mapa y su fila y columna
+	//for (size_t row = 0; row < mapaV.size(); ++row) {
+	//	for (size_t col = 0; col < mapaV[row].size(); ++col) {
+	//		cout << "(" << row << ", " << col << ") -> " << mapaV[row][col] << endl;
+	//	}
+	//	cout << endl;
+	//}
+
+	background_spritesheet = g->getTexture(Game::TextureName::BACKGROUND);
+}
+
 void Tilemap::renderMapa() {
 
-	static constexpr int TILE_MAP = 32;
+	static constexpr int TILE_MAP = 32;	
 	static constexpr int TILE_SIDE = 32;
 	static constexpr int WIN_WIDTH = 18;
 	static constexpr int WIN_HEIGHT = 16;
@@ -77,34 +106,7 @@ void Tilemap::renderMapa() {
 	cout << "Renderizado" << endl;
 }
 
-Tilemap::Tilemap(const string& fichero, Game* game) {
-	g = game;
 
-	ifstream input(fichero);
-	if (!input) return;
-
-	string line;
-	while (getline(input, line)) {
-		vector<int> aux;
-		stringstream ss(line);
-		int c;
-		while (ss >> c) {
-			aux.push_back(c);
-			if (ss.peek() == ',') ss.ignore();
-		}
-		mapaV.push_back(aux);
-	}
-
-	// Debug, imprime cada elemento del mapa y su fila y columna
-	//for (size_t row = 0; row < mapaV.size(); ++row) {
-	//	for (size_t col = 0; col < mapaV[row].size(); ++col) {
-	//		cout << "(" << row << ", " << col << ") -> " << mapaV[row][col] << endl;
-	//	}
-	//	cout << endl;
-	//}
-
-	background_spritesheet = g->getTexture(Game::TextureName::BACKGROUND);
-}
 
 
 
