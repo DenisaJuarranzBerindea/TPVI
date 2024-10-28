@@ -56,7 +56,7 @@ class Game
 	int mapOffset = 0;
 
 	// declaración de los elementos de juego
-
+	Tilemap* mapa;
 
 	int startTime, frameTime;	// manejo de tiempo en run
 
@@ -64,12 +64,10 @@ class Game
 public:
 	// Identificadores de las texturas
 	enum TextureName {
-		BACKGROUND,
-		MARIO,
-		NUM_TEXTURES,  // Truco C++: número de texturas definidas
+		BACKGROUND, // = 0
+		MARIO, // = 1
+		NUM_TEXTURES  // Truco C++: número de texturas definidas
 	};
-
-private:
 
 	// Array con todas las texturas del juego
 	std::array<Texture*, NUM_TEXTURES> textures;
@@ -102,7 +100,7 @@ private:
 	int getMapOffset();
 	Texture* getTexture(TextureName name) const;
 	SDL_Renderer* getRenderer() { return renderer; }
-	bool GetExit() { return exit; }
+	bool GetExit() const { return exit; }
 
 	// setters
 	void EndGame();
@@ -115,16 +113,10 @@ private:
 	// lee mapa
 	void loadMap();
 	// fondo
-	void renderBackground();
+	//void renderBackground(); // utilizar?
 	// muestra en consola las vidas del jugador
 	void playerLife();
 
 };
-
-inline Texture*
-Game::getTexture(TextureName name) const
-{
-	return textures[name];
-}
 
 #endif

@@ -12,16 +12,13 @@ class Tilemap
 {
 
 protected:
-	Game* g;
 	vector<vector<int>> mapaV;
-	Texture* background_spritesheet;
-
-	SDL_Texture* background_texture;
+	Texture* background;
+	Game* g;
 
 public: 
 
-	Texture* background;
-	Tilemap(const string&, Game*);
+	Tilemap(const string& fichero);
 
 	void renderMapa();
 };

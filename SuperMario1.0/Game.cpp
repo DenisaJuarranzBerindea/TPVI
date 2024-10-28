@@ -1,5 +1,5 @@
 #include <string>
-
+#include <array>
 #include "Game.h"
 
 using namespace std;
@@ -16,17 +16,19 @@ struct TextureSpec
 const string textureRoot = "../assets/imgs/";
 
 // Especificacion de las texturas del juego
-const array<TextureSpec, Game::NUM_TEXTURES> textureSpec{
-	{"imgs/background.png", 9, 7},
-
+const array<TextureSpec, Game::TextureName::NUM_TEXTURES> textureSpec{
+	{
+		{"background.png", 9, 7},
+		{"mario.png", 12, 1}
+	}
 };
 
 Game::Game() /*: randomGenerator(time(nullptr)), exit(false)*/
 {
-	int winX, winY; // Posici�n de la ventana
+	int winX, winY; // Posición de la ventana
 	winX = winY = SDL_WINDOWPOS_CENTERED;
 
-	// Inicializaci�n del sistema, ventana y renderer
+	// Inicialización del sistema, ventana y renderer
 	SDL_Init(SDL_INIT_EVERYTHING);
 
 	// ERRORES DE SDL
@@ -69,7 +71,7 @@ Game::~Game()
 	SDL_Quit();
 }
 
-// Inicializaci�n
+// Inicialización
 void Game::init()
 {
 	loadTextures();
@@ -80,16 +82,15 @@ void Game::init()
 void Game::loadTextures()
 {
 	try {
-	    //bucle para rellenar el array de texturas
+     // bucle para rellenar el array de texturas
 		for (int i = 0; i < NUM_TEXTURES; i++) {
 
-			//crea la textura con el url, width y height
+			// crea la textura con el url, width y height
 			Texture* tex = new Texture(renderer,
 				(textureRoot + textureSpec[i].name).c_str(),
 				textureSpec[i].numRows,
 				textureSpec[i].numColumns);
-
-			//la mete en el array
+			// la mete en el array
 			textures[i] = tex;
 
 			if (textures[i] == nullptr)
@@ -97,9 +98,16 @@ void Game::loadTextures()
 				cout << "Textura null";
 			}
 		}
+		for (int i = 0; i < NUM_TEXTURES; i++) {
+			if (textures[i] != nullptr) {
+				cout << "Texture " << i << ": " << textureSpec[i].name << " loaded successfully." << endl;
+			} else {
+				cout << "Texture " << i << ": " << textureSpec[i].name << " failed to load." << endl;
+			}
+		}
 	}
 	catch (...) {
-		std::cout << "Textura no encontrada";
+		std::cout << "Textura no encontrada" << " (fichero Game.cpp)" << endl;
 		EndGame();
 	}
 }
@@ -107,9 +115,17 @@ void Game::loadTextures()
 void Game::loadMap()
 {
 	const string map = "../assets/maps/world1.csv";
-	Tilemap mapa(map);
-	mapa.renderMapa();
+	mapa = new Tilemap(map, this);
+	cout << "Tilemap creado" << " (fichero Game.cpp)" << endl;
+	mapa->renderMapa();
 	
+}
+
+Texture* Game::getTexture(TextureName name) const
+{
+	Texture* aux = textures[name];
+	cout << "Textura " << name << " cargada" << " (fichero Game.cpp)" << endl;
+	return aux;
 }
 
 // Loop del juego
@@ -117,9 +133,11 @@ void Game::run()
 {
 	// get ticks al inicio del bucle
 	startTime = SDL_GetTicks();
-
 	while (!exit)
 	{
+
+		// cout << "Juego corriendo" << endl;
+
 		handleEvents();
 
 		// tiempo desde ultima actualizacion
@@ -150,7 +168,7 @@ void Game::render() const
 	SDL_RenderClear(renderer);
 
 	// Pinta los objetos del juego
-	textures[BACKGROUND]->render();
+	//textures[0]->render(); // esto renderiza la textura de background.png
 	//player->render();
 	//mushroom->render();
 	//koopa->render();
