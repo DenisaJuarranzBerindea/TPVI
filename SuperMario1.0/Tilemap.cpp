@@ -29,15 +29,16 @@ void Tilemap::renderMapa() {
 
 	//ZONA DE PRUEBAS (hace lo mismo que el bucle pero solo tres casos, cuando funcione esto aplicar al bucle)
 	// DUDA PRINCIPAL: cómo utilizar renderFrame y si hay que utilizar una textura
-	// nueva background (líneas 34-36), o background_spritesheet (inicializada en el constructor)
+	// nueva background (líneas 34-36), o background_spritesheet (Texture*, inicializada en el constructor)
 //----------------------------------------------------------------------------------------------------
 	SDL_Surface* background_surface = SDL_CreateRGBSurface(0, 16, 210, 0, 138, 132, 255, 255);
-	background_texture = SDL_CreateTextureFromSurface(g->getRenderer(), background_surface);
-	background = new Texture(g->getRenderer(), background_texture, 16, 210);
+	SDL_Texture* background_texture = SDL_CreateTextureFromSurface(g->getRenderer(), background_surface);
+	Texture* background = new Texture(g->getRenderer(), background_texture, 16, 210);
+	//background_spritesheet = g->getTexture(Game::TextureName::BACKGROUND); //ya inicializada
 
 	//(6, 9) -> 40, renderizando: 4, 4 (o sea, indice / 9, indice % 9)
-	rect.x = 9;
-	rect.y = 6;
+	rect.x = 9 * TILE_SIDE;
+	rect.y = 6 * TILE_SIDE;
 	int indice = 40;
 	background_spritesheet->renderFrame(rect, indice / 9, indice % 9);
 	//background->renderFrame(rect, indice / 9, indice % 9);

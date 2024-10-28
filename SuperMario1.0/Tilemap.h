@@ -16,11 +16,7 @@ protected:
 	vector<vector<int>> mapaV;
 	Texture* background_spritesheet;
 
-	SDL_Texture* background_texture;
-
-public: 
-
-	Texture* background;
+public:
 	Tilemap(const string&, Game*);
 
 	void renderMapa();
