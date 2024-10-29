@@ -36,8 +36,6 @@ void Player::render() const
 	destRect.x = x * g->TILE_SIDE - g->getMapOffset();
 	destRect.y = y * g->TILE_SIDE;
 
-	texture->renderFrame(destRect, 0, marioFrame);
-
 	// Usa el flip segun la direccion
 	SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
@@ -137,12 +135,10 @@ void Player::updateOffset()
 	// si llega a la mitad actual en pantalla en ese momento
 	// actualiza el offset
 
-	//int screenX = position.getX() * g->TILE_SIDE - g->getMapOffset();
-	int screenX = x * g->TILE_SIDE - g->getMapOffset();
+	//cout << x * g->TILE_SIDE - g->getMapOffset() << " > " << g->WIN_WIDTH / 2 << endl;
+	if (x * g->TILE_SIDE - g->getMapOffset() > g->WIN_WIDTH / 2) g->setMapOffset(x * g->TILE_SIDE - g->WIN_WIDTH / 2);
 
-	if (screenX > g->TILE_SIDE * g->WIN_WIDTH / 2) {
-		g->setMapOffset(g->getMapOffset() + 1); // + g->TILE_SIDE * speed ??
-	}
+
 }
 
 bool Player::checkFall()
@@ -159,7 +155,8 @@ void Player::moveMario()
 		dy = 0;
 	}
 
-	if (keyA != keyD) {
+	else if (keyA != keyD) {
+		cout << dx << " " << x << endl;
 		if (keyA) {
 			//direction = Vector2D<double>(-1, 0);
 			dx = -1;
@@ -174,28 +171,28 @@ void Player::moveMario()
 		}
 	}
 
-	if (keySpace && grounded && !canJump) {
+	if (keySpace && grounded && !canJump) { //!canJump?
 		//direction = Vector2D<int>(0, -1);
 		dx = 0;
 		dy = -1;
 		//maxHeight = position.getY() - 3;
-		maxHeight = y - 3;
+		maxHeight = y - 4;
 		grounded = false;
 		isFalling = false;
 	}
 
 	//position.setX(position.getX() + (direction.getX() * speed * 0.3));
-	x += (dx * speed * 0.3);
+	x += (dx * speed);
 
 	if (!grounded) {
 		if (!isFalling && y > maxHeight) { //(!isFalling && position.getY() > maxHeight)
 			//position.setY(position.getY() - speed * 0.3);
-			y -= speed * 0.3;
+			y -= speed;
 		}
 		else {
 			isFalling = true;
 			//position.setY(position.getY() + speed * 0.3);
-			y += speed * 0.3;
+			y += speed;
 		}
 
 		if (y >= groundedYPos) { //(position.getY() >= groundedYPos)
@@ -207,7 +204,8 @@ void Player::moveMario()
 	}
 
 	//if (position.getX() < 0) position.setX(0);
-	if (x < 0) x = 0;
+	//PROBLEMA TILE ANTERIOR A FUTURO
+	if (x * g->TILE_SIDE - g->getMapOffset() <= 0 ) x = g->getMapOffset() / g->TILE_SIDE;
 
-	canJump = keySpace;
+	//canJump = keySpace;
 }

@@ -30,9 +30,9 @@ private:
 
 	//Point2D<double> position;	// posicion actual en Point2D
 	//Vector2D<int> direction = Vector2D(0, 0);	// direccion de movimiento
-	int x, y;
+	double x, y;
 	int dx, dy;
-	float speed;			// velocidad de movimiento
+	double speed;			// velocidad de movimiento
 
 public:
 

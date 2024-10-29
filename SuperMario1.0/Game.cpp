@@ -118,7 +118,7 @@ void Game::loadMap()
 {
 	const string map = "../assets/maps/world1.csv";
 	mapa = new Tilemap(map, this);
-	cout << "Tilemap creado" << " (fichero Game.cpp)" << endl;
+	cout << "Tilemap creado (fichero Game.cpp)" << endl;
 
 	ifstream file("../assets/maps/world1.txt");
 	string line;
@@ -127,7 +127,9 @@ void Game::loadMap()
 		stringstream lineStream(line);
 		char tipo;
 		lineStream >> tipo;
-		//cout<< "Tipo: " << tipo << endl;
+
+		cout << "Tipo: " << tipo << endl;
+
 		//LA LECTURA ESTÁ MAL??
 		switch (tipo) {
 		case 'M': {
@@ -138,10 +140,12 @@ void Game::loadMap()
 			break;
 		}
 		case 'B':
-			// Handle 'B' type
 			break;
 		case 'G':
-			// Handle 'G' type
+			break;
+		case 'K':
+			break;
+		case 'H':
 			break;
 		// Add more cases as needed
 		default:

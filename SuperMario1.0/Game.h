@@ -26,10 +26,10 @@
 //#include "./HolaSDL/Vector2D.h"
 #include "./HolaSDL/Player.h"
 
-/*#include "Block.h"
-#include "Goomba.h"
-#include "Mushroom.h"
-#include "Koopa.h"*/
+#include "./HolaSDL/Block.h"
+/*#include "./HolaSDL/Goomba.h"
+#include "./HolaSDL/Mushroom.h"
+#include "./HolaSDL/Koopa.h"*/
 
 using uint = unsigned int;
 
@@ -51,11 +51,12 @@ class Game
 	// Interruptor para terminar el juego
 	bool exit;
 	// Desplazamiento del mapa
-	int mapOffset = 0;
+	int mapOffset = 45*TILE_SIDE-WIN_WIDTH/2; //int choca y bloquea en el borde??
 
 	// declaración de los elementos de juego
 	Tilemap* mapa;
 	Player* player;
+	vector<Block*> blocks;
 
 	int startTime, frameTime;	// manejo de tiempo en run
 
