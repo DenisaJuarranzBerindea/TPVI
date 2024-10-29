@@ -1,8 +1,10 @@
-#include <string>
-#include <array>
 #include "Game.h"
 
 using namespace std;
+/*
+Primero se crea, llama a init(), que llama a loadTextures() y loadMap()
+Ya después se llama a run(), que llama a handleEvents(), update() y render().
+*/
 
 // Formato de la especificacion de una textura
 struct TextureSpec
@@ -55,7 +57,7 @@ Game::Game() /*: randomGenerator(time(nullptr)), exit(false)*/
 Game::~Game()
 {
 	// Elimina los objetos del juego
-	//delete player;
+	delete player;
 	//delete blocks;
 	//delete mushroom;
 	//delete goomba;
@@ -117,7 +119,35 @@ void Game::loadMap()
 	const string map = "../assets/maps/world1.csv";
 	mapa = new Tilemap(map, this);
 	cout << "Tilemap creado" << " (fichero Game.cpp)" << endl;
-	
+
+	ifstream file("../assets/maps/world1.txt");
+	string line;
+
+	while (getline(file, line)) {
+		stringstream lineStream(line);
+		char tipo;
+		lineStream >> tipo;
+		cout<< "Tipo: " << tipo << endl;
+		//LA LECTURA ESTÁ MAL
+		switch (tipo) {
+		case 'M': {
+			int x, y, lifes;
+			lineStream >> x >> y >> lifes;
+			player = new Player(this, x, y, lifes, MARIO_SPEED);
+			cout << "Player creado" << endl;
+			break;
+		}
+		case 'B':
+			// Handle 'B' type
+			break;
+		case 'G':
+			// Handle 'G' type
+			break;
+		// Add more cases as needed
+		default:
+			break;
+		}
+	}
 }
 
 Texture* Game::getTexture(TextureName name) const
@@ -132,11 +162,9 @@ void Game::run()
 {
 	// get ticks al inicio del bucle
 	startTime = SDL_GetTicks();
+
 	while (!exit)
 	{
-
-		// cout << "Juego corriendo" << endl;
-
 		handleEvents();
 
 		// tiempo desde ultima actualizacion
@@ -154,7 +182,10 @@ void Game::run()
 void Game::update()
 {
 	// Actualiza los objetos del juego
-	//player->update();
+	if (player != nullptr) {
+		player->update();
+		cout << "Player actualizado (fichero Game.cpp)" << endl;
+	}
 	//mushroom->update();
 	//koopa->update();
 	//goomba->update();
@@ -168,7 +199,8 @@ void Game::render() const
 
 	// Pinta los objetos del juego
 	mapa->renderMapa();
-	//player->render();
+	cout << "player->render() dentro de game.cpp" << endl;
+	player->render();
 	//mushroom->render();
 	//koopa->render();
 	//goomba->render();
@@ -192,8 +224,8 @@ void Game::handleEvents()
 
 		// MANEJO DE EVENTOS DE OBJETOS DE JUEGO
 		else {
-		//	player->handleEvents(event);
 			mapa->handleEvents(event);
+			player->handleEvents(event);
 		// 	mushroom->handleEvents(event);
 		//  koopa->handleEvents(event);
 		//  goomba->handleEvents(event);
@@ -207,29 +239,6 @@ void Game::collides()
 {
 
 }
-
-/*void Game::loadMap() {
-	istream file("world1.txt");
-
-	string line;
-	getline(file, line);
-	
-	//para leer colisiones (a futuro), utilizar STRINGSTREAM //#include <sstream>
-	stringstream lineStream(line);
-	
-	char tipo;
-	lineStream >> tipo;
-
-	switch (tipo) {
-		case 'M':
-			player = Player(this, lineStream);
-			break;
-		case 'B':
-			break;
-		//un case por tipo
-		default:
-	}
-}*/
 
 // Fin juego
 void Game::EndGame()

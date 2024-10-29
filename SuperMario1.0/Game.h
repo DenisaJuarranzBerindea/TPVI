@@ -13,18 +13,20 @@
 
 // Nuestras clases
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <array>
 #include <vector>
-#include <fstream>
-#include <random>
 #include <string>
+#include <random>
+
 #include <time.h>
 #include "Texture.h"
 #include "Tilemap.h"
-/*#include "Vector2D.h"
+//#include "./HolaSDL/Vector2D.h"
+#include "./HolaSDL/Player.h"
 
-#include "Player.h"
-#include "Block.h"
+/*#include "Block.h"
 #include "Goomba.h"
 #include "Mushroom.h"
 #include "Koopa.h"*/
@@ -44,11 +46,7 @@ class Game
 	// Constante globales
 	const int FRAME_RATE = 50;
 	const int TIME_BY_FRAME = 1 / FRAME_RATE;
-
-	//En tiles
-	static constexpr int TILE_SIDE = 32; 
-	static constexpr int TILE_WINDOW_WIDTH = 18;
-	static constexpr int TILE_WINDOW_HEIGHT = 16;
+	const double MARIO_SPEED = 0.01;
 
 	// Interruptor para terminar el juego
 	bool exit;
@@ -57,6 +55,7 @@ class Game
 
 	// declaración de los elementos de juego
 	Tilemap* mapa;
+	Player* player;
 
 	int startTime, frameTime;	// manejo de tiempo en run
 
@@ -72,8 +71,14 @@ public:
 	// Array con todas las texturas del juego
 	std::array<Texture*, NUM_TEXTURES> textures;
 
-	static constexpr uint WIN_WIDTH = TILE_SIDE * TILE_WINDOW_WIDTH;  // ancho ventana
-	static constexpr uint WIN_HEIGHT = TILE_SIDE * TILE_WINDOW_HEIGHT; // alto ventana
+
+	//En tiles
+	static constexpr uint TILE_MAP = 32;
+	static constexpr uint TILE_SIDE = 32;
+	static constexpr uint TILE_WINDOW_WIDTH = 18; // ancho ventana en tiles
+	static constexpr uint TILE_WINDOW_HEIGHT = 16; // alto ventana en tiles
+	static constexpr uint WIN_WIDTH = TILE_SIDE * TILE_WINDOW_WIDTH;  // ancho ventana en px
+	static constexpr uint WIN_HEIGHT = TILE_SIDE * TILE_WINDOW_HEIGHT; // alto ventana en px
 
 
 	//Constructora

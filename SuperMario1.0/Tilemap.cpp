@@ -9,25 +9,20 @@ using namespace std;
 
 void Tilemap::renderMapa() {
 
-	static constexpr int TILE_MAP = 32;
-	static constexpr int TILE_SIDE = 32;
-	static constexpr int WIN_WIDTH = 18;
-	static constexpr int WIN_HEIGHT = 16;
-
-	int x0 = g->getMapOffset() / TILE_MAP;
-	int d0 = g->getMapOffset() % TILE_MAP;
+	int x0 = g->getMapOffset() / g->TILE_MAP;
+	int d0 = g->getMapOffset() % g->TILE_MAP;
 	//preguntar por esta linea porque no entiendo que es el TILE_MAP ni la division del offset,
 	//esta relacionado con las expresiones estaticas en game.h
 
 	SDL_Rect rect;
-	rect.w = TILE_SIDE;
-	rect.h = TILE_SIDE;
+	rect.w = g->TILE_SIDE;
+	rect.h = g->TILE_SIDE;
 
 	//color de fondo
 	SDL_SetRenderDrawColor(g->getRenderer(), 138, 132, 255, 255);
 
-	for (int i = 0; i < WIN_WIDTH + 1; ++i) { //mas anchura de la necesaria, a proposito
-		for (int j = 0; j < WIN_HEIGHT; ++j) {
+	for (int i = 0; i < g->TILE_WINDOW_WIDTH + 1; ++i) { //mas anchura de la necesaria, a proposito
+		for (int j = 0; j < g->TILE_WINDOW_HEIGHT; ++j) {
 			int indice = mapaV[j][x0+i]; //esto es el elemento del csv
 			int fx = indice % 9; //esto es la fila del spritesheet
 			int fy = indice / 9; //esto es la columna del spritesheet
@@ -36,8 +31,8 @@ void Tilemap::renderMapa() {
 			//cout << indice;
 			//cout << ", renderizando: " << fy << ", " << fx << endl;
 
-			rect.x = -d0 + i * TILE_SIDE; //la posicion del rect a dibujar, indice por pixeles del tile
-			rect.y = j * TILE_SIDE;
+			rect.x = -d0 + i * g->TILE_SIDE; //la posicion del rect a dibujar, indice por pixeles del tile
+			rect.y = j * g->TILE_SIDE;
 	
 			if (indice == -1) fx = fy = 0;
 			background_spritesheet->renderFrame(rect, fy, fx);
@@ -55,32 +50,32 @@ void Tilemap::handleEvents(const SDL_Event& event)
 	int limite = 210 * 32 - 18 * 32; //nTiles * tamTile - WIN_WIDTH * tamTile
 	int velScroll = 50;
 
-	// pulsar
-	if (event.type == SDL_KEYDOWN)
-	{
-		// IZQD
-		if (key == SDL_SCANCODE_A) {
-			g->setMapOffset(g->getMapOffset() - velScroll);
-			if (g->getMapOffset() <= 0) g->setMapOffset(0);
-		}
+	//// pulsar
+	//if (event.type == SDL_KEYDOWN)
+	//{
+	//	// IZQD
+	//	if (key == SDL_SCANCODE_A) {
+	//		g->setMapOffset(g->getMapOffset() - velScroll);
+	//		if (g->getMapOffset() <= 0) g->setMapOffset(0);
+	//	}
 
-		// DCHA
-		else if (key == SDL_SCANCODE_D) {
-			g->setMapOffset(g->getMapOffset() + velScroll);
-			if (g->getMapOffset() >= limite) g->setMapOffset(limite);
-		}
+	//	// DCHA
+	//	else if (key == SDL_SCANCODE_D) {
+	//		g->setMapOffset(g->getMapOffset() + velScroll);
+	//		if (g->getMapOffset() >= limite) g->setMapOffset(limite);
+	//	}
 
-	}
+	//}
 
-	// despulsar
-	else if (event.type == SDL_KEYUP)
-	{
-		// IZQ
-		if (key == SDL_SCANCODE_A) keyA = false;
+	//// despulsar
+	//else if (event.type == SDL_KEYUP)
+	//{
+	//	// IZQ
+	//	if (key == SDL_SCANCODE_A) keyA = false;
 
-		// DER
-		else if (key == SDL_SCANCODE_D) keyD = false;
-	}
+	//	// DER
+	//	else if (key == SDL_SCANCODE_D) keyD = false;
+	//}
 }
 
 Tilemap::Tilemap(const string& fichero, Game* game) {

@@ -24,9 +24,6 @@
     <ClInclude Include="..\Tilemap.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Vector2D.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Block.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>

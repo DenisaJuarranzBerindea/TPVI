@@ -16,8 +16,8 @@ public:
 		: x(x), y(y) {}
 
 	// Getters
-	T getX() { return x; }
-	T getY() { return y; }
+	T getX() const { return x; }
+	T getY() const { return y; }
 	// Setters
 	void setX(T newX) { x = newX; }
 	void setY(T newY) { y = newY; }
@@ -66,6 +66,13 @@ public:
 	{
 		pos << "(" << v.x << "," << v.y << ")";
 		return pos;
+	}
+
+	// Operador entrada consola >>
+	friend std::istream& operator>>(std::istream& is, Vector2D& v)
+	{
+		is >> v.x >> v.y;
+		return is;
 	}
 };
 
