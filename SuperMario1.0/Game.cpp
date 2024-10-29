@@ -1,7 +1,7 @@
 #include <string>
-/*#include <iostream>
+#include <iostream>
 #include <istream>
-#include "TileMap.h"*/
+#include "TileMap.h"
 #include "Game.h"
 
 using namespace std;
@@ -57,7 +57,7 @@ Game::Game() /*: randomGenerator(time(nullptr)), exit(false)*/
 Game::~Game()
 {
 	// Elimina los objetos del juego
-	//delete player;
+	delete player;
 	//delete blocks;
 	//delete mushroom;
 	//delete goomba;
@@ -155,7 +155,7 @@ void Game::update()
 {
 	// Actualiza los objetos del juego
 	mapa->update();
-	//player->update();
+	player->update();
 	
 	//mushroom->update();
 	//koopa->update();
@@ -169,8 +169,9 @@ void Game::render() const
 	SDL_RenderClear(renderer);
 
 	// Pinta los objetos del juego
+	//textures[0]->render(); // esto renderiza la textura de background.png
 	mapa->renderMapa();
-	//player->render();
+	player->render();
 	//mushroom->render();
 	//koopa->render();
 	//goomba->render();
@@ -194,7 +195,7 @@ void Game::handleEvents()
 
 		// MANEJO DE EVENTOS DE OBJETOS DE JUEGO
 		else {
-		//	player->handleEvents(event);
+			player->handleEvents(event);
 		// 	mushroom->handleEvents(event);
 		//  koopa->handleEvents(event);
 		//  goomba->handleEvents(event);
@@ -238,11 +239,6 @@ void Game::collides()
 void Game::EndGame()
 {
 	exit = true;
-}
-
-int Game::getMapOffset()
-{
-	return mapOffset;
 }
 
 // Vidas - salida por consola
