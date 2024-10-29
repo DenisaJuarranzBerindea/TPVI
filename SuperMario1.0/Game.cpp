@@ -127,14 +127,14 @@ void Game::loadMap()
 		stringstream lineStream(line);
 		char tipo;
 		lineStream >> tipo;
-		cout<< "Tipo: " << tipo << endl;
-		//LA LECTURA ESTÁ MAL
+		//cout<< "Tipo: " << tipo << endl;
+		//LA LECTURA ESTÁ MAL??
 		switch (tipo) {
 		case 'M': {
 			int x, y, lifes;
 			lineStream >> x >> y >> lifes;
 			player = new Player(this, x, y, lifes, MARIO_SPEED);
-			cout << "Player creado" << endl;
+			cout << "Player creado en game.cpp, loadMap" << endl;
 			break;
 		}
 		case 'B':
@@ -182,10 +182,7 @@ void Game::run()
 void Game::update()
 {
 	// Actualiza los objetos del juego
-	if (player != nullptr) {
-		player->update();
-		cout << "Player actualizado (fichero Game.cpp)" << endl;
-	}
+	player->update();
 	//mushroom->update();
 	//koopa->update();
 	//goomba->update();
@@ -199,7 +196,6 @@ void Game::render() const
 
 	// Pinta los objetos del juego
 	mapa->renderMapa();
-	cout << "player->render() dentro de game.cpp" << endl;
 	player->render();
 	//mushroom->render();
 	//koopa->render();

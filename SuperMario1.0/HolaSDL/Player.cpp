@@ -8,17 +8,17 @@ Player::Player(Game* game, int x_, int y_, int lifes_, double speed_)
 	cout << "Llamando constructor player" << endl;
 	//position = Point2D<double>(x_, y_) - Point2D<double>(0, 1); // coloca bien a mario
 	//direction = Vector2D<int>(0, 0);
-	setX(x_);
-	setY(y_ - 1);
-	setDx(0);
-	setDy(0);
+	x = x_;
+	y = y_ - 1;
+	dx = 0;
+	dy = 0;
 
 	texture = g->getTexture(Game::TextureName::MARIO); // textura inicial de mario
 
 	//marioState = 'm';
 
 	//groundedYPos = position.getY();
-	groundedYPos = getY();
+	groundedYPos = y;
 }
 
 void Player::render() const
@@ -33,8 +33,8 @@ void Player::render() const
 	//destRect.x = (position.getX() * g->TILE_SIDE) - g->getMapOffset();
 	//destRect.y = (position.getY() * g->TILE_SIDE);
 
-	destRect.x = getX() * g->TILE_SIDE - g->getMapOffset();
-	destRect.y = getY() * g->TILE_SIDE;
+	destRect.x = x * g->TILE_SIDE - g->getMapOffset();
+	destRect.y = y * g->TILE_SIDE;
 
 	texture->renderFrame(destRect, 0, marioFrame);
 
@@ -52,7 +52,7 @@ void Player::update()
 
 	updateAnims();
 	//cout << (position.getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
-	cout << (getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
+	//cout << (getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
 
 }
 
@@ -138,76 +138,76 @@ void Player::updateOffset()
 	// actualiza el offset
 
 	//int screenX = position.getX() * g->TILE_SIDE - g->getMapOffset();
-	int screenX = getX() * g->TILE_SIDE - g->getMapOffset();
+	int screenX = x * g->TILE_SIDE - g->getMapOffset();
 
 	if (screenX > g->TILE_SIDE * g->WIN_WIDTH / 2) {
-		g->setMapOffset(g->getMapOffset() + g->TILE_SIDE * speed); // + g->TILE_SIDE * speed ??
+		g->setMapOffset(g->getMapOffset() + 1); // + g->TILE_SIDE * speed ??
 	}
 }
 
 bool Player::checkFall()
 {
 	//return (position.getY() * g->TILE_SIDE - g->getMapOffset()) >= g->WIN_HEIGHT + texture->getFrameHeight();
-	return (getY() * g->TILE_SIDE - g->getMapOffset()) >= g->WIN_HEIGHT + texture->getFrameHeight();
+	return (y * g->TILE_SIDE - g->getMapOffset()) >= g->WIN_HEIGHT + texture->getFrameHeight();
 }
 
 void Player::moveMario()
 {
 	if (keyA == keyD) {
 		//direction = Vector2D<double>(0, 0);
-		setDx(0);
-		setDy(0);
+		dx = 0;
+		dy = 0;
 	}
 
 	if (keyA != keyD) {
 		if (keyA) {
 			//direction = Vector2D<double>(-1, 0);
-			setDx(-1);
-			setDy(0);
+			dx = -1;
+			dy = 0;
 			flipSprite = true;  // Activa el flip al mover a la izquierda
 		}
 		else if (keyD) {
 			//direction = Vector2D<double>(1, 0);
-			setDx(1);
-			setDy(0);
+			dx = 1;
+			dy = 0;
 			flipSprite = false; // Desactiva el flip al mover a la derecha
 		}
 	}
 
 	if (keySpace && grounded && !canJump) {
 		//direction = Vector2D<int>(0, -1);
-		setDx(0);
-		setDy(-1);
+		dx = 0;
+		dy = -1;
 		//maxHeight = position.getY() - 3;
-		maxHeight = getY() - 3;
+		maxHeight = y - 3;
 		grounded = false;
 		isFalling = false;
 	}
 
 	//position.setX(position.getX() + (direction.getX() * speed * 0.3));
-	setX(getX() + (getDx() * speed * 0.3));
+	x += (dx * speed * 0.3);
 
 	if (!grounded) {
-		if (!isFalling && getY() > maxHeight) { //(!isFalling && position.getY() > maxHeight)
+		if (!isFalling && y > maxHeight) { //(!isFalling && position.getY() > maxHeight)
 			//position.setY(position.getY() - speed * 0.3);
-			setY(getY() - speed * 0.3);
+			y -= speed * 0.3;
 		}
 		else {
 			isFalling = true;
 			//position.setY(position.getY() + speed * 0.3);
-			setY(getY() + speed * 0.3);
+			y += speed * 0.3;
 		}
 
-		if (getY() >= groundedYPos) { //(position.getY() >= groundedYPos)
+		if (y >= groundedYPos) { //(position.getY() >= groundedYPos)
 			//position.setY(groundedYPos);
-			setY(groundedYPos);
+			y = groundedYPos;
 			grounded = true;
 			isFalling = false;
 		}
 	}
 
 	//if (position.getX() < 0) position.setX(0);
-	if (getX() < 0) setX(0);
+	if (x < 0) x = 0;
 
 	canJump = keySpace;
 }
