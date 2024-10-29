@@ -21,10 +21,10 @@
 #include <time.h>
 #include "Texture.h"
 #include "Tilemap.h"
-#include "Vector2D.h"
+/*#include "Vector2D.h"
 
 #include "Player.h"
-/*#include "Block.h"
+#include "Block.h"
 #include "Goomba.h"
 #include "Mushroom.h"
 #include "Koopa.h"*/
@@ -44,7 +44,6 @@ class Game
 	// Constante globales
 	const int FRAME_RATE = 50;
 	const int TIME_BY_FRAME = 1 / FRAME_RATE;
-	const double MARIO_SPEED = 0.01;
 
 	//En tiles
 	static constexpr int TILE_SIDE = 32; 
@@ -58,7 +57,6 @@ class Game
 
 	// declaración de los elementos de juego
 	Tilemap* mapa;
-	Player* player;
 
 	int startTime, frameTime;	// manejo de tiempo en run
 
@@ -77,7 +75,7 @@ public:
 	static constexpr uint WIN_WIDTH = TILE_SIDE * TILE_WINDOW_WIDTH;  // ancho ventana
 	static constexpr uint WIN_HEIGHT = TILE_SIDE * TILE_WINDOW_HEIGHT; // alto ventana
 
-	
+
 	//Constructora
 	Game();
 
@@ -115,13 +113,10 @@ private:
 	// lee mapa
 	void loadMap();
 	// fondo
-	void renderBackground(); // utilizar?
+	//void renderBackground(); // utilizar?
 	// muestra en consola las vidas del jugador
 	void playerLife();
 
 };
-
-inline Texture*
-Game::getTexture(TextureName name) const { return textures[name]; }
 
 #endif

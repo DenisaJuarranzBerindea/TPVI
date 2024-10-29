@@ -67,13 +67,6 @@ public:
 		pos << "(" << v.x << "," << v.y << ")";
 		return pos;
 	}
-
-	// Operador entrada consola >>
-	friend std::istream& operator>>(std::istream& is, Vector2D& v)
-	{
-		is >> v.x >> v.y;
-		return is;
-	}
 };
 
 template <class T = int> 

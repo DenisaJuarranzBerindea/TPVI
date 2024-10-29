@@ -1,7 +1,5 @@
 #include <string>
-#include <iostream>
-#include <istream>
-#include "TileMap.h"
+#include <array>
 #include "Game.h"
 
 using namespace std;
@@ -57,7 +55,7 @@ Game::Game() /*: randomGenerator(time(nullptr)), exit(false)*/
 Game::~Game()
 {
 	// Elimina los objetos del juego
-	delete player;
+	//delete player;
 	//delete blocks;
 	//delete mushroom;
 	//delete goomba;
@@ -134,9 +132,11 @@ void Game::run()
 {
 	// get ticks al inicio del bucle
 	startTime = SDL_GetTicks();
-
 	while (!exit)
 	{
+
+		// cout << "Juego corriendo" << endl;
+
 		handleEvents();
 
 		// tiempo desde ultima actualizacion
@@ -154,9 +154,7 @@ void Game::run()
 void Game::update()
 {
 	// Actualiza los objetos del juego
-	mapa->update();
-	player->update();
-	
+	//player->update();
 	//mushroom->update();
 	//koopa->update();
 	//goomba->update();
@@ -171,7 +169,7 @@ void Game::render() const
 	// Pinta los objetos del juego
 	//textures[0]->render(); // esto renderiza la textura de background.png
 	mapa->renderMapa();
-	player->render();
+	//player->render();
 	//mushroom->render();
 	//koopa->render();
 	//goomba->render();
@@ -194,13 +192,13 @@ void Game::handleEvents()
 		if (event.type == SDL_QUIT) EndGame();
 
 		// MANEJO DE EVENTOS DE OBJETOS DE JUEGO
-		else {
-			player->handleEvents(event);
+		//else {
+		//	player->handleEvents(event);
 		// 	mushroom->handleEvents(event);
 		//  koopa->handleEvents(event);
 		//  goomba->handleEvents(event);
 		//  blocks->handleEvents(event);
-		}
+		// }
 	}
 }
 
@@ -211,7 +209,7 @@ void Game::collides()
 }
 
 /*void Game::loadMap() {
-	istream file('../world1.txt');
+	istream file("world1.txt");
 
 	string line;
 	getline(file, line);
@@ -224,11 +222,9 @@ void Game::collides()
 
 	switch (tipo) {
 		case 'M':
-			this->player = new Player(this, lineStream);
+			player = Player(this, lineStream);
 			break;
 		case 'B':
-			break;
-		case 'G':
 			break;
 		//un case por tipo
 		default:
@@ -246,3 +242,5 @@ void Game::playerLife()
 {
 	//cout << "VIDAS RESTANTES: " <<  << endl;
 }
+
+int Game::getMapOffset() { return Game::mapOffset; }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "checkML.h"
-
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -14,23 +12,14 @@ class Tilemap
 {
 
 protected:
-	Game* g = nullptr;
+	Game* g;
 	vector<vector<int>> mapaV;
-	Texture* background_spritesheet = nullptr;
+	Texture* background_spritesheet;
 
 public:
-	//Constructora
 	Tilemap(const string&, Game*);
 
-	////Destructora
-	//~Tilemap();
-
-	//Render
 	void renderMapa();
-	//Actualizar
-	void update();
-	// Colisiones
-	void hit();
 };
 
 
