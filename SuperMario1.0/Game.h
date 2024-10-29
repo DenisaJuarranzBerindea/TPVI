@@ -21,10 +21,9 @@
 #include <time.h>
 #include "Texture.h"
 #include "Tilemap.h"
-#include "Vector2D.h"
-
+/*#include "Vector2D.h"
 #include "Player.h"
-/*#include "Block.h"
+#include "Block.h"
 #include "Goomba.h"
 #include "Mushroom.h"
 #include "Koopa.h"*/
@@ -58,7 +57,7 @@ class Game
 
 	// declaración de los elementos de juego
 	Tilemap* mapa;
-	Player* player;
+	//Player* player;
 
 	int startTime, frameTime;	// manejo de tiempo en run
 
@@ -120,8 +119,5 @@ private:
 	void playerLife();
 
 };
-
-inline Texture*
-Game::getTexture(TextureName name) const { return textures[name]; }
 
 #endif

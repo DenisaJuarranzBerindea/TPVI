@@ -55,32 +55,6 @@ void Tilemap::renderMapa() {
 	//color de fondo
 	SDL_SetRenderDrawColor(g->getRenderer(), 138, 132, 255, 255);
 
-
-	//ZONA DE PRUEBAS (hace lo mismo que el bucle pero solo tres casos, cuando funcione esto aplicar al bucle)
-	// DUDA PRINCIPAL: c�mo utilizar renderFrame
-//----------------------------------------------------------------------------------------------------
-	
-	//background_spritesheet = g->getTexture(Game::TextureName::BACKGROUND); //ya inicializada
-
-	//(6, 9) -> 40, renderizando: 4, 4 (o sea, indice / 9, indice % 9)
-	rect.x = 9 * TILE_SIDE;
-	rect.y = 6 * TILE_SIDE;
-	int indice = 40;
-	background_spritesheet->renderFrame(rect, indice / 9, indice % 9);
-
-	//(6, 10) -> 41, renderizando: 4, 5
-	rect.x = 10 * TILE_SIDE;
-	rect.y = 6 * TILE_SIDE;
-	indice = 41;
-	background_spritesheet->renderFrame(rect, indice / 9, indice % 9);
-
-	//(6, 11) -> 42, renderizando: 4, 6
-	rect.x = 11 * TILE_SIDE;
-	rect.y = 6 * TILE_SIDE;
-	indice = 42;
-	background_spritesheet->renderFrame(rect, indice / 9, indice % 9);
-//----------------------------------------------------------------------------------------------------
-
 	for (int i = 0; i < WIN_HEIGHT; ++i) { //mas anchura de la necesaria, a proposito
 		for (int j = 0; j < WIN_WIDTH + 1; ++j) {
 			cout << "(" << x0 + i << ", " << j << ") -> ";
