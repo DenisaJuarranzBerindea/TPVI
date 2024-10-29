@@ -167,7 +167,6 @@ void Game::render() const
 	SDL_RenderClear(renderer);
 
 	// Pinta los objetos del juego
-	//textures[0]->render(); // esto renderiza la textura de background.png
 	mapa->renderMapa();
 	//player->render();
 	//mushroom->render();
@@ -192,13 +191,14 @@ void Game::handleEvents()
 		if (event.type == SDL_QUIT) EndGame();
 
 		// MANEJO DE EVENTOS DE OBJETOS DE JUEGO
-		//else {
+		else {
 		//	player->handleEvents(event);
+			mapa->handleEvents(event);
 		// 	mushroom->handleEvents(event);
 		//  koopa->handleEvents(event);
 		//  goomba->handleEvents(event);
 		//  blocks->handleEvents(event);
-		// }
+		}
 	}
 }
 
@@ -244,3 +244,4 @@ void Game::playerLife()
 }
 
 int Game::getMapOffset() { return Game::mapOffset; }
+void Game::setMapOffset(int par_) { mapOffset = par_; }

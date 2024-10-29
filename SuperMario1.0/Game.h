@@ -103,6 +103,7 @@ public:
 	bool GetExit() const { return exit; }
 
 	// setters
+	void setMapOffset(int);
 	void EndGame();
 	void setExit(bool aux) { exit = aux; }
 

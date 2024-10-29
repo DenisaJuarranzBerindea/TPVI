@@ -20,6 +20,7 @@ public:
 	Tilemap(const string&, Game*);
 
 	void renderMapa();
+	void handleEvents(const SDL_Event&);
 };
 
 
