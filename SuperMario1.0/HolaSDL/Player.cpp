@@ -191,7 +191,7 @@ void Player::moveMario()
 		}
 		else {
 			isFalling = true;
-			//position.setY(position.getY() + speed * 0.3);
+	
 			y += speed;
 		}
 
@@ -205,7 +205,8 @@ void Player::moveMario()
 
 	//if (position.getX() < 0) position.setX(0);
 	//PROBLEMA TILE ANTERIOR A FUTURO
-	if (x * g->TILE_SIDE - g->getMapOffset() <= 0 ) x = g->getMapOffset() / g->TILE_SIDE;
-
-	//canJump = keySpace;
+	if (x * g->TILE_SIDE - g->getMapOffset() <= 0 && dx == -1)
+	{
+		x = g->getMapOffset() / g->TILE_SIDE;
+	}
 }

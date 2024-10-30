@@ -51,7 +51,7 @@ class Game
 	// Interruptor para terminar el juego
 	bool exit;
 	// Desplazamiento del mapa
-	int mapOffset = 45*TILE_SIDE-WIN_WIDTH/2; //int choca y bloquea en el borde??
+	double mapOffset = 0; //int choca y bloquea en el borde??
 
 	// declaración de los elementos de juego
 	Tilemap* mapa;
