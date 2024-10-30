@@ -37,7 +37,7 @@ private:
 public:
 
 	bool grounded = true;		// si esta en el suelo, solo puede saltar cuando lo este
-	int groundedYPos;	// posicion en el suelo
+	double groundedYPos;	// posicion en el suelo
 	int maxHeight;
 
 	//char marioState; // m(mario), s(supermario)
@@ -82,16 +82,16 @@ public:
 
 
 	// Getters
-	int getX() const { return x; }
-	int getY() const { return y; }
-	int getDx() const { return dx; }
-	int getDy() const { return dy; }
+	double getX() const { return x; }
+	double getY() const { return y; }
+	double getDx() const { return dx; }
+	double getDy() const { return dy; }
 
 	// Setters
-	void setX(int newX) { x = newX; }
-	void setY(int newY) { y = newY; }
-	void setDx(int newDx) { dx = newDx; }
-	void setDy(int newDy) { dy = newDy; }
+	void setX(double newX) { x = newX; }
+	void setY(double newY) { y = newY; }
+	void setDx(double newDx) { dx = newDx; }
+	void setDy(double newDy) { dy = newDy; }
 
 private:
 	// Movimiento

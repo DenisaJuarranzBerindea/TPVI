@@ -33,8 +33,8 @@ void Player::render() const
 	//destRect.x = (position.getX() * g->TILE_SIDE) - g->getMapOffset();
 	//destRect.y = (position.getY() * g->TILE_SIDE);
 
-	destRect.x = x * g->TILE_SIDE - g->getMapOffset();
-	destRect.y = y * g->TILE_SIDE;
+	destRect.x = x * (double)(g->TILE_SIDE) - g->getMapOffset();
+	destRect.y = y * (double)(g->TILE_SIDE);
 
 	// Usa el flip segun la direccion
 	SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
@@ -136,7 +136,7 @@ void Player::updateOffset()
 	// actualiza el offset
 
 	//cout << x * g->TILE_SIDE - g->getMapOffset() << " > " << g->WIN_WIDTH / 2 << endl;
-	if (x * g->TILE_SIDE - g->getMapOffset() > g->WIN_WIDTH / 2) g->setMapOffset(x * g->TILE_SIDE - g->WIN_WIDTH / 2);
+	if (x * g->TILE_SIDE - g->getMapOffset() > g->WIN_WIDTH / 2) g->setMapOffset(x * (double)g->TILE_SIDE - g->WIN_WIDTH / 2);
 
 
 }
@@ -191,7 +191,7 @@ void Player::moveMario()
 		}
 		else {
 			isFalling = true;
-	
+			//position.setY(position.getY() + speed * 0.3);
 			y += speed;
 		}
 
@@ -205,8 +205,7 @@ void Player::moveMario()
 
 	//if (position.getX() < 0) position.setX(0);
 	//PROBLEMA TILE ANTERIOR A FUTURO
-	if (x * g->TILE_SIDE - g->getMapOffset() <= 0 && dx == -1)
-	{
-		x = g->getMapOffset() / g->TILE_SIDE;
-	}
+	if (x * (double)g->TILE_SIDE - g->getMapOffset() <= 0 && dx == -1) x = g->getMapOffset() / (double)g->TILE_SIDE;
+	if (x * (double)g->TILE_SIDE + g->WIN_WIDTH >= 210*g->TILE_SIDE && dx == 1) x = g->getMapOffset() / (double)g->TILE_SIDE;
+	//canJump = keySpace;
 }
