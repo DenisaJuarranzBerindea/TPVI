@@ -15,7 +15,7 @@ Player::Player(Game* game, int x_, int y_, int lifes_, double speed_)
 
 	texture = g->getTexture(Game::TextureName::MARIO); // textura inicial de mario
 
-	//marioState = 'm';
+	marioState = 'm';
 
 	//groundedYPos = position.getY();
 	groundedYPos = y;
@@ -171,7 +171,7 @@ void Player::moveMario()
 		}
 	}
 
-	if (keySpace && grounded && !canJump) { //!canJump?
+	if (keySpace && grounded) { 
 		//direction = Vector2D<int>(0, -1);
 		dx = 0;
 		dy = -1;

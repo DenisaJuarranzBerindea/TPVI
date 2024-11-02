@@ -24,18 +24,16 @@
 #include "Texture.h"
 #include "Tilemap.h"
 //#include "./HolaSDL/Vector2D.h"
-#include "./HolaSDL/Player.h"
 
+//Objetos de juego
+#include "./HolaSDL/Player.h"
 #include "./HolaSDL/Block.h"
-/*#include "./HolaSDL/Goomba.h"
+#include "./HolaSDL/Goomba.h"
 #include "./HolaSDL/Mushroom.h"
-#include "./HolaSDL/Koopa.h"*/
+#include "./HolaSDL/Koopa.h"
 
 using uint = unsigned int;
 
-//
-// Clase que representa el juego y controla todos sus aspectos
-//
 class Game
 {
 	// Ventana de la SDL (se destruirá en el destructor)
@@ -47,6 +45,9 @@ class Game
 	const int FRAME_RATE = 50;
 	const int TIME_BY_FRAME = 1 / FRAME_RATE;
 	const double MARIO_SPEED = 0.01;
+	const double GOOMBA_SPEED = 0.01;
+	const double KOOPA_SPEED = 0.01;
+	const double MUSHROOM_SPEED = 0.01;
 
 	// Interruptor para terminar el juego
 	bool exit;
@@ -54,8 +55,12 @@ class Game
 	double mapOffset = 0; //int choca y bloquea en el borde??
 
 	// declaración de los elementos de juego
-	Tilemap* mapa;
-	Player* player;
+	Tilemap* mapa = nullptr;
+	Player* player = nullptr;
+	Goomba* goomba = nullptr;
+	Block* block = nullptr;
+
+	vector<Goomba*> goombas;
 	vector<Block*> blocks;
 
 	int startTime, frameTime;	// manejo de tiempo en run
@@ -66,6 +71,10 @@ public:
 	enum TextureName {
 		BACKGROUND, // = 0
 		MARIO, // = 1
+		GOOMBA, // = 2
+		KOOPA, // = 3
+		MUSHROOM, // = 4
+		BLOCK, // = 5
 		NUM_TEXTURES  // Truco C++: número de texturas definidas
 	};
 
@@ -107,6 +116,7 @@ public:
 	Texture* getTexture(TextureName name) const;
 	SDL_Renderer* getRenderer() { return renderer; }
 	bool GetExit() const { return exit; }
+
 
 	// setters
 	void setMapOffset(int);

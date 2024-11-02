@@ -40,7 +40,7 @@ public:
 	double groundedYPos;	// posicion en el suelo
 	int maxHeight;
 
-	//char marioState; // m(mario), s(supermario)
+	char marioState; // m(mario), s(supermario)
 
 	// ANIMACION
 	int marioFrame = 0;

@@ -1,12 +1,7 @@
 #include "Game.h"
 
 using namespace std;
-/*
-Primero se crea, llama a init(), que llama a loadTextures() y loadMap()
-Ya después se llama a run(), que llama a handleEvents(), update() y render().
-*/
 
-// Formato de la especificacion de una textura
 struct TextureSpec
 {
 	const char* name;	// Ruta del archivo
@@ -21,11 +16,16 @@ const string textureRoot = "../assets/imgs/";
 const array<TextureSpec, Game::TextureName::NUM_TEXTURES> textureSpec{
 	{
 		{"background.png", 9, 7},
-		{"mario.png", 12, 1}
+		{"mario.png", 12, 1},
+		{"goomba.png", 3, 1},
+		{"koopa.png", 4, 1},
+		{"mushroom.png", 1, 1},
+		{"blocks.png", 6, 1},
+	
 	}
 };
 
-Game::Game() /*: randomGenerator(time(nullptr)), exit(false)*/
+Game::Game() 
 {
 	int winX, winY; // Posición de la ventana
 	winX = winY = SDL_WINDOWPOS_CENTERED;
@@ -60,7 +60,7 @@ Game::~Game()
 	delete player;
 	//delete blocks;
 	//delete mushroom;
-	//delete goomba;
+	delete goomba;
 	//delete koopa;
 
 	// Elimina las texturas
@@ -140,8 +140,12 @@ void Game::loadMap()
 			break;
 		}
 		case 'B':
+			block = new Block(this, lineStream);
+			blockVec.push_back(block);
 			break;
 		case 'G':
+			goomba = new Goomba(this, lineStream);
+			goombaVec.push_back(goomba);
 			break;
 		case 'K':
 			break;
@@ -169,8 +173,6 @@ void Game::run()
 
 	while (!exit)
 	{
-		handleEvents();
-
 		// tiempo desde ultima actualizacion
 		frameTime = SDL_GetTicks() - startTime;
 
@@ -179,6 +181,8 @@ void Game::run()
 			startTime = SDL_GetTicks();
 		}
 		render(); // renderiza todos los objetos de juego
+
+		handleEvents();
 	}
 }
 
@@ -187,10 +191,24 @@ void Game::update()
 {
 	// Actualiza los objetos del juego
 	player->update();
+
+	for (int i = 0; i < goombas.size(); i++)
+	{
+		goombas[i]->update();
+	}
+
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		//blocks[i]->update();
+	}
+
+	//for (int i = 0; i < koopas.size(); i++)
+	//{
+	//	koopas[i]->update();
+	//}
+	
 	//mushroom->update();
-	//koopa->update();
-	//goomba->update();
-	//blocks->update();
+
 }
 
 // Render
@@ -201,10 +219,22 @@ void Game::render() const
 	// Pinta los objetos del juego
 	mapa->renderMapa();
 	player->render();
+	for (int i = 0; i < goombas.size(); i++)
+	{
+		goombas[i]->render();
+	}
+
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		//blocks[i]->render();
+	}
+
+	//for (int i = 0; i < koopas.size(); i++)
+	//{
+	//	koopas[i]->render();
+	//}
+
 	//mushroom->render();
-	//koopa->render();
-	//goomba->render();
-	//blocks->render();
 
 	SDL_RenderPresent(renderer);
 }
@@ -228,7 +258,7 @@ void Game::handleEvents()
 			player->handleEvents(event);
 		// 	mushroom->handleEvents(event);
 		//  koopa->handleEvents(event);
-		//  goomba->handleEvents(event);
+		//	goomba->handleEvents(event);
 		//  blocks->handleEvents(event);
 		}
 	}
