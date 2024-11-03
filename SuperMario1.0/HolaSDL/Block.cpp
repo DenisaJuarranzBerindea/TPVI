@@ -40,7 +40,7 @@ Block::Block(Game* g, std::istream& in, int _x, int _y)
 
 	texture = game->getTexture(Game::BLOCK); // textura inicial del bloque
 
-	blockFrame = 0;
+	
 }
 
 void Block::render() const
@@ -66,7 +66,6 @@ void Block::update()
 			frameTimer = 0;
 			animationFrame = (animationFrame + 1) % 3;  // Ciclo 0,1,2,3, y luego se reinicie 
 
-			// Ciclo de caminar 2 -> 3 -> 4 -> 3
 			if (animationFrame == 0) blockFrame = 1;
 			else if (animationFrame == 1) blockFrame = 2;
 			else if (animationFrame == 2) blockFrame = 0;
