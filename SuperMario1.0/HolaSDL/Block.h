@@ -50,7 +50,7 @@ private:
 	int frameTimer = 0;
 
 public:
-	Block(Game* g, std::istream& in, int _x, int _y);
+	Block(Game* g, std::istream& in);
 
 	void render() const;
 

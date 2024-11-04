@@ -25,7 +25,7 @@ private:
 	//Vector2D<int> direction;	// direccion de movimiento
 	double x, y;
 	int dx, dy;
-	double speed;				// velocidad de movimiento
+	double speed = 0;			// velocidad de movimiento
 
 
 	bool frozen; // inactivo si no se ve en pantalla pantalla
@@ -36,7 +36,7 @@ private:
 	int frameTimer = 0;
 
 public:
-	Goomba(Game* g, std::istream& in, double speed, int x, int y);
+	Goomba(Game* g, std::istream& in);
 
 	void render() const;
 	void update();

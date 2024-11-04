@@ -84,14 +84,14 @@ public:
 	// Getters
 	double getX() const { return x; }
 	double getY() const { return y; }
-	double getDx() const { return dx; }
-	double getDy() const { return dy; }
+	int getDx() const { return dx; }
+	int getDy() const { return dy; }
 
 	// Setters
 	void setX(double newX) { x = newX; }
 	void setY(double newY) { y = newY; }
-	void setDx(double newDx) { dx = newDx; }
-	void setDy(double newDy) { dy = newDy; }
+	void setDx(int newDx) { dx = newDx; }
+	void setDy(int newDy) { dy = newDy; }
 
 private:
 	// Movimiento

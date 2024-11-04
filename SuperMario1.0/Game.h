@@ -62,6 +62,7 @@ class Game
 
 	vector<Goomba*> goombas;
 	vector<Block*> blocks;
+	vector<Koopa*> koopas;
 
 	int startTime, frameTime;	// manejo de tiempo en run
 
@@ -112,7 +113,7 @@ public:
 	void collides();
 
 	// getters
-	int getMapOffset();
+	double getMapOffset();
 	Texture* getTexture(TextureName name) const;
 	SDL_Renderer* getRenderer() { return renderer; }
 	bool GetExit() const { return exit; }

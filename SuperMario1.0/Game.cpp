@@ -141,11 +141,11 @@ void Game::loadMap()
 		}
 		case 'B':
 			block = new Block(this, lineStream);
-			blockVec.push_back(block);
+			blocks.push_back(block);
 			break;
 		case 'G':
 			goomba = new Goomba(this, lineStream);
-			goombaVec.push_back(goomba);
+			goombas.push_back(goomba);
 			break;
 		case 'K':
 			break;
@@ -161,7 +161,7 @@ void Game::loadMap()
 Texture* Game::getTexture(TextureName name) const
 {
 	Texture* aux = textures[name];
-	cout << "Textura " << name << " cargada" << " (fichero Game.cpp)" << endl;
+	cout << "Textura " << name << " cargada" << " (fichero Game.cpp)\n" << endl;
 	return aux;
 }
 
@@ -199,13 +199,13 @@ void Game::update()
 
 	for (int i = 0; i < blocks.size(); i++)
 	{
-		//blocks[i]->update();
+		blocks[i]->update();
 	}
 
-	//for (int i = 0; i < koopas.size(); i++)
-	//{
-	//	koopas[i]->update();
-	//}
+	for (int i = 0; i < koopas.size(); i++)
+	{
+		//koopas[i]->update();
+	}
 	
 	//mushroom->update();
 
@@ -221,12 +221,13 @@ void Game::render() const
 	player->render();
 	for (int i = 0; i < goombas.size(); i++)
 	{
+		//cout << "Render goomba" << endl;
 		goombas[i]->render();
 	}
 
 	for (int i = 0; i < blocks.size(); i++)
 	{
-		//blocks[i]->render();
+		blocks[i]->render();
 	}
 
 	//for (int i = 0; i < koopas.size(); i++)
@@ -258,8 +259,16 @@ void Game::handleEvents()
 			player->handleEvents(event);
 		// 	mushroom->handleEvents(event);
 		//  koopa->handleEvents(event);
-		//	goomba->handleEvents(event);
-		//  blocks->handleEvents(event);
+		// 
+		//	for (int i = 0; i < goombas.size(); i++)
+		//	{
+		//		goombas[i]->handleEvents(event);
+		//	}
+		//
+		//	for (int i = 0; i < blocks.size(); i++)
+		//	{
+		//		blocks[i]->handleEvents(event);
+		//	}
 		}
 	}
 }
@@ -282,5 +291,5 @@ void Game::playerLife()
 	//cout << "VIDAS RESTANTES: " <<  << endl;
 }
 
-int Game::getMapOffset() { return Game::mapOffset; }
+double Game::getMapOffset() { return Game::mapOffset; }
 void Game::setMapOffset(int par_) { mapOffset = par_; }

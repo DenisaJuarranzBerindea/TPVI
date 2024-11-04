@@ -1,16 +1,15 @@
 #include "Block.h"
 #include "../Game.h"
 
-Block::Block(Game* g, std::istream& in, int _x, int _y)
+Block::Block(Game* g, std::istream& in)
 	: game(g)
 {
+	cout << "Llamando constructor block" << endl;
 	//in >> position;
 	//position = position - Point2D<double>(0, 1);
-	x = _x;
-	y = _y - 1;
-
-	in >> tipoL;
-	in >> accionL;
+	in >> x >> y >> tipoL;
+	y -= 1;
+	if (tipoL != 'B') in >> accionL;
 
 	// Asignamos el tipo de bloque basado en el carácter leído
 	switch (tipoL) {
@@ -39,7 +38,6 @@ Block::Block(Game* g, std::istream& in, int _x, int _y)
 	}
 
 	texture = game->getTexture(Game::BLOCK); // textura inicial del bloque
-
 	
 }
 
@@ -52,8 +50,8 @@ void Block::render() const
 	destRect.h = texture->getFrameHeight() * 2;
 
 	// posicion
-	destRect.x = (x * game->TILE_SIDE) - game->getMapOffset();
-	destRect.y = (y * game->TILE_SIDE);
+	destRect.x = (x * (double)game->TILE_SIDE) - game->getMapOffset();
+	destRect.y = (y * (double)game->TILE_SIDE);
 
 	texture->renderFrame(destRect, 0, blockFrame);
 }

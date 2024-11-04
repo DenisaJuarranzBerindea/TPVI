@@ -10,7 +10,7 @@ using namespace std;
 void Tilemap::renderMapa() {
 
 	int x0 = g->getMapOffset() / g->TILE_MAP;
-	int d0 = g->getMapOffset() % g->TILE_MAP;
+	int d0 = (int)g->getMapOffset() % g->TILE_MAP;
 	//preguntar por esta linea porque no entiendo que es el TILE_MAP ni la division del offset,
 	//esta relacionado con las expresiones estaticas en game.h
 

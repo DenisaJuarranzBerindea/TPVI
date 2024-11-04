@@ -1,19 +1,20 @@
 #include "Goomba.h"
 #include "../Game.h"
 
-Goomba::Goomba(Game* g, std::istream& in, double(_speed), int _x, int _y) 
-	: game(g), speed(_speed)
+Goomba::Goomba(Game* g, std::istream& in)
+	: game(g)
 {
 	cout << "Llamando constructor goomba" << endl;
 
 	//in >> position;
+	in >> x >> y;
+	y -= 1;
+
 	//direction = Vector2D<int>(0, 0);
-	x = _x;
-	y = _y - 1;
 	dx = 0;
 	dy = 0;
 
-	texture = game->getTexture(Game::GOOMBA); // textura inicial de mario
+	texture = game->getTexture(Game::GOOMBA); // textura inicial de goomba
 
 	goombaFrame = 0;
 
@@ -41,10 +42,12 @@ void Goomba::render() const
 void Goomba::update()
 {
 	// si la pos del goomba es menor que el offset mas el ancho de la pantalla -> se activa
-	if ((x * 32) - texture->getFrameWidth() < (game->getMapOffset() + game->WIN_WIDTH))
+	if ((x * game->TILE_SIDE) - texture->getFrameWidth() < (game->getMapOffset() + game->WIN_WIDTH))
 	{
 		frozen = false;
+		cout << "Goomba update frozen = false" << endl;
 	}
+	else frozen = true;
 
 	moveGoomba();
 }

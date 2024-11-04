@@ -136,7 +136,7 @@ void Player::updateOffset()
 	// actualiza el offset
 
 	//cout << x * g->TILE_SIDE - g->getMapOffset() << " > " << g->WIN_WIDTH / 2 << endl;
-	if (x * g->TILE_SIDE - g->getMapOffset() > g->WIN_WIDTH / 2) g->setMapOffset(x * (double)g->TILE_SIDE - g->WIN_WIDTH / 2);
+	if (x * g->TILE_SIDE - g->getMapOffset() > g->WIN_WIDTH / 2.) g->setMapOffset(x * (double)g->TILE_SIDE - g->WIN_WIDTH / 2.);
 
 
 }
@@ -156,7 +156,7 @@ void Player::moveMario()
 	}
 
 	else if (keyA != keyD) {
-		cout << dx << " " << x << endl;
+		//cout << dx << " " << x << endl;
 		if (keyA) {
 			//direction = Vector2D<double>(-1, 0);
 			dx = -1;
@@ -176,7 +176,7 @@ void Player::moveMario()
 		dx = 0;
 		dy = -1;
 		//maxHeight = position.getY() - 3;
-		maxHeight = y - 4;
+		maxHeight = y - 4.0;
 		grounded = false;
 		isFalling = false;
 	}
@@ -204,8 +204,7 @@ void Player::moveMario()
 	}
 
 	//if (position.getX() < 0) position.setX(0);
-	//PROBLEMA TILE ANTERIOR A FUTURO
 	if (x * (double)g->TILE_SIDE - g->getMapOffset() <= 0 && dx == -1) x = g->getMapOffset() / (double)g->TILE_SIDE;
-	if (x * (double)g->TILE_SIDE + g->WIN_WIDTH >= 210*g->TILE_SIDE && dx == 1) x = g->getMapOffset() / (double)g->TILE_SIDE;
+	if (x * (double)g->TILE_SIDE + g->WIN_WIDTH >= 220*g->TILE_SIDE && dx == 1) x = -0.00001 + (220 * g->TILE_SIDE - g->WIN_WIDTH) / (double)g->TILE_SIDE;
 	//canJump = keySpace;
 }
