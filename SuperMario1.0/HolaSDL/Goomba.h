@@ -28,7 +28,7 @@ private:
 	double speed = 0.003;			// velocidad de movimiento
 
 
-	bool frozen; // inactivo si no se ve en pantalla pantalla
+	bool frozen = true; // inactivo si no se ve en pantalla pantalla
 	bool alive;	// vida
 
 	int goombaFrame; // animacion

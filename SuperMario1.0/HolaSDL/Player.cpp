@@ -2,14 +2,15 @@
 #include "../Game.h" // para evitar inclusiones cruzadas
 
 
-Player::Player(Game* game, int x_, int y_, int lifes_, double speed_)
-	: g(game), lifes(lifes_), speed(speed_)
+Player::Player(Game* game, std::istream& in, double speed_)
+	: g(game), speed(speed_)
 {
+
 	cout << "Llamando constructor player" << endl;
 	//position = Point2D<double>(x_, y_) - Point2D<double>(0, 1); // coloca bien a mario
 	//direction = Vector2D<int>(0, 0);
-	x = x_;
-	y = y_ - 1;
+	in >> x >> y >> lifes;
+	y -= 1;
 	dx = 0;
 	dy = 0;
 

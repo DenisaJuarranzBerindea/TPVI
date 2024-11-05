@@ -133,9 +133,7 @@ void Game::loadMap()
 		//LA LECTURA ESTÁ MAL??
 		switch (tipo) {
 		case 'M': {
-			int x, y, lifes;
-			lineStream >> x >> y >> lifes;
-			player = new Player(this, x, y, lifes, MARIO_SPEED);
+			player = new Player(this, lineStream, MARIO_SPEED);
 			cout << "Player creado en game.cpp, loadMap" << endl;
 			break;
 		}

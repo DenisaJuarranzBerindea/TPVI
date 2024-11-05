@@ -42,12 +42,14 @@ void Goomba::render() const
 void Goomba::update()
 {
 	// si la pos del goomba es menor que el offset mas el ancho de la pantalla -> se activa
-	if ((x * game->TILE_SIDE) - texture->getFrameWidth() < (game->getMapOffset() + game->WIN_WIDTH))
-	{
+	if ((x * game->TILE_SIDE) - texture->getFrameWidth() < (game->getMapOffset() + game->WIN_WIDTH)) {
 		frozen = false;
-		cout << "Goomba update frozen = false" << endl;
 	}
 	else frozen = true;
+
+	if ((x * game->TILE_SIDE + texture->getFrameWidth() * 2) < (game->getMapOffset())) {
+		frozen = true;
+	}
 
 	moveGoomba();
 }
@@ -59,12 +61,16 @@ void Goomba::hit(SDL_Rect* rect)
 
 void Goomba::moveGoomba()
 {
+	//cout << "Goomba update frozen = " << frozen << endl;
 	//direction = Vector2D<int>(0, 0);
 	dx = 0;
 	dy = 0;
 
 	if (!frozen)
 	{
+		//debug comprueba que el goomba no se mueve fuera de la pantalla
+		//cout << (x * game->TILE_SIDE + texture->getFrameWidth() * 2) - (game->getMapOffset()) << endl;
+		
 		//direction = Vector2D<int>(-1, 0);
 		dx = -1;
 		dy = 0;

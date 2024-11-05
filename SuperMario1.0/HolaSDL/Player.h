@@ -64,7 +64,7 @@ public:
 
 public:
 	//Constructora
-	Player(Game* g, int x_, int y_, int lifes_, double speed_); // La textura tambien?
+	Player(Game* game, std::istream& in, double speed_); // La textura tambien?
 
 	// Render
 	void render() const;
