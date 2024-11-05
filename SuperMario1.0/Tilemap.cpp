@@ -109,5 +109,6 @@ Tilemap::Tilemap(const string& fichero, Game* game) {
 
 Collision Tilemap::hit(const SDL_Rect& rect_ext, bool fromPlayer) {
 	SDL_Rect* result;
-	return SDL_IntersectRect(&rect_ext, &rect, result);
+	SDL_IntersectRect(&rect_ext, &rect, result);
+	//buscar código y devolver Collision
 }

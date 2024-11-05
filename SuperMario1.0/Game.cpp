@@ -272,7 +272,7 @@ void Game::handleEvents()
 }
 
 Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
-	if (mapa->hit(rect, fromPlayer).collides) return mapa->hit(rect, fromPlayer);
+	if (mapa->hit(rect, fromPlayer)) return mapa->hit(rect, fromPlayer);
 	//for (int i = 0; i < goombas.size(); i++)
 	//{
 	//	goombas[i]->hit(rect, fromPlayer);
