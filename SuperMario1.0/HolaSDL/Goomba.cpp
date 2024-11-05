@@ -70,7 +70,7 @@ void Goomba::moveGoomba()
 		dy = 0;
 
 		//position.setX(position.getX() + (direction.getX() * speed));
-		x = dx + x * speed;
+		x += dx * speed;
 	}
 
 	//Animaciones
@@ -86,4 +86,8 @@ void Goomba::moveGoomba()
 			else if (animationFrame == 1) goombaFrame = 0;
 		}
 	}
+}
+
+void Goomba::printPos() {
+	cout << "x: " << x << ", y: " << y << endl;
 }

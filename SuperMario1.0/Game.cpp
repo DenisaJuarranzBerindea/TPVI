@@ -223,6 +223,7 @@ void Game::render() const
 	{
 		//cout << "Render goomba" << endl;
 		goombas[i]->render();
+		//goombas[0]->printPos();
 	}
 
 	for (int i = 0; i < blocks.size(); i++)

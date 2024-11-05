@@ -25,7 +25,7 @@ private:
 	//Vector2D<int> direction;	// direccion de movimiento
 	double x, y;
 	int dx, dy;
-	double speed = 0;			// velocidad de movimiento
+	double speed = 0.003;			// velocidad de movimiento
 
 
 	bool frozen; // inactivo si no se ve en pantalla pantalla
@@ -41,6 +41,8 @@ public:
 	void render() const;
 	void update();
 	void hit(SDL_Rect* rect);
+
+	void printPos();
 
 private:
 
