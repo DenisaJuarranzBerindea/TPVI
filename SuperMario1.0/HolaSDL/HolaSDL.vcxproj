@@ -75,6 +75,7 @@
     <ClInclude Include="..\Tilemap.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Goomba.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="Player.h" />

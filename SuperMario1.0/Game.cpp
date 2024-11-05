@@ -130,7 +130,6 @@ void Game::loadMap()
 
 		cout << "Tipo: " << tipo << endl;
 
-		//LA LECTURA ESTÁ MAL??
 		switch (tipo) {
 		case 'M': {
 			player = new Player(this, lineStream, MARIO_SPEED);
@@ -272,9 +271,17 @@ void Game::handleEvents()
 	}
 }
 
-// Colisiones
-void Game::collides()
-{
+Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
+	if (mapa->hit(rect, fromPlayer).collides) return mapa->hit(rect, fromPlayer);
+	//for (int i = 0; i < goombas.size(); i++)
+	//{
+	//	goombas[i]->hit(rect, fromPlayer);
+	//}
+
+	//for (int i = 0; i < blocks.size(); i++)
+	//{
+	//	blocks[i]->hit(rect, fromPlayer);
+	//}
 
 }
 

@@ -14,7 +14,6 @@ void Tilemap::renderMapa() {
 	//preguntar por esta linea porque no entiendo que es el TILE_MAP ni la division del offset,
 	//esta relacionado con las expresiones estaticas en game.h
 
-	SDL_Rect rect;
 	rect.w = g->TILE_SIDE;
 	rect.h = g->TILE_SIDE;
 
@@ -40,6 +39,7 @@ void Tilemap::renderMapa() {
 	}
 }
 
+//sobra porque ya no mueves el mapa
 void Tilemap::handleEvents(const SDL_Event& event)
 {
 	// Recibe tecla
@@ -105,4 +105,9 @@ Tilemap::Tilemap(const string& fichero, Game* game) {
 	//}
 
 	background_spritesheet = g->getTexture(Game::TextureName::BACKGROUND);
+}
+
+Collision Tilemap::hit(const SDL_Rect& rect_ext, bool fromPlayer) {
+	SDL_Rect* result;
+	return SDL_IntersectRect(&rect_ext, &rect, result);
 }

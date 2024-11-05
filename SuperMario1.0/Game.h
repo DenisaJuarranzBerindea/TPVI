@@ -23,6 +23,7 @@
 #include <time.h>
 #include "Texture.h"
 #include "Tilemap.h"
+#include "HolaSDL/Collision.h"
 //#include "./HolaSDL/Vector2D.h"
 
 //Objetos de juego
@@ -40,6 +41,9 @@ class Game
 	SDL_Window* window = nullptr;
 	// Renderizador de la SDL (para dibujar)
 	SDL_Renderer* renderer = nullptr;
+
+	//Colisiones
+	Collision* colisiones;
 
 	// Constante globales
 	const int FRAME_RATE = 50;
@@ -109,8 +113,8 @@ public:
 	void update();
 	// input del jugador y otros eventos
 	void handleEvents();
-	// colisiones
-	void collides();
+	// gestionar colisiones
+	Collision checkCollision(const SDL_Rect& rect, bool fromPlayer);
 
 	// getters
 	double getMapOffset();
@@ -131,7 +135,6 @@ private:
 	// lee mapa
 	void loadMap();
 	// fondo
-	//void renderBackground(); // utilizar?
 	// muestra en consola las vidas del jugador
 	void playerLife();
 

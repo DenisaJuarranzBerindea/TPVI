@@ -52,7 +52,26 @@ void Player::update()
 	updateAnims();
 	//cout << (position.getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
 	//cout << (getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
+	
+	colRect.h = texture->getFrameHeight();
+	colRect.w = texture->getFrameWidth();
 
+	// posicion
+	//destRect.x = (position.getX() * g->TILE_SIDE) - g->getMapOffset();
+	//destRect.y = (position.getY() * g->TILE_SIDE);
+
+
+	colRect.y = y * (double)(g->TILE_SIDE) - dy * speed; //corregir a speed.x y speed.y
+
+	collisionMario = g->checkCollision(colRect, true);
+
+	colRect.x = x * (double)(g->TILE_SIDE) - g->getMapOffset() + dx * speed;
+
+	collisionMario = g->checkCollision(colRect, true);
+
+	//vidas (a futuro) // vidas por update
+	//if (lifes > 0) lifes--;
+	//else isAlive = false;
 }
 
 void Player::handleEvents(const SDL_Event& event)
@@ -99,12 +118,6 @@ void Player::handleEvents(const SDL_Event& event)
 		else if (key == SDL_SCANCODE_E) keyE = false;
 
 	}
-}
-
-void Player::hit(SDL_Rect* rect)
-{
-	if (lifes > 0) lifes--;
-	else isAlive = false;
 }
 
 void Player::updateAnims()

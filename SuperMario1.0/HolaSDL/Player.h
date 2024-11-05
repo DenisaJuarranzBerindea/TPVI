@@ -5,6 +5,7 @@
 #include <SDL.h>
 //#include "Vector2D.h"
 #include "../Texture.h"
+#include "HolaSDL/Collision.h"
 #include <istream>
 #include <iostream>
 #include <fstream>
@@ -53,8 +54,9 @@ public:
 	bool keyE = false; //Salir
 		
 
-	// rect destino
-	//SDL_Rect destRect; //definido en render en cpp
+	// Colisiones player
+	SDL_Rect colRect = SDL_Rect();
+	Collision collisionMario;
 
 	bool isFalling = false;
 	bool canJump = false;
@@ -73,7 +75,7 @@ public:
 	// Eventos, sobre todo input   
 	void handleEvents(const SDL_Event& event);
 	// Colisiones
-	void hit(SDL_Rect* rect);
+	Collision hit(const SDL_Rect& rect, bool fromPlayer);
 
 	// Animaciones
 	void updateAnims();
