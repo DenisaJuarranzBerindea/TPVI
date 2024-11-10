@@ -1,9 +1,16 @@
-#pragma once
+#ifndef COLLISION_H
+#define COLLISION_H
+
+#include <SDL.h>
 #include "./Vector2D.h"
 
 struct Collision {
-	bool collides;
-	bool damages;
+    bool collides = false;
+    bool damages = false;        // indica si la colision implica danio
+    SDL_Rect intersection;       // rectangulo de interseccion de la colision
+    void* collider = nullptr;    // puntero al objeto con el que se colisiono
 
-	operator bool() const { return collides; }
+    operator bool() const { return collides; }
 };
+
+#endif

@@ -40,7 +40,7 @@ public:
 
 	void render() const;
 	void update();
-	void hit(SDL_Rect* rect);
+	Collision hit(SDL_Rect* rect, bool Mario);
 
 	void printPos();
 

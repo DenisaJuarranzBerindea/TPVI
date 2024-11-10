@@ -222,3 +222,18 @@ void Player::moveMario()
 	if (x * (double)g->TILE_SIDE + g->WIN_WIDTH >= 220*g->TILE_SIDE && dx == 1) x = -0.00001 + (220 * g->TILE_SIDE - g->WIN_WIDTH) / (double)g->TILE_SIDE;
 	//canJump = keySpace;
 }
+
+//Esto va en el update? En plan, son los efectos de la colisión
+void Player::hit(SDL_Rect* rect)
+{
+	if (marioState == 's')
+	{
+		marioState = 'm';
+	}
+	else
+	{
+		if (lifes > 0) lives--;
+		else 	isAlive = false;
+	}
+
+}

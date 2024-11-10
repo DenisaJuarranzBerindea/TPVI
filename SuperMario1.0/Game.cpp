@@ -1,5 +1,9 @@
 #include "Game.h"
 
+#include <string>
+#include <iostream>
+#include <istream>
+
 using namespace std;
 
 struct TextureSpec
@@ -272,7 +276,7 @@ void Game::handleEvents()
 }
 
 Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
-	if (mapa->hit(rect, fromPlayer)) return mapa->hit(rect, fromPlayer);
+	//if (mapa->hit(rect, fromPlayer)) return mapa->hit(rect, fromPlayer);
 	//for (int i = 0; i < goombas.size(); i++)
 	//{
 	//	goombas[i]->hit(rect, fromPlayer);
@@ -282,6 +286,52 @@ Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
 	//{
 	//	blocks[i]->hit(rect, fromPlayer);
 	//}
+
+	Collision colMapa = tileMap->hit(rect, fromPlayer); // Tilemap.
+	if (colMapa.collides) return colMapa;
+
+	// Goombas.
+	int i = 0;
+	bool found = false;
+	while (i < goombas.size() && !found)
+	{
+		Collision::collision colGoomba = goombas[i]->hit(rect, fromPlayer);
+		if (colGoomba.collides) {
+			found = true;
+			return colGoomba;
+		}
+		i++;
+	}
+
+	// Bloques.
+	i = 0;
+	found = false;
+	while (i < blocks.size() && !found)
+	{
+		Collision::collision colBlock = blocks[i]->hit(rect, fromPlayer);
+		if (colBlock.collides) {
+			found = true;
+			return colBlock;
+		}
+		i++;
+	}
+
+	//// Koopas.
+	//i = 0;
+	//found = false;
+	//while (i < koopas.size() && !found)
+	//{
+	//	Collision::collision colKoopas = koopas[i]->hit(rect, fromPlayer);
+	//	if (colKoopas.collides) {
+	//		found = true;
+	//		return colKoopas;
+	//	}
+	//	i++;
+	//}
+
+	// Sin colisión.
+	Collision::collision notCollision = { false, false };
+	return notCollision;
 
 }
 

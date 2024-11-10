@@ -1,5 +1,6 @@
 #include "Goomba.h"
 #include "../Game.h"
+#include "Block.h"
 
 Goomba::Goomba(Game* g, std::istream& in)
 	: game(g)
@@ -54,9 +55,11 @@ void Goomba::update()
 	moveGoomba();
 }
 
-void Goomba::hit(SDL_Rect* rect)
+Collision Goomba::hit(SDL_Rect* rect, bool mario)
 {
+	Collision col;
 
+	return col;
 }
 
 void Goomba::moveGoomba()

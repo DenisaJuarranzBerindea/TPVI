@@ -5,10 +5,12 @@
 #include <SDL.h>
 //#include "Vector2D.h"
 #include "../Texture.h"
+#include "HolaSDL/Collision.h"
 #include <istream>
 #include <iostream>
 #include <fstream>
 #include <string>
+
 
 class Game;
 
@@ -21,6 +23,9 @@ class Block
 private:
 	Texture* texture = nullptr;	// puntero a su textura
 	Game* game = nullptr;		// puntero al juego
+	int blockFrame;
+	int animationFrame = 0;   // Contador para el ciclo de caminar
+	int frameTimer = 0;
 
 	//Point2D<double> position;	// posicion actual en Point2D
 	double x, y;
@@ -44,12 +49,8 @@ private:
 		POTENCIADOR, MONEDA
 	};
 
-
-	int blockFrame;
-	int animationFrame = 0;   // Contador para el ciclo de caminar
-	int frameTimer = 0;
-
 public:
+
 	Block(Game* g, std::istream& in);
 
 	void render() const;
@@ -57,6 +58,15 @@ public:
 	void update();
 
 	void hit(SDL_Rect* rect);
+
+	//Getters y setters
+	char getLTipo() const { return tipoL; }
+	int getTipo() const { return tipo; }
+	char getLAccion() const { return accionL; }
+	int getAccion() const { return accion; }
+
+	// Setters
+
 };
 
 #endif
