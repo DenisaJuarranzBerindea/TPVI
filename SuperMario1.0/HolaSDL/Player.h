@@ -32,12 +32,9 @@ private:
 	Point2D<double> position;	// posicion actual en Point2D
 	Vector2D<int> direction;	// direccion de movimiento
 	Vector2D<double> speed; // velocidad de movimiento
+	double fallSpeed = 0.01;
 
 public:
-
-	bool grounded = true;		// si esta en el suelo, solo puede saltar cuando lo este
-	double groundedYPos;	// posicion en el suelo
-	int maxHeight;
 
 	char marioState; // m(mario), s(supermario)
 
@@ -56,8 +53,11 @@ public:
 	SDL_Rect colRect = SDL_Rect();
 	Collision collisionMario;
 
-	bool isFalling = false;
+	bool isFalling = true;
 	bool canJump = false;
+	bool grounded = false;		// si esta en el suelo, solo puede saltar cuando lo este
+	int maxHeight;
+
 	int animationFrame = 0;   // Contador para el ciclo de caminar
 	int frameTimer = 0;
 	bool flipSprite = false;
@@ -95,7 +95,7 @@ public:
 
 private:
 	// Movimiento
-	void moveMario();
+	void moveMario(bool, bool);
 
 	//Ca das
 	bool checkFall();

@@ -9,14 +9,14 @@ Player::Player(Game* game, std::istream& in, double speedX_, double speedY_)
 	cout << "Llamando constructor player" << endl;
 	double tempX, tempY;
 	in >> tempX >> tempY >> lifes;
-	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien a mario
+	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien a mario //en world1.txt, y = 14
 	direction = Vector2D<int>(0, 0);
+	
+	//double fallSpeed = speed.getY();
 
 	texture = g->getTexture(Game::TextureName::MARIO); // textura inicial de mario
 
 	marioState = 'm';
-
-	groundedYPos = position.getY();
 }
 
 void Player::render() const
@@ -39,25 +39,43 @@ void Player::render() const
 
 void Player::update()
 {
-	moveMario();
-
-	updateOffset();
-
-	updateAnims();
 	//cout << (position.getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
 	//cout << (getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
 	
+	Vector2D<double> tempSpeed = speed;
+	bool canMoveX = true;
+	bool canMoveY = true;
+
 	colRect.h = texture->getFrameHeight();
 	colRect.w = texture->getFrameWidth();
-
+	SDL_Rect tempCol = colRect;
 
 	colRect.y = position.getY() * (double)(g->TILE_SIDE) - direction.getY() * speed.getY();
-
 	collisionMario = g->checkCollision(colRect, true);
+	if (collisionMario.collides) {
+		//cout << "Colisionando en Y" << endl;
+		grounded = true;
+		isFalling = false;
+
+		canMoveY = false;
+		colRect = tempCol;
+	}
 
 	colRect.x = position.getX() * (double)(g->TILE_SIDE) - g->getMapOffset() + direction.getX() * speed.getX();
-
 	collisionMario = g->checkCollision(colRect, true);
+	if (collisionMario.collides) {
+		cout << "Colisionando en X" << endl;
+		canMoveX = false;
+		colRect = tempCol;
+	}
+
+	moveMario(canMoveX, canMoveY);
+	updateOffset();
+	updateAnims();
+
+	speed = tempSpeed;
+	canMoveX = true;
+	canMoveY = true;
 
 	//vidas (a futuro) // vidas por update
 	//if (lifes > 0) lifes--;
@@ -150,7 +168,7 @@ bool Player::checkFall()
 	return (position.getY() * g->TILE_SIDE - g->getMapOffset()) >= g->WIN_HEIGHT + texture->getFrameHeight();
 }
 
-void Player::moveMario()
+void Player::moveMario(bool canMoveX, bool canMoveY)
 {
 	if (keyA == keyD) {
 		direction = Vector2D<int>(0, 0);
@@ -168,36 +186,32 @@ void Player::moveMario()
 		}
 	}
 
-	if (keySpace && grounded) { 
-		direction = Vector2D<int>(0, -1);
+	if (canMoveX) position.setX(position.getX() + (direction.getX() * speed.getX()));
+	
+	if (keySpace && grounded && !isFalling) {
+		direction.setY(-1);
 		maxHeight = position.getY() - 4.;
 		grounded = false;
-		isFalling = false;
+		cout << 'S' << endl;
 	}
+	else direction.setY(0);
 
-	position.setX(position.getX() + (direction.getX() * speed.getX()));
-
-	if (!grounded) {
-		if (!isFalling && position.getY() > maxHeight) {
-			position.setY(position.getY() - speed.getY());
-		}
-		else {
-			isFalling = true;
-			position.setY(position.getY() + speed.getY());
-		}
-
-		if (position.getY() >= groundedYPos) {
-			position.setY(groundedYPos);
-			grounded = true;
-			isFalling = false;
-		}
+	if (position.getY() > maxHeight && keySpace && !isFalling && (canMoveY || direction.getY() == -1)) { //saltando dirY es -1
+		position.setY(position.getY() - speed.getY());
 	}
-
-	canJump = keySpace;
+	//si se puede mover y su direccion es para abajo, caer
+	else if (canMoveY && (position.getY() <= maxHeight || direction.getY() == 0)) { //cayendo dirY es 0
+		isFalling = true;
+		position.setY(position.getY() + fallSpeed);
+	}
 
 	//if (position.getX() < 0) position.setX(0);
 	if (position.getX() * (double)g->TILE_SIDE - g->getMapOffset() <= 0 && direction.getX() == -1) position.setX(g->getMapOffset() / (double)g->TILE_SIDE);
 	if (position.getX() * (double)g->TILE_SIDE + g->WIN_WIDTH >= 220*g->TILE_SIDE && direction.getX() == 1) position.setX(-0.00001 + (220 * g->TILE_SIDE - g->WIN_WIDTH) / (double)g->TILE_SIDE);
+
+	if (position.getY() > 15.5) {
+		position.setY(0);
+	}
 }
 
 //Esto va en el update? En plan, son los efectos de la colisi�n

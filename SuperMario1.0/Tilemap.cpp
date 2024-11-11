@@ -110,7 +110,7 @@ Tilemap::Tilemap(const string& fichero, Game* game) {
 Collision Tilemap::hit(const SDL_Rect& rect, bool fromPlayer)
 {
 	Collision c;
-	c.collides = true;
+	c.collides = false;
 	c.damages = false;
 
 	Texture* texture;
@@ -129,8 +129,10 @@ Collision Tilemap::hit(const SDL_Rect& rect, bool fromPlayer)
 		for (int col = col0; col <= col1; ++col) {
 			int indice = mapaV[row][col];
 
-			if (indice != -1 && indice % background_spritesheet->getNumColumns() < OBSTACLE_THRESHOLD)
+			if (indice != -1 && indice % background_spritesheet->getNumColumns() < OBSTACLE_THRESHOLD) {
+				c.collides = true;
 				return c;
+			}
 		}
 	}
 

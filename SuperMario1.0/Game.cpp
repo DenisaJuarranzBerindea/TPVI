@@ -279,7 +279,6 @@ Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
 	
 	// hit mapa
 	if (mapa->hit(rect, fromPlayer).collides) {
-
 		return (mapa->hit(rect, fromPlayer));
 	}
 
@@ -303,6 +302,8 @@ Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
 			return blocks[i]->hit(rect, fromPlayer);
 		}
 	}
+
+	return Collision();
 
 }
 
