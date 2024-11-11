@@ -2,24 +2,21 @@
 #include "../Game.h" // para evitar inclusiones cruzadas
 
 
-Player::Player(Game* game, std::istream& in, double speed_)
-	: g(game), speed(speed_)
+Player::Player(Game* game, std::istream& in, double speedX_, double speedY_)
+	: g(game), speed(speedX_, speedY_)
 {
 
 	cout << "Llamando constructor player" << endl;
-	//position = Point2D<double>(x_, y_) - Point2D<double>(0, 1); // coloca bien a mario
-	//direction = Vector2D<int>(0, 0);
-	in >> x >> y >> lifes;
-	y -= 1;
-	dx = 0;
-	dy = 0;
+	double tempX, tempY;
+	in >> tempX >> tempY >> lifes;
+	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien a mario
+	direction = Vector2D<int>(0, 0);
 
 	texture = g->getTexture(Game::TextureName::MARIO); // textura inicial de mario
 
 	marioState = 'm';
 
-	//groundedYPos = position.getY();
-	groundedYPos = y;
+	groundedYPos = position.getY();
 }
 
 void Player::render() const
@@ -31,11 +28,8 @@ void Player::render() const
 	destRect.h = texture->getFrameHeight();
 
 	// posicion
-	//destRect.x = (position.getX() * g->TILE_SIDE) - g->getMapOffset();
-	//destRect.y = (position.getY() * g->TILE_SIDE);
-
-	destRect.x = x * (double)(g->TILE_SIDE) - g->getMapOffset();
-	destRect.y = y * (double)(g->TILE_SIDE);
+	destRect.x = position.getX() * (double)(g->TILE_SIDE) - g->getMapOffset();
+	destRect.y = position.getY() * (double)(g->TILE_SIDE);
 
 	// Usa el flip segun la direccion
 	SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
@@ -56,16 +50,12 @@ void Player::update()
 	colRect.h = texture->getFrameHeight();
 	colRect.w = texture->getFrameWidth();
 
-	// posicion
-	//destRect.x = (position.getX() * g->TILE_SIDE) - g->getMapOffset();
-	//destRect.y = (position.getY() * g->TILE_SIDE);
 
-
-	colRect.y = y * (double)(g->TILE_SIDE) - dy * speed; //corregir a speed.x y speed.y
+	colRect.y = position.getY() * (double)(g->TILE_SIDE) - direction.getY() * speed.getY();
 
 	collisionMario = g->checkCollision(colRect, true);
 
-	colRect.x = x * (double)(g->TILE_SIDE) - g->getMapOffset() + dx * speed;
+	colRect.x = position.getX() * (double)(g->TILE_SIDE) - g->getMapOffset() + direction.getX() * speed.getX();
 
 	collisionMario = g->checkCollision(colRect, true);
 
@@ -128,7 +118,7 @@ void Player::updateAnims()
 	}
 	else if (keyA != keyD) {
 		frameTimer++;
-		if (frameTimer >= 200) {  // Velocidad del ciclo
+		if (frameTimer >= 50) {  // Velocidad del ciclo
 			frameTimer = 0;
 			animationFrame = (animationFrame + 1) % 4;  // Ciclo 0,1,2,3, y luego se reinicie 
 
@@ -150,77 +140,64 @@ void Player::updateOffset()
 	// actualiza el offset
 
 	//cout << x * g->TILE_SIDE - g->getMapOffset() << " > " << g->WIN_WIDTH / 2 << endl;
-	if (x * g->TILE_SIDE - g->getMapOffset() > g->WIN_WIDTH / 2.) g->setMapOffset(x * (double)g->TILE_SIDE - g->WIN_WIDTH / 2.);
+	if (position.getX() * g->TILE_SIDE - g->getMapOffset() > g->WIN_WIDTH / 2.) g->setMapOffset(position.getX() * (double)g->TILE_SIDE - g->WIN_WIDTH / 2.);
 
 
 }
 
 bool Player::checkFall()
 {
-	//return (position.getY() * g->TILE_SIDE - g->getMapOffset()) >= g->WIN_HEIGHT + texture->getFrameHeight();
-	return (y * g->TILE_SIDE - g->getMapOffset()) >= g->WIN_HEIGHT + texture->getFrameHeight();
+	return (position.getY() * g->TILE_SIDE - g->getMapOffset()) >= g->WIN_HEIGHT + texture->getFrameHeight();
 }
 
 void Player::moveMario()
 {
 	if (keyA == keyD) {
-		//direction = Vector2D<double>(0, 0);
-		dx = 0;
-		dy = 0;
+		direction = Vector2D<int>(0, 0);
 	}
 
 	else if (keyA != keyD) {
 		//cout << dx << " " << x << endl;
 		if (keyA) {
-			//direction = Vector2D<double>(-1, 0);
-			dx = -1;
-			dy = 0;
+			direction = Vector2D<int>(-1, 0);
 			flipSprite = true;  // Activa el flip al mover a la izquierda
 		}
 		else if (keyD) {
-			//direction = Vector2D<double>(1, 0);
-			dx = 1;
-			dy = 0;
+			direction = Vector2D<int>(1, 0);
 			flipSprite = false; // Desactiva el flip al mover a la derecha
 		}
 	}
 
 	if (keySpace && grounded) { 
-		//direction = Vector2D<int>(0, -1);
-		dx = 0;
-		dy = -1;
-		//maxHeight = position.getY() - 3;
-		maxHeight = y - 4.0;
+		direction = Vector2D<int>(0, -1);
+		maxHeight = position.getY() - 4.;
 		grounded = false;
 		isFalling = false;
 	}
 
-	//position.setX(position.getX() + (direction.getX() * speed * 0.3));
-	x += (dx * speed);
+	position.setX(position.getX() + (direction.getX() * speed.getX()));
 
 	if (!grounded) {
-		if (!isFalling && y > maxHeight) { //(!isFalling && position.getY() > maxHeight)
-			//position.setY(position.getY() - speed * 0.3);
-			y -= speed;
+		if (!isFalling && position.getY() > maxHeight) {
+			position.setY(position.getY() - speed.getY());
 		}
 		else {
 			isFalling = true;
-			//position.setY(position.getY() + speed * 0.3);
-			y += speed;
+			position.setY(position.getY() + speed.getY());
 		}
 
-		if (y >= groundedYPos) { //(position.getY() >= groundedYPos)
-			//position.setY(groundedYPos);
-			y = groundedYPos;
+		if (position.getY() >= groundedYPos) {
+			position.setY(groundedYPos);
 			grounded = true;
 			isFalling = false;
 		}
 	}
 
+	canJump = keySpace;
+
 	//if (position.getX() < 0) position.setX(0);
-	if (x * (double)g->TILE_SIDE - g->getMapOffset() <= 0 && dx == -1) x = g->getMapOffset() / (double)g->TILE_SIDE;
-	if (x * (double)g->TILE_SIDE + g->WIN_WIDTH >= 220*g->TILE_SIDE && dx == 1) x = -0.00001 + (220 * g->TILE_SIDE - g->WIN_WIDTH) / (double)g->TILE_SIDE;
-	//canJump = keySpace;
+	if (position.getX() * (double)g->TILE_SIDE - g->getMapOffset() <= 0 && direction.getX() == -1) position.setX(g->getMapOffset() / (double)g->TILE_SIDE);
+	if (position.getX() * (double)g->TILE_SIDE + g->WIN_WIDTH >= 220*g->TILE_SIDE && direction.getX() == 1) position.setX(-0.00001 + (220 * g->TILE_SIDE - g->WIN_WIDTH) / (double)g->TILE_SIDE);
 }
 
 //Esto va en el update? En plan, son los efectos de la colisi�n
@@ -236,7 +213,7 @@ Collision Player::hit(const SDL_Rect& rect, bool fromPlayer)
 	else
 	{
 		if (lifes > 0) lifes--;
-		else 	isAlive = false;
+		else isAlive = false;
 	}
 
 	return col;

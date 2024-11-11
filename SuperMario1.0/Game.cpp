@@ -136,7 +136,7 @@ void Game::loadMap()
 
 		switch (tipo) {
 		case 'M': {
-			player = new Player(this, lineStream, MARIO_SPEED);
+			player = new Player(this, lineStream, MARIO_SPEED_X, MARIO_SPEED_Y);
 			cout << "Player creado en game.cpp, loadMap" << endl;
 			break;
 		}

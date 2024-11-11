@@ -29,11 +29,9 @@ private:
 
 	bool isAlive = true;
 
-	//Point2D<double> position;	// posicion actual en Point2D
-	//Vector2D<int> direction = Vector2D(0, 0);	// direccion de movimiento
-	double x, y;
-	int dx, dy;
-	double speed;			// velocidad de movimiento
+	Point2D<double> position;	// posicion actual en Point2D
+	Vector2D<int> direction;	// direccion de movimiento
+	Vector2D<double> speed; // velocidad de movimiento
 
 public:
 
@@ -66,7 +64,7 @@ public:
 
 public:
 	//Constructora
-	Player(Game* game, std::istream& in, double speed_); // La textura tambien?
+	Player(Game* game, std::istream& in, double speedX_, double speedY_); // La textura tambien?
 
 	// Render
 	void render() const;
@@ -84,16 +82,16 @@ public:
 
 
 	// Getters
-	double getX() const { return x; }
-	double getY() const { return y; }
-	int getDx() const { return dx; }
-	int getDy() const { return dy; }
+	double getX() const { return position.getX(); }
+	double getY() const { return position.getY(); }
+	int getDx() const { return direction.getX(); }
+	int getDy() const { return direction.getY(); }
 
 	// Setters
-	void setX(double newX) { x = newX; }
-	void setY(double newY) { y = newY; }
-	void setDx(int newDx) { dx = newDx; }
-	void setDy(int newDy) { dy = newDy; }
+	void setX(double newX) { position.setX(newX); }
+	void setY(double newY) { position.setY(newY); }
+	void setDx(int newDx) { direction.setX(newDx); }
+	void setDy(int newDy) { direction.setY(newDy); }
 
 private:
 	// Movimiento

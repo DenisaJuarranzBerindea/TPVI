@@ -48,7 +48,8 @@ class Game
 	// Constante globales
 	const int FRAME_RATE = 50;
 	const int TIME_BY_FRAME = 1 / FRAME_RATE;
-	const double MARIO_SPEED = 0.01;
+	const double MARIO_SPEED_X = 0.01;
+	const double MARIO_SPEED_Y = 0.01;
 	const double GOOMBA_SPEED = 0.01;
 	const double KOOPA_SPEED = 0.01;
 	const double MUSHROOM_SPEED = 0.01;
