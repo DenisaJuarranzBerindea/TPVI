@@ -11,7 +11,7 @@ Block::Block(Game* g, std::istream& in)
 	y -= 1;
 	if (tipoL != 'B') in >> accionL;
 
-	// Asignamos el tipo de bloque basado en el carácter leído
+	// Asignamos el tipo de bloque basado en el carï¿½cter leï¿½do
 	switch (tipoL) {
 	case 'B':
 		tipo = LADRILLO;
@@ -19,7 +19,7 @@ Block::Block(Game* g, std::istream& in)
 		break;
 	case '?':
 		tipo = SORPRESA;
-		blockFrame = 0;  // Comienza la animación del bloque sorpresa desde el primer frame
+		blockFrame = 0;  // Comienza la animaciï¿½n del bloque sorpresa desde el primer frame
 		break;
 	case 'H':
 		tipo = OCULTO;
@@ -27,7 +27,7 @@ Block::Block(Game* g, std::istream& in)
 		break;
 	}
 
-	// Asignamos la acción del bloque basado en el carácter leído
+	// Asignamos la acciï¿½n del bloque basado en el carï¿½cter leï¿½do
 	switch (accionL) {
 	case 'P':
 		accion = POTENCIADOR;
@@ -45,7 +45,7 @@ void Block::render() const
 {
 	SDL_Rect destRect;
 
-	// tamano (son de 16*16, pero los queremos de 32*32, así que * 2
+	// tamano (son de 16*16, pero los queremos de 32*32, asï¿½ que * 2
 	destRect.w = texture->getFrameWidth() * 2;
 	destRect.h = texture->getFrameHeight() * 2;
 
@@ -71,7 +71,15 @@ void Block::update()
 	}
 }
 
-void Block::hit(SDL_Rect* rect)
+Collision Block::hit(const SDL_Rect& rect, bool fromPlayer)
 {
+	Collision col;
 
+	// si hay colision
+	if (SDL_HasIntersection(&rect, &colRect))
+	{
+		cout << "hit Block" << endl;
+	}
+
+	return col;
 }

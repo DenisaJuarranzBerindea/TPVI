@@ -36,15 +36,14 @@ private:
 	int frameTimer = 0;
 
 public:
-	// Colisiones player
+	// Colisiones goomba
 	SDL_Rect colRect = SDL_Rect();
-	Collision collisionGoomba;
 
 	Goomba(Game* g, std::istream& in);
 
 	void render() const;
 	void update();
-	Collision hit(SDL_Rect* rect, bool Mario);
+	//Collision hit(const SDL_Rect& rect, bool Mario);
 
 	void printPos();
 

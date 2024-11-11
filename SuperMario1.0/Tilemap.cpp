@@ -107,13 +107,12 @@ Tilemap::Tilemap(const string& fichero, Game* game) {
 	background_spritesheet = g->getTexture(Game::TextureName::BACKGROUND);
 }
 
-Collision TileMap::hit(const SDL_Rect& rect, bool fromPlayer)
+Collision Tilemap::hit(const SDL_Rect& rect, bool fromPlayer)
 {
 	Collision c;
-	c.collides = false;
+	c.collides = true;
 	c.damages = false;
 
-	vector<vector<int>> matrix; // atributos de TileMap
 	Texture* texture;
 
 	constexpr int OBSTACLE_THRESHOLD = 4; // constante
@@ -128,9 +127,9 @@ Collision TileMap::hit(const SDL_Rect& rect, bool fromPlayer)
 
 	for (int row = row0; row <= row1; ++row) {
 		for (int col = col0; col <= col1; ++col) {
-			int indice = matrix[row][col];
+			int indice = mapaV[row][col];
 
-			if (indice != -1 && indice % texture->getNumColumns() < OBSTACLE_THRESHOLD)
+			if (indice != -1 && indice % background_spritesheet->getNumColumns() < OBSTACLE_THRESHOLD)
 				return c;
 		}
 	}

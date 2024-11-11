@@ -5,7 +5,7 @@
 #include <SDL.h>
 //#include "Vector2D.h"
 #include "../Texture.h"
-#include "./HolaSDL/Collision.h"
+#include "./Collision.h"
 #include <istream>
 #include <iostream>
 #include <fstream>
@@ -50,6 +50,9 @@ private:
 
 public:
 
+	// Colisiones bloque
+	SDL_Rect colRect = SDL_Rect();
+
 	Block(Game* g, std::istream& in);
 
 	void render() const;
@@ -61,7 +64,7 @@ public:
 	//	-> si el bloque es de ladrillo y el player es SuperMario: bloque se rompe
 	//	-> si el bloque es sorpresa/oculto y accion es potenciador: saca mushroom sobre el bloque y lo hace vacio
 	//	-> nada en el resto de casos
-	void hit(SDL_Rect* rect);
+	Collision hit(const SDL_Rect& rect, bool fromPlayer);
 
 	//Getters y setters
 	char getLTipo() const { return tipoL; }

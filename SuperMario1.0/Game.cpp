@@ -287,20 +287,20 @@ Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
 	player->hit(rect, fromPlayer);
 
 	// hit goombas
-	for (int i = 0; i < goombas.size(); i++)
-	{
-		if (goombas[i]->hit(rect, fromPlayer).damages)
-		{
-			return (goombas[i]->hit(rect, fromPlayer));
-		}
-	}
+	//for (int i = 0; i < goombas.size(); i++)
+	//{
+	//	if (goombas[i]->hit(rect, fromPlayer).damages)
+	//	{
+	//		return (goombas[i]->hit(rect, fromPlayer));
+	//	}
+	//}
 
 	// hit blocks
 	for (int i = 0; i < blocks.size(); i++)
 	{
 		if (blocks[i]->hit(rect, fromPlayer).collides) {
 
-			return (blocks[i]->hit(rect, fromPlayer));
+			return blocks[i]->hit(rect, fromPlayer);
 		}
 	}
 

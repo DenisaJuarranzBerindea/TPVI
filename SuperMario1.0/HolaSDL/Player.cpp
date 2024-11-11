@@ -223,9 +223,12 @@ void Player::moveMario()
 	//canJump = keySpace;
 }
 
-//Esto va en el update? En plan, son los efectos de la colisión
-Collision Player::hit(const SDL_Rect* rect)
+//Esto va en el update? En plan, son los efectos de la colisiï¿½n
+Collision Player::hit(const SDL_Rect& rect, bool fromPlayer)
 {
+	Collision col;
+	col.collides = true;
+
 	if (marioState == 's')
 	{
 		marioState = 'm';
@@ -236,4 +239,5 @@ Collision Player::hit(const SDL_Rect* rect)
 		else 	isAlive = false;
 	}
 
+	return col;
 }
