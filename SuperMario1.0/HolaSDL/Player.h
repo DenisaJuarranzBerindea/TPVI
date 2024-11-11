@@ -5,7 +5,7 @@
 #include <SDL.h>
 //#include "Vector2D.h"
 #include "../Texture.h"
-#include "HolaSDL/Collision.h"
+#include "./HolaSDL/Collision.h"
 #include <istream>
 #include <iostream>
 #include <fstream>
@@ -75,7 +75,7 @@ public:
 	// Eventos, sobre todo input   
 	void handleEvents(const SDL_Event& event);
 	// Colisiones
-	Collision hit(const SDL_Rect& rect, bool fromPlayer);
+	Collision hit(const SDL_Rect& rect);
 
 	// Animaciones
 	void updateAnims();

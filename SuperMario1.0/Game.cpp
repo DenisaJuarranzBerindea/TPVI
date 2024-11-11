@@ -62,7 +62,7 @@ Game::~Game()
 {
 	// Elimina los objetos del juego
 	delete player;
-	//delete blocks;
+	delete block;
 	//delete mushroom;
 	delete goomba;
 	//delete koopa;
@@ -276,62 +276,33 @@ void Game::handleEvents()
 }
 
 Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
-	//if (mapa->hit(rect, fromPlayer)) return mapa->hit(rect, fromPlayer);
-	//for (int i = 0; i < goombas.size(); i++)
-	//{
-	//	goombas[i]->hit(rect, fromPlayer);
-	//}
+	
+	// hit mapa
+	if (mapa->hit(rect, fromPlayer).collides) {
 
-	//for (int i = 0; i < blocks.size(); i++)
-	//{
-	//	blocks[i]->hit(rect, fromPlayer);
-	//}
-
-	Collision colMapa = tileMap->hit(rect, fromPlayer); // Tilemap.
-	if (colMapa.collides) return colMapa;
-
-	// Goombas.
-	int i = 0;
-	bool found = false;
-	while (i < goombas.size() && !found)
-	{
-		Collision::collision colGoomba = goombas[i]->hit(rect, fromPlayer);
-		if (colGoomba.collides) {
-			found = true;
-			return colGoomba;
-		}
-		i++;
+		return (mapa->hit(rect, fromPlayer));
 	}
 
-	// Bloques.
-	i = 0;
-	found = false;
-	while (i < blocks.size() && !found)
+	// hit mario
+	player->hit(rect, fromPlayer);
+
+	// hit goombas
+	for (int i = 0; i < goombas.size(); i++)
 	{
-		Collision::collision colBlock = blocks[i]->hit(rect, fromPlayer);
-		if (colBlock.collides) {
-			found = true;
-			return colBlock;
+		if (goombas[i]->hit(rect, fromPlayer).damages)
+		{
+			return (goombas[i]->hit(rect, fromPlayer));
 		}
-		i++;
 	}
 
-	//// Koopas.
-	//i = 0;
-	//found = false;
-	//while (i < koopas.size() && !found)
-	//{
-	//	Collision::collision colKoopas = koopas[i]->hit(rect, fromPlayer);
-	//	if (colKoopas.collides) {
-	//		found = true;
-	//		return colKoopas;
-	//	}
-	//	i++;
-	//}
+	// hit blocks
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		if (blocks[i]->hit(rect, fromPlayer).collides) {
 
-	// Sin colisión.
-	Collision::collision notCollision = { false, false };
-	return notCollision;
+			return (blocks[i]->hit(rect, fromPlayer));
+		}
+	}
 
 }
 

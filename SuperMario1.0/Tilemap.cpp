@@ -109,14 +109,18 @@ Tilemap::Tilemap(const string& fichero, Game* game) {
 
 Collision TileMap::hit(const SDL_Rect& rect, bool fromPlayer)
 {
+	Collision c;
+	c.collides = false;
+	c.damages = false;
+
 	vector<vector<int>> matrix; // atributos de TileMap
 	Texture* texture;
 
 	constexpr int OBSTACLE_THRESHOLD = 4; // constante
 
 	// Celda del nivel que contiene la esquina superior izquierda del rectángulo
-	int row0 = rec.y / Game::TILE_SIDE;
-	int col0 = rec.x / Game::TILE_SIDE;
+	int row0 = rect.y / Game::TILE_SIDE;
+	int col0 = rect.x / Game::TILE_SIDE;
 
 	// Celda del nivel que contiene la esquina inferior derecha del rectángulo
 	int row1 = (rect.y + rect.h - 1) / Game::TILE_SIDE;
@@ -124,13 +128,13 @@ Collision TileMap::hit(const SDL_Rect& rect, bool fromPlayer)
 
 	for (int row = row0; row <= row1; ++row) {
 		for (int col = col0; col <= col1; ++col) {
-			int indice = matriz[row][col];
+			int indice = matrix[row][col];
 
 			if (indice != -1 && indice % texture->getNumColumns() < OBSTACLE_THRESHOLD)
-				return true;
+				return c;
 		}
 	}
 
 
-	return false;
+	return c;
 }

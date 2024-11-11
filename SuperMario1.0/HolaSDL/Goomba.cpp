@@ -59,6 +59,11 @@ Collision Goomba::hit(SDL_Rect* rect, bool mario)
 {
 	Collision col;
 
+	// si hay colision
+	if (SDL_HasIntersection(rect, &colRect))
+	{
+	}
+
 	return col;
 }
 

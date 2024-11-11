@@ -224,7 +224,7 @@ void Player::moveMario()
 }
 
 //Esto va en el update? En plan, son los efectos de la colisión
-void Player::hit(SDL_Rect* rect)
+Collision Player::hit(const SDL_Rect* rect)
 {
 	if (marioState == 's')
 	{
@@ -232,7 +232,7 @@ void Player::hit(SDL_Rect* rect)
 	}
 	else
 	{
-		if (lifes > 0) lives--;
+		if (lifes > 0) lifes--;
 		else 	isAlive = false;
 	}
 

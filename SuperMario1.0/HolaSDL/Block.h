@@ -5,12 +5,11 @@
 #include <SDL.h>
 //#include "Vector2D.h"
 #include "../Texture.h"
-#include "HolaSDL/Collision.h"
+#include "./HolaSDL/Collision.h"
 #include <istream>
 #include <iostream>
 #include <fstream>
 #include <string>
-
 
 class Game;
 
@@ -57,6 +56,11 @@ public:
 
 	void update();
 
+	// Los bloques son obstaculos para todos los personajes cuando lo golpeen desde arriba o desde un lateral
+	// Si Mario lo golpa desde abajo:
+	//	-> si el bloque es de ladrillo y el player es SuperMario: bloque se rompe
+	//	-> si el bloque es sorpresa/oculto y accion es potenciador: saca mushroom sobre el bloque y lo hace vacio
+	//	-> nada en el resto de casos
 	void hit(SDL_Rect* rect);
 
 	//Getters y setters
