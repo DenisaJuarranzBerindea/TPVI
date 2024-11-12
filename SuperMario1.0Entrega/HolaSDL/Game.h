@@ -20,11 +20,9 @@
 #include <string>
 #include <random>
 
-#include <time.h>
 #include "Texture.h"
 #include "Tilemap.h"
 #include "Collision.h"
-//#include "./HolaSDL/Vector2D.h"
 
 //Objetos de juego
 #include "Player.h"
@@ -63,6 +61,7 @@ class Game
 	Tilemap* mapa = nullptr;
 	Player* player = nullptr;
 	Goomba* goomba = nullptr;
+	Koopa* koopa = nullptr;
 	Block* block = nullptr;
 
 	vector<Goomba*> goombas;

@@ -62,10 +62,22 @@ Game::~Game()
 {
 	// Elimina los objetos del juego
 	delete player;
-	delete block;
-	//delete mushroom;
-	delete goomba;
-	//delete koopa;
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		delete blocks[i];
+	}
+	for (int i = 0; i < goombas.size(); i++)
+	{
+		delete goombas[i];
+	}
+	//for (int i = 0; i < koopas.size(); i++)
+	//{
+	//	delete koopas[i];
+	//}
+	//for (int i = 0; i < mushrooms.size(); i++)
+	//{
+	//	delete mushrooms[i];
+	//}
 
 	// Elimina las texturas
 	for (Texture* texture : textures)
