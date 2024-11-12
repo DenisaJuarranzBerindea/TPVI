@@ -10,30 +10,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Block.h" />
-    <ClInclude Include="..\checkML.h" />
-    <ClInclude Include="..\Collision.h" />
-    <ClInclude Include="..\Game.h" />
-    <ClInclude Include="..\Goomba.h" />
-    <ClInclude Include="..\Koopa.h" />
-    <ClInclude Include="..\Mushroom.h" />
-    <ClInclude Include="..\Player.h" />
-    <ClInclude Include="..\Texture.h" />
-    <ClInclude Include="..\Tilemap.h" />
-    <ClInclude Include="..\Vector2D.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\Block.cpp" />
-    <ClCompile Include="..\Game.cpp" />
-    <ClCompile Include="..\Goomba.cpp" />
-    <ClCompile Include="..\Koopa.cpp" />
-    <ClCompile Include="..\main.cpp" />
-    <ClCompile Include="..\Mushroom.cpp" />
-    <ClCompile Include="..\Player.cpp" />
-    <ClCompile Include="..\Texture.cpp" />
-    <ClCompile Include="..\Tilemap.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{28A4C5CD-307A-4FE6-81E4-4CE1F1E49AB4}</ProjectGuid>
     <RootNamespace>HolaSDL</RootNamespace>
@@ -93,6 +69,30 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\checkML.h" />
+    <ClInclude Include="..\Game.h" />
+    <ClInclude Include="..\Texture.h" />
+    <ClInclude Include="..\Tilemap.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Goomba.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Koopa.h" />
+    <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Vector2D.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Game.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\Texture.cpp" />
+    <ClCompile Include="..\Tilemap.cpp" />
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Goomba.cpp" />
+    <ClCompile Include="Koopa.cpp" />
+    <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="Player.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

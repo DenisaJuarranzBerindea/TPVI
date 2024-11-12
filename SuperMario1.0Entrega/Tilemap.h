@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 #include "Texture.h"
-#include "HolaSDL/Collision.h"
+#include "Collision.h"
 
 using namespace std;
 class Game;

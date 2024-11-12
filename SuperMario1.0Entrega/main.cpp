@@ -4,7 +4,7 @@
 #include "SDL_image.h"
 
 #include <iostream>
-#include <Windows.h>
+//#include <Windows.h>
 #include <vector>
 
 #include "Game.h"
