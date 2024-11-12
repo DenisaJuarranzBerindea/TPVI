@@ -1,0 +1,5 @@
+Denisa Juarranz Berindea
+Amiel Ramos Juez
+
+No se han implementado características opcionales
+No hay koopas, ni champiñones y las colisiones están a medias
