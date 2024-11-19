@@ -22,7 +22,7 @@
 
 #include "Texture.h"
 #include "Tilemap.h"
-#include "Collision.h"
+class Collision;
 
 //Objetos de juego
 class Player;

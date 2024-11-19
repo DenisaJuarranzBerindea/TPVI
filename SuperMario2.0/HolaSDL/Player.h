@@ -68,12 +68,14 @@ public:
 	Player(Game* game, std::istream& in, double speedX_, double speedY_); // La textura tambien?
 
 	//Destructora
-	~Player() override;
+	//~Player() override;
 
 	// Render
-	void render() const;
-	// Actualizaci n
-	void update();
+	void render() const override;
+	// Actualizacion
+	void update() override;
+	// Hit (no necesario?) No implementado
+	Collision hit(SDL_Rect, bool) override;
 	// Eventos, sobre todo input   
 	void handleEvents(const SDL_Event& event);
 	// Efectos de colisiones

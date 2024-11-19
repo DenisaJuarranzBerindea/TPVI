@@ -7,10 +7,10 @@ class GameObject
 {
 public:
 	//Estos métodos no tienen implementación, se overridean desde cada GO.
-	virtual void render() const;
-	virtual void update();
-	//Destructora para qué?
-	virtual ~GameObject();
+	virtual void render() const = 0;
+	virtual void update() = 0;
+	
+	//~GameObject();
 
 protected:
 	Game* game;
@@ -18,4 +18,3 @@ protected:
 };
 
 #endif
-

@@ -82,6 +82,11 @@ void Player::update()
 	//else isAlive = false;
 }
 
+Collision Player::hit(SDL_Rect, bool) //no es necesario, implementado para que funcione herencia, pregunta
+{
+	return Collision();
+}
+
 void Player::handleEvents(const SDL_Event& event)
 {
 	// Recibe tecla

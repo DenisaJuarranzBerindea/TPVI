@@ -5,15 +5,15 @@
 #include "Collision.h"
 
 class SceneObject : public GameObject {
-//protected:
-//	Vector2D<double> position;
-//	double width;
-//	double height;
-//	Vector2D<double> speed;
-//public:
-//	virtual Collision hit(SDL_Rect, bool);
-//protected:
-//	Collision tryToMove(Vector2D<double>, bool);
+protected:
+	Vector2D<double> position;
+	double width;
+	double height;
+	Vector2D<double> speed;
+public:
+	virtual Collision hit(SDL_Rect, bool) = 0;
+protected:
+	Collision tryToMove(Vector2D<double>, bool);
 };
 
 #endif
