@@ -1,5 +1,5 @@
 #include "Block.h"
-#include "../Game.h"
+#include "Game.h"
 
 Block::Block(Game* g, std::istream& in)
 	: game(g)

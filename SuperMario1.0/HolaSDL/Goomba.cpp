@@ -1,5 +1,5 @@
 #include "Goomba.h"
-#include "../Game.h"
+#include "Game.h"
 #include "Block.h"
 
 Goomba::Goomba(Game* g, std::istream& in)

@@ -20,18 +20,16 @@
 #include <string>
 #include <random>
 
-#include <time.h>
 #include "Texture.h"
 #include "Tilemap.h"
-#include "HolaSDL/Collision.h"
-//#include "./HolaSDL/Vector2D.h"
+#include "Collision.h"
 
 //Objetos de juego
-#include "./HolaSDL/Player.h"
-#include "./HolaSDL/Block.h"
-#include "./HolaSDL/Goomba.h"
-#include "./HolaSDL/Mushroom.h"
-#include "./HolaSDL/Koopa.h"
+class Player;
+#include "Block.h"
+#include "Goomba.h"
+#include "Mushroom.h"
+#include "Koopa.h"
 
 using uint = unsigned int;
 
@@ -63,6 +61,7 @@ class Game
 	Tilemap* mapa = nullptr;
 	Player* player = nullptr;
 	Goomba* goomba = nullptr;
+	Koopa* koopa = nullptr;
 	Block* block = nullptr;
 
 	vector<Goomba*> goombas;
@@ -122,7 +121,7 @@ public:
 	Texture* getTexture(TextureName name) const;
 	SDL_Renderer* getRenderer() { return renderer; }
 	bool GetExit() const { return exit; }
-	int getMarioState() { return player->getState(); }
+	int getMarioState();
 
 	// setters
 	void setMapOffset(int);

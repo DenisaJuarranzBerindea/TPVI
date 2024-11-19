@@ -1,10 +1,10 @@
 #ifndef Koopa_h
 #define Koopa_h
 
-#include "../checkML.h"
+#include "checkML.h"
 #include <SDL.h>
 #include "Vector2D.h"
-#include "../texture.h"
+#include "Texture.h"
 #include <istream>
 #include <iostream>
 #include <fstream>

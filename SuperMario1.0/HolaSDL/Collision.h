@@ -2,7 +2,7 @@
 #define COLLISION_H
 
 #include <SDL.h>
-#include "./Vector2D.h"
+#include "Vector2D.h"
 
 struct Collision {
     bool collides = false;

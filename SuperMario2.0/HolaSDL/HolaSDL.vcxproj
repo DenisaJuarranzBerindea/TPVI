@@ -15,10 +15,12 @@
     <ClInclude Include="checkML.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Goomba.h" />
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SceneObject.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Tilemap.h" />
     <ClInclude Include="Vector2D.h" />
@@ -31,6 +33,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tilemap.cpp" />
   </ItemGroup>

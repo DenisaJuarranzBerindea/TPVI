@@ -1,11 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "SceneObject.h"
+
 #include "checkML.h"
 #include <SDL.h>
 #include "Vector2D.h"
 #include "Texture.h"
-#include "Collision.h"
 #include <istream>
 #include <iostream>
 #include <fstream>
@@ -17,7 +18,7 @@ class Game;
 using uint = unsigned int;
 using namespace std;
 
-class Player
+class Player : public SceneObject
 {
 
 private:
@@ -65,6 +66,9 @@ public:
 public:
 	//Constructora
 	Player(Game* game, std::istream& in, double speedX_, double speedY_); // La textura tambien?
+
+	//Destructora
+	~Player() override;
 
 	// Render
 	void render() const;

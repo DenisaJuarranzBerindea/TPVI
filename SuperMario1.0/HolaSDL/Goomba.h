@@ -1,15 +1,15 @@
 #ifndef Goomba_h
 #define Goomba_h
 
-#include "../checkML.h"
+#include "checkML.h"
 #include <SDL.h>
 #include "Vector2D.h"
-#include "../texture.h"
+#include "Texture.h"
 #include <istream>
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "./Collision.h"
+#include "Collision.h"
 
 class Game;
 

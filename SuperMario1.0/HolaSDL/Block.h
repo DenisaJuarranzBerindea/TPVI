@@ -1,11 +1,11 @@
 #ifndef Block_h
 #define Block_h
 
-#include "../checkML.h"
+#include "checkML.h"
 #include <SDL.h>
 //#include "Vector2D.h"
-#include "../Texture.h"
-#include "./Collision.h"
+#include "Texture.h"
+#include "Collision.h"
 #include <istream>
 #include <iostream>
 #include <fstream>

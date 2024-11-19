@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "../Game.h" // para evitar inclusiones cruzadas
+#include "Game.h" // para evitar inclusiones cruzadas
 
 
 Player::Player(Game* game, std::istream& in, double speedX_, double speedY_)
@@ -61,7 +61,7 @@ void Player::update()
 		colRect = tempCol;
 	}
 
-	colRect.x = position.getX() * (double)(g->TILE_SIDE) - g->getMapOffset() + direction.getX() * speed.getX();
+	colRect.x = position.getX() * (double)(g->TILE_SIDE) + direction.getX() * speed.getX();
 	collisionMario = g->checkCollision(colRect, true);
 	if (collisionMario.collides) {
 		cout << "Colisionando en X" << endl;
@@ -209,8 +209,10 @@ void Player::moveMario(bool canMoveX, bool canMoveY)
 	if (position.getX() * (double)g->TILE_SIDE - g->getMapOffset() <= 0 && direction.getX() == -1) position.setX(g->getMapOffset() / (double)g->TILE_SIDE);
 	if (position.getX() * (double)g->TILE_SIDE + g->WIN_WIDTH >= 220*g->TILE_SIDE && direction.getX() == 1) position.setX(-0.00001 + (220 * g->TILE_SIDE - g->WIN_WIDTH) / (double)g->TILE_SIDE);
 
-	if (position.getY() > 15.5) {
-		position.setY(0);
+	if (position.getY() > 14.5) {
+		position.setY(10);
+		g->setMapOffset(0);
+		position.setX(1);
 	}
 }
 

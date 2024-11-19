@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <istream>
+#include "Player.h"
 
 using namespace std;
 
@@ -62,10 +63,22 @@ Game::~Game()
 {
 	// Elimina los objetos del juego
 	delete player;
-	delete block;
-	//delete mushroom;
-	delete goomba;
-	//delete koopa;
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		delete blocks[i];
+	}
+	for (int i = 0; i < goombas.size(); i++)
+	{
+		delete goombas[i];
+	}
+	//for (int i = 0; i < koopas.size(); i++)
+	//{
+	//	delete koopas[i];
+	//}
+	//for (int i = 0; i < mushrooms.size(); i++)
+	//{
+	//	delete mushrooms[i];
+	//}
 
 	// Elimina las texturas
 	for (Texture* texture : textures)
@@ -164,6 +177,11 @@ Texture* Game::getTexture(TextureName name) const
 	Texture* aux = textures[name];
 	cout << "Textura " << name << " cargada" << " (fichero Game.cpp)\n" << endl;
 	return aux;
+}
+
+int Game::getMarioState()
+{
+	return player->getState(); 
 }
 
 // Loop del juego
