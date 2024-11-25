@@ -4,16 +4,24 @@
 #include "GameObject.h"
 #include "Collision.h"
 
+#include "Vector2D.h"
+
+class Game;
+
 class SceneObject : public GameObject {
 protected:
-	Vector2D<double> position;
+	Point2D<double> position;
 	double width;
 	double height;
 	Vector2D<double> speed;
+
+	SDL_Rect rectCol;
 public:
 	virtual Collision hit(SDL_Rect, bool) = 0;
 protected:
-	Collision tryToMove(Vector2D<double>, bool);
+	Collision tryToMove(const Vector2D<double>& speed, Collision::Target target);
+	SDL_Rect getCollisionRect() const;
+	SDL_Rect getRenderRect() const;
 };
 
 #endif

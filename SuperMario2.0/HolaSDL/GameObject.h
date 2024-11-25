@@ -1,6 +1,8 @@
 #ifndef GameObject_h
 #define GameObject_h
 
+#include "Game.h"
+
 class Game;
 
 class GameObject

@@ -32,6 +32,8 @@ const array<TextureSpec, Game::TextureName::NUM_TEXTURES> textureSpec{
 
 Game::Game() 
 {
+	cout << "Game constructor" << endl;
+
 	int winX, winY; // Posición de la ventana
 	winX = winY = SDL_WINDOWPOS_CENTERED;
 
@@ -103,7 +105,7 @@ void Game::loadTextures()
 	try {
      // bucle para rellenar el array de texturas
 		for (int i = 0; i < NUM_TEXTURES; i++) {
-
+			cout << 't' << i << endl;
 			// crea la textura con el url, width y height
 			Texture* tex = new Texture(renderer,
 				(textureRoot + textureSpec[i].name).c_str(),
@@ -149,7 +151,7 @@ void Game::loadMap()
 
 		switch (tipo) {
 		case 'M': {
-			player = new Player(this, lineStream, MARIO_SPEED_X, MARIO_SPEED_Y);
+			player = new Player(lineStream, MARIO_SPEED_X, MARIO_SPEED_Y);
 			cout << "Player creado en game.cpp, loadMap" << endl;
 			break;
 		}
@@ -187,6 +189,8 @@ int Game::getMarioState()
 // Loop del juego
 void Game::run()
 {
+
+	cout << "Game running" << endl;
 	// get ticks al inicio del bucle
 	startTime = SDL_GetTicks();
 
@@ -237,14 +241,15 @@ void Game::render() const
 
 	// Pinta los objetos del juego
 	mapa->renderMapa();
+	cout << "Check 1" << endl;
 	player->render();
+	cout << "Check 2" << endl;
 	for (int i = 0; i < goombas.size(); i++)
 	{
 		//cout << "Render goomba" << endl;
 		goombas[i]->render();
 		//goombas[0]->printPos();
 	}
-
 	for (int i = 0; i < blocks.size(); i++)
 	{
 		blocks[i]->render();
@@ -362,5 +367,5 @@ void Game::playerLife()
 	//cout << "VIDAS RESTANTES: " <<  << endl;
 }
 
-double Game::getMapOffset() { return Game::mapOffset; }
-void Game::setMapOffset(int par_) { mapOffset = par_; }
+double Game::getMapOffset() { return mapOffset; }
+void Game::setMapOffset(double par_) { mapOffset = par_; }

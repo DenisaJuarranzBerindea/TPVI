@@ -4,11 +4,8 @@
 #include "SceneObject.h"
 
 #include "checkML.h"
-#include <SDL.h>
-#include "Vector2D.h"
 #include "Texture.h"
 #include <istream>
-#include <iostream>
 #include <fstream>
 #include <string>
 
@@ -22,17 +19,15 @@ class Player : public SceneObject
 {
 
 private:
+	Game* game;
 	Texture* texture;	// puntero a su textura
-	Game* g; // puntero al juego
 
 	int maxLifes = 3;
 	int lifes;					// numero de vidas restantes, 3 al inicio
 
 	bool isAlive = true;
 
-	Point2D<double> position;	// posicion actual en Point2D
 	Vector2D<int> direction;	// direccion de movimiento
-	Vector2D<double> speed; // velocidad de movimiento
 	double fallSpeed = 0.01;
 
 public:
@@ -65,7 +60,7 @@ public:
 
 public:
 	//Constructora
-	Player(Game* game, std::istream& in, double speedX_, double speedY_); // La textura tambien?
+	Player(std::istream& in, double speedX_, double speedY_); // La textura tambien?
 
 	//Destructora
 	//~Player() override;

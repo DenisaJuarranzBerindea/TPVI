@@ -4,9 +4,7 @@
 #include "SDL_image.h"
 
 #include <iostream>
-//#include <Windows.h>
 #include <vector>
-
 #include "Game.h"
 
 using namespace std;

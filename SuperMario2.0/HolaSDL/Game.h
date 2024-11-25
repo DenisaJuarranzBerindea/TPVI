@@ -55,7 +55,7 @@ class Game
 	// Interruptor para terminar el juego
 	bool exit;
 	// Desplazamiento del mapa
-	double mapOffset = 0; //int choca y bloquea en el borde??
+	double mapOffset = 0;
 
 	// declaración de los elementos de juego
 	Tilemap* mapa = nullptr;
@@ -124,7 +124,7 @@ public:
 	int getMarioState();
 
 	// setters
-	void setMapOffset(int);
+	void setMapOffset(double);
 	void EndGame();
 	void setExit(bool aux) { exit = aux; }
 

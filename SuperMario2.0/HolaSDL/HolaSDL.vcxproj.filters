@@ -24,6 +24,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="SceneObject.h" />
+    <ClInclude Include="gameList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp">

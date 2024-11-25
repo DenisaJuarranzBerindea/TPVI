@@ -1,9 +1,8 @@
 #include "Player.h"
-#include "Game.h" // para evitar inclusiones cruzadas
+#include "Game.h"
 
 
-Player::Player(Game* game, std::istream& in, double speedX_, double speedY_)
-	: g(game), speed(speedX_, speedY_)
+Player::Player(std::istream& in, double speedX_, double speedY_)
 {
 
 	cout << "Llamando constructor player" << endl;
@@ -11,10 +10,11 @@ Player::Player(Game* game, std::istream& in, double speedX_, double speedY_)
 	in >> tempX >> tempY >> lifes;
 	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien a mario //en world1.txt, y = 14
 	direction = Vector2D<int>(0, 0);
+	speed = Vector2D<double>(speedX_, speedY_);
 	
 	//double fallSpeed = speed.getY();
-
-	texture = g->getTexture(Game::TextureName::MARIO); // textura inicial de mario
+	cout << Game::TextureName::MARIO << endl;
+	texture = game->getTexture(Game::TextureName::MARIO); // textura inicial de mario
 
 	marioState = 'm';
 }
@@ -28,8 +28,11 @@ void Player::render() const
 	destRect.h = texture->getFrameHeight();
 
 	// posicion
-	destRect.x = position.getX() * (double)(g->TILE_SIDE) - g->getMapOffset();
-	destRect.y = position.getY() * (double)(g->TILE_SIDE);
+	cout << "Check 11" << endl;
+	cout << game->TILE_SIDE << endl;
+	destRect.x = position.getX() * (double)(game->TILE_SIDE) - game->getMapOffset();
+	cout << "Check 12" << endl;
+	destRect.y = position.getY() * (double)(game->TILE_SIDE);
 
 	// Usa el flip segun la direccion
 	SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
@@ -50,8 +53,8 @@ void Player::update()
 	colRect.w = texture->getFrameWidth();
 	SDL_Rect tempCol = colRect;
 
-	colRect.y = position.getY() * (double)(g->TILE_SIDE) - direction.getY() * speed.getY();
-	collisionMario = g->checkCollision(colRect, true);
+	colRect.y = position.getY() * (double)(game->TILE_SIDE) - direction.getY() * speed.getY();
+	collisionMario = game->checkCollision(colRect, true);
 	if (collisionMario.collides) {
 		//cout << "Colisionando en Y" << endl;
 		grounded = true;
@@ -61,8 +64,8 @@ void Player::update()
 		colRect = tempCol;
 	}
 
-	colRect.x = position.getX() * (double)(g->TILE_SIDE) + direction.getX() * speed.getX();
-	collisionMario = g->checkCollision(colRect, true);
+	colRect.x = position.getX() * (double)(game->TILE_SIDE) + direction.getX() * speed.getX();
+	collisionMario = game->checkCollision(colRect, true);
 	if (collisionMario.collides) {
 		cout << "Colisionando en X" << endl;
 		canMoveX = false;
@@ -82,7 +85,7 @@ void Player::update()
 	//else isAlive = false;
 }
 
-Collision Player::hit(SDL_Rect, bool) //no es necesario, implementado para que funcione herencia, pregunta
+Collision Player::hit(SDL_Rect, bool) //no es necesario, implementado para que funcione herencia, preguntar
 {
 	return Collision();
 }
@@ -162,15 +165,15 @@ void Player::updateOffset()
 	// si llega a la mitad actual en pantalla en ese momento
 	// actualiza el offset
 
-	//cout << x * g->TILE_SIDE - g->getMapOffset() << " > " << g->WIN_WIDTH / 2 << endl;
-	if (position.getX() * g->TILE_SIDE - g->getMapOffset() > g->WIN_WIDTH / 2.) g->setMapOffset(position.getX() * (double)g->TILE_SIDE - g->WIN_WIDTH / 2.);
+	//cout << x * game->TILE_SIDE - game->getMapOffset() << " > " << game->WIN_WIDTH / 2 << endl;
+	if (position.getX() * game->TILE_SIDE - game->getMapOffset() > game->WIN_WIDTH / 2.) game->setMapOffset(position.getX() * (double)game->TILE_SIDE - game->WIN_WIDTH / 2.);
 
 
 }
 
 bool Player::checkFall()
 {
-	return (position.getY() * g->TILE_SIDE - g->getMapOffset()) >= g->WIN_HEIGHT + texture->getFrameHeight();
+	return (position.getY() * game->TILE_SIDE - game->getMapOffset()) >= game->WIN_HEIGHT + texture->getFrameHeight();
 }
 
 void Player::moveMario(bool canMoveX, bool canMoveY)
@@ -211,12 +214,12 @@ void Player::moveMario(bool canMoveX, bool canMoveY)
 	}
 
 	//if (position.getX() < 0) position.setX(0);
-	if (position.getX() * (double)g->TILE_SIDE - g->getMapOffset() <= 0 && direction.getX() == -1) position.setX(g->getMapOffset() / (double)g->TILE_SIDE);
-	if (position.getX() * (double)g->TILE_SIDE + g->WIN_WIDTH >= 220*g->TILE_SIDE && direction.getX() == 1) position.setX(-0.00001 + (220 * g->TILE_SIDE - g->WIN_WIDTH) / (double)g->TILE_SIDE);
+	if (position.getX() * (double)game->TILE_SIDE - game->getMapOffset() <= 0 && direction.getX() == -1) position.setX(game->getMapOffset() / (double)game->TILE_SIDE);
+	if (position.getX() * (double)game->TILE_SIDE + game->WIN_WIDTH >= 220*game->TILE_SIDE && direction.getX() == 1) position.setX(-0.00001 + (220 * game->TILE_SIDE - game->WIN_WIDTH) / (double)game->TILE_SIDE);
 
 	if (position.getY() > 14.5) {
 		position.setY(10);
-		g->setMapOffset(0);
+		game->setMapOffset(0);
 		position.setX(1);
 	}
 }

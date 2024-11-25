@@ -35,6 +35,14 @@ public:
 		return suma;
 	}
 
+	Vector2D<T>& operator+=(const Vector2D<T>& v) {
+		x += v.x;
+		y += v.y;
+		return *this;
+	}
+
+
+
 	// Operador -
 	Vector2D operator-(const Vector2D& v) const
 	{
@@ -78,9 +86,8 @@ public:
 	}
 };
 
-template <class T = int> 
-
 // Using Point2D
+template <class T>
 using Point2D = Vector2D<T>;
 
 #endif
