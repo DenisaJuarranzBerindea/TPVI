@@ -19,7 +19,7 @@ class Player : public SceneObject
 {
 
 private:
-	Game* game;
+	//Game* game;
 	Texture* texture;	// puntero a su textura
 
 	int maxLifes = 3;

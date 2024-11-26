@@ -76,15 +76,16 @@ public:
 	enum TextureName {
 		BACKGROUND, // = 0
 		MARIO, // = 1
-		GOOMBA, // = 2
-		KOOPA, // = 3
-		MUSHROOM, // = 4
-		BLOCK, // = 5
+		SUPERMARIO, // = 2
+		GOOMBA, // = 3
+		KOOPA, // = 4
+		MUSHROOM, // = 5
+		BLOCK, // = 6
 		NUM_TEXTURES  // Truco C++: número de texturas definidas
 	};
 
 	// Array con todas las texturas del juego
-	std::array<Texture*, NUM_TEXTURES> textures;
+	std::array<Texture*, NUM_TEXTURES> textures = {};
 
 
 	//En tiles

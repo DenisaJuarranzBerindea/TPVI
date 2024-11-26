@@ -13,10 +13,11 @@ Player::Player(std::istream& in, double speedX_, double speedY_)
 	speed = Vector2D<double>(speedX_, speedY_);
 	
 	//double fallSpeed = speed.getY();
-	cout << Game::TextureName::MARIO << endl;
 	texture = game->getTexture(Game::TextureName::MARIO); // textura inicial de mario
 
 	marioState = 'm';
+
+	cout << "Player creado" << endl;
 }
 
 void Player::render() const

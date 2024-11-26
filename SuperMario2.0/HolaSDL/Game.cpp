@@ -22,6 +22,7 @@ const array<TextureSpec, Game::TextureName::NUM_TEXTURES> textureSpec{
 	{
 		{"background.png", 9, 7},
 		{"mario.png", 12, 1},
+		{"supermario.png", 22, 1},
 		{"goomba.png", 3, 1},
 		{"koopa.png", 4, 1},
 		{"mushroom.png", 1, 1},
@@ -30,7 +31,7 @@ const array<TextureSpec, Game::TextureName::NUM_TEXTURES> textureSpec{
 	}
 };
 
-Game::Game() 
+Game::Game()
 {
 	cout << "Game constructor" << endl;
 
@@ -105,7 +106,6 @@ void Game::loadTextures()
 	try {
      // bucle para rellenar el array de texturas
 		for (int i = 0; i < NUM_TEXTURES; i++) {
-			cout << 't' << i << endl;
 			// crea la textura con el url, width y height
 			Texture* tex = new Texture(renderer,
 				(textureRoot + textureSpec[i].name).c_str(),
@@ -131,6 +131,8 @@ void Game::loadTextures()
 		std::cout << "Textura no encontrada" << " (fichero Game.cpp)" << endl;
 		EndGame();
 	}
+
+	cout << endl;
 }
 
 void Game::loadMap()
@@ -176,9 +178,8 @@ void Game::loadMap()
 
 Texture* Game::getTexture(TextureName name) const
 {
-	Texture* aux = textures[name];
 	cout << "Textura " << name << " cargada" << " (fichero Game.cpp)\n" << endl;
-	return aux;
+	return textures[name];
 }
 
 int Game::getMarioState()
