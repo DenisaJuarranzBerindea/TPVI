@@ -87,6 +87,7 @@ public:
 	// Array con todas las texturas del juego
 	std::array<Texture*, NUM_TEXTURES> textures = {};
 
+	int map = 1;
 
 	//En tiles
 	static constexpr uint TILE_MAP = 32;
@@ -128,6 +129,10 @@ public:
 	void setMapOffset(double);
 	void EndGame();
 	void setExit(bool aux) { exit = aux; }
+
+
+
+	void cargarMapa(int map_);
 
 private:
 

@@ -14,7 +14,9 @@ using uint = unsigned int;
 int main(int argc, char* argv[])
 {
 	try {
+		cout << "G" << endl;
 		Game game;
+		cout << "Game creado" << endl;
 		game.run();
 	}
 	catch (const std::string& msg) {

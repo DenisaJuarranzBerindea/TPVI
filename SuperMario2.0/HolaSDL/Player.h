@@ -19,7 +19,6 @@ class Player : public SceneObject
 {
 
 private:
-	//Game* game;
 	Texture* texture;	// puntero a su textura
 
 	int maxLifes = 3;
@@ -60,7 +59,7 @@ public:
 
 public:
 	//Constructora
-	Player(std::istream& in, double speedX_, double speedY_); // La textura tambien?
+	Player(Game* game_, std::istream& in, double speedX_, double speedY_); // La textura tambien?
 
 	//Destructora
 	//~Player() override;

@@ -2,8 +2,10 @@
 #include "Game.h"
 
 
-Player::Player(std::istream& in, double speedX_, double speedY_)
+Player::Player(Game* game_, std::istream& in, double speedX_, double speedY_)
 {
+
+	game = game_;
 
 	cout << "Llamando constructor player" << endl;
 	double tempX, tempY;
@@ -29,10 +31,7 @@ void Player::render() const
 	destRect.h = texture->getFrameHeight();
 
 	// posicion
-	cout << "Check 11" << endl;
-	cout << game->TILE_SIDE << endl;
 	destRect.x = position.getX() * (double)(game->TILE_SIDE) - game->getMapOffset();
-	cout << "Check 12" << endl;
 	destRect.y = position.getY() * (double)(game->TILE_SIDE);
 
 	// Usa el flip segun la direccion
@@ -201,7 +200,7 @@ void Player::moveMario(bool canMoveX, bool canMoveY)
 		direction.setY(-1);
 		maxHeight = position.getY() - 4.;
 		grounded = false;
-		cout << 'S' << endl;
+		//cout << 'S' << endl;
 	}
 	else direction.setY(0);
 
@@ -216,7 +215,10 @@ void Player::moveMario(bool canMoveX, bool canMoveY)
 
 	//if (position.getX() < 0) position.setX(0);
 	if (position.getX() * (double)game->TILE_SIDE - game->getMapOffset() <= 0 && direction.getX() == -1) position.setX(game->getMapOffset() / (double)game->TILE_SIDE);
-	if (position.getX() * (double)game->TILE_SIDE + game->WIN_WIDTH >= 220*game->TILE_SIDE && direction.getX() == 1) position.setX(-0.00001 + (220 * game->TILE_SIDE - game->WIN_WIDTH) / (double)game->TILE_SIDE);
+	if (position.getX() * (double)game->TILE_SIDE + game->WIN_WIDTH >= 220 * game->TILE_SIDE && direction.getX() == 1) {
+		game->map += 1;
+		game->cargarMapa(game->map);
+	}
 
 	if (position.getY() > 14.5) {
 		position.setY(10);

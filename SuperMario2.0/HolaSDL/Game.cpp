@@ -65,7 +65,7 @@ Game::Game()
 Game::~Game()
 {
 	// Elimina los objetos del juego
-	delete player;
+	//delete player;
 	for (int i = 0; i < blocks.size(); i++)
 	{
 		delete blocks[i];
@@ -137,11 +137,12 @@ void Game::loadTextures()
 
 void Game::loadMap()
 {
-	const string map = "../assets/maps/world1.csv";
-	mapa = new Tilemap(map, this);
+	const string map_ = "../assets/maps/world" + std::to_string(map) + ".csv";
+	cout << map_ << endl;
+	mapa = new Tilemap(map_, this);
 	cout << "Tilemap creado (fichero Game.cpp)" << endl;
 
-	ifstream file("../assets/maps/world1.txt");
+	ifstream file("../assets/maps/world" + std::to_string(map) + ".txt");
 	string line;
 
 	while (getline(file, line)) {
@@ -153,7 +154,7 @@ void Game::loadMap()
 
 		switch (tipo) {
 		case 'M': {
-			player = new Player(lineStream, MARIO_SPEED_X, MARIO_SPEED_Y);
+			player = new Player(this, lineStream, MARIO_SPEED_X, MARIO_SPEED_Y);
 			cout << "Player creado en game.cpp, loadMap" << endl;
 			break;
 		}
@@ -174,6 +175,30 @@ void Game::loadMap()
 			break;
 		}
 	}
+}
+
+void Game::cargarMapa(int map_) {
+	
+	cout << "cargarMapa" << endl;
+
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		delete blocks[i];
+	}
+	for (int i = 0; i < goombas.size(); i++)
+	{
+		delete goombas[i];
+	}
+	for (Texture* texture : textures) delete texture;
+	delete mapa;
+
+	map = map_;
+
+
+	init();
+
+	player = nullptr;
+
 }
 
 Texture* Game::getTexture(TextureName name) const
@@ -199,7 +224,6 @@ void Game::run()
 	{
 		// tiempo desde ultima actualizacion
 		frameTime = SDL_GetTicks() - startTime;
-
 		if (frameTime > TIME_BY_FRAME) {
 			update(); // actualiza todos los objetos de juego
 			startTime = SDL_GetTicks();
@@ -213,8 +237,14 @@ void Game::run()
 // Update
 void Game::update()
 {
+	int map_temp = map;
 	// Actualiza los objetos del juego
 	player->update();
+
+	if (map_temp != map) {
+		cout << map_temp << map << endl;
+		return;
+	}
 
 	for (int i = 0; i < goombas.size(); i++)
 	{
@@ -242,9 +272,7 @@ void Game::render() const
 
 	// Pinta los objetos del juego
 	mapa->renderMapa();
-	cout << "Check 1" << endl;
 	player->render();
-	cout << "Check 2" << endl;
 	for (int i = 0; i < goombas.size(); i++)
 	{
 		//cout << "Render goomba" << endl;
