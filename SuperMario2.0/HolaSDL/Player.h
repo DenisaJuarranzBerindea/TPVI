@@ -3,12 +3,6 @@
 
 #include "SceneObject.h"
 
-#include "checkML.h"
-#include "Texture.h"
-#include <istream>
-#include <fstream>
-#include <string>
-
 // para evitar inclusiones cruzadas
 class Game;
 
@@ -19,22 +13,37 @@ class Player : public SceneObject
 {
 
 private:
-	Texture* texture;	// puntero a su textura
+	Texture* texture;	
 
+	// Gestión de vidas
 	int maxLifes = 3;
-	int lifes;					// numero de vidas restantes, 3 al inicio
-
+	int lifes;
+	bool immune;
 	bool isAlive = true;
+	// Invencibilidad
+	int invCounter = 0;
+	int maxInvCounter = 5;
+	bool invencible = false;
 
-	Vector2D<int> direction;	// direccion de movimiento
+	// Gestión de movimiento
+	Vector2D<int> direction;	
 	double fallSpeed = 0.01;
+	bool grounded, jumping;
+	bool isFalling = true;
+	int maxHeight;
 
-public:
+	// Animación
+	int walkFrame;
+	bool flipSprite = false;
+	int marioFrame = 0;
+
+	//double deadH = 14 * 32;
+	double bgSpeed = 1.0;
+	double velX;
 
 	char marioState; // m(mario), s(supermario)
 
-	// ANIMACION
-	int marioFrame = 0;
+public:
 
 	// INPUT
 	bool keyA = false; //Izqd
@@ -43,16 +52,11 @@ public:
 	bool keySpace = false; //Salto
 	bool keyE = false; //Salir
 		
-
 	// Colisiones player
 	SDL_Rect colRect = SDL_Rect();
 	Collision collisionMario;
 
-	bool isFalling = true;
-	bool canJump = false;
-	bool grounded = false;		// si esta en el suelo, solo puede saltar cuando lo este
-	int maxHeight;
-
+	// Animacion
 	int animationFrame = 0;   // Contador para el ciclo de caminar
 	int frameTimer = 0;
 	bool flipSprite = false;
@@ -60,7 +64,7 @@ public:
 public:
 	//Constructora
 	Player(Game* game_, std::istream& in, double speedX_, double speedY_); // La textura tambien?
-
+	
 	//Destructora
 	//~Player() override;
 

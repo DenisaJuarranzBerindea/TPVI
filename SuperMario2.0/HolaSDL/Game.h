@@ -22,10 +22,13 @@
 
 #include "Texture.h"
 #include "Tilemap.h"
-class Collision;
+//class Collision;
+#include "Vector2D.h"
+#include "Collision.h"
+class TileMap;
 
 //Objetos de juego
-class Player;
+#include "Player.h"
 #include "Block.h"
 #include "Goomba.h"
 #include "Mushroom.h"
