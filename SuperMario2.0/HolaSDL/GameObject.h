@@ -1,7 +1,10 @@
 #ifndef GameObject_h
 #define GameObject_h
 
-#include "Game.h"
+#include "checkML.h"
+#include <SDL.h>
+#include "Vector2D.h"
+#include "Texture.h"
 
 class Game;
 
@@ -9,10 +12,18 @@ class GameObject
 {
 public:
 	//Estos métodos no tienen implementación, se overridean desde cada GO.
-	virtual void render() const = 0;
+	GameObject();
+
+	GameObject(Game* game);
+
+	// Destructora virtual
+	virtual ~GameObject();
+
+	// Render
+	virtual void render() = 0;
+
+	// Update
 	virtual void update() = 0;
-	
-	//~GameObject();
 
 protected:
 	Game* game;
