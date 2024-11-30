@@ -19,7 +19,7 @@ protected:
 	Texture* background_spritesheet;
 
 public:
-	Tilemap(const string&, Game*);
+	Tilemap(vector<int>, const string&, Game*);
 	void renderMapa();
 	void handleEvents(const SDL_Event&);
 	Collision hit(const SDL_Rect& rect, bool fromPlayer);

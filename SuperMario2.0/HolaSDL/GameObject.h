@@ -12,10 +12,10 @@ public:
 	virtual void render() const = 0;
 	virtual void update() = 0;
 	
-	//~GameObject();
+	virtual ~GameObject() = default;
 
 protected:
-	Game* game;
+	Game* game = nullptr;
 
 };
 

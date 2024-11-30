@@ -26,9 +26,6 @@ private:
 
 	bool isAlive = true;
 
-	Vector2D<int> direction;	// direccion de movimiento
-	double fallSpeed = 0.01;
-
 public:
 
 	char marioState; // m(mario), s(supermario)
@@ -47,11 +44,14 @@ public:
 	// Colisiones player
 	SDL_Rect colRect = SDL_Rect();
 	Collision collisionMario;
+	
+	const double X_SPEED = 0.01;
+	const double Y_SPEED = 0.015;
+	const double GRAVITY = 0.0025;
 
-	bool isFalling = true;
-	bool canJump = false;
-	bool grounded = false;		// si esta en el suelo, solo puede saltar cuando lo este
 	int maxHeight;
+	bool grounded = false;
+	bool canJump = true; //esta subiendo
 
 	int animationFrame = 0;   // Contador para el ciclo de caminar
 	int frameTimer = 0;
@@ -59,7 +59,7 @@ public:
 
 public:
 	//Constructora
-	Player(Game* game_, std::istream& in, double speedX_, double speedY_); // La textura tambien?
+	Player(Game* game_, std::istream& in);
 
 	//Destructora
 	//~Player() override;
@@ -84,20 +84,17 @@ public:
 	// Getters
 	double getX() const { return position.getX(); }
 	double getY() const { return position.getY(); }
-	int getDx() const { return direction.getX(); }
-	int getDy() const { return direction.getY(); }
 	char getState() { return marioState; }
 
 	// Setters
 	void setX(double newX) { position.setX(newX); }
 	void setY(double newY) { position.setY(newY); }
-	void setDx(int newDx) { direction.setX(newDx); }
-	void setDy(int newDy) { direction.setY(newDy); }
 	void setState(char newState) { marioState = newState; }
 
 private:
 	// Movimiento
-	void moveMario(bool, bool);
+	void moveMarioX();
+	void moveMarioY();
 
 	//Ca das
 	bool checkFall();

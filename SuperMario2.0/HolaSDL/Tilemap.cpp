@@ -7,6 +7,38 @@
 
 using namespace std;
 
+Tilemap::Tilemap(vector<int> background, const string& fichero, Game* game) {
+	g = game;
+
+	//color de fondo
+	SDL_SetRenderDrawColor(g->getRenderer(), background[0], background[1], background[2], 255);
+
+	ifstream input(fichero);
+	if (!input) return;
+
+	string line;
+	while (getline(input, line)) {
+		vector<int> aux;
+		stringstream ss(line);
+		int c;
+		while (ss >> c) {
+			aux.push_back(c);
+			if (ss.peek() == ',') ss.ignore();
+		}
+		mapaV.push_back(aux);
+	}
+
+	// Debug, imprime cada elemento del mapa y su fila y columna
+	//for (size_t row = 0; row < mapaV.size(); ++row) {
+	//	for (size_t col = 0; col < mapaV[row].size(); ++col) {
+	//		cout << "(" << row << ", " << col << ") -> " << mapaV[row][col] << endl;
+	//	}
+	//	cout << endl;
+	//}
+
+	background_spritesheet = g->getTexture(Game::TextureName::BACKGROUND);
+}
+
 void Tilemap::renderMapa() {
 
 	int x0 = g->getMapOffset() / g->TILE_MAP;
@@ -16,9 +48,6 @@ void Tilemap::renderMapa() {
 
 	rect.w = g->TILE_SIDE;
 	rect.h = g->TILE_SIDE;
-
-	//color de fondo
-	SDL_SetRenderDrawColor(g->getRenderer(), 138, 132, 255, 255);
 
 	for (int i = 0; i < g->TILE_WINDOW_WIDTH + 1; ++i) { //mas anchura de la necesaria, a proposito
 		for (int j = 0; j < g->TILE_WINDOW_HEIGHT; ++j) {
@@ -78,63 +107,33 @@ void Tilemap::handleEvents(const SDL_Event& event)
 	//}
 }
 
-Tilemap::Tilemap(const string& fichero, Game* game) {
-	g = game;
-
-	ifstream input(fichero);
-	if (!input) return;
-
-	string line;
-	while (getline(input, line)) {
-		vector<int> aux;
-		stringstream ss(line);
-		int c;
-		while (ss >> c) {
-			aux.push_back(c);
-			if (ss.peek() == ',') ss.ignore();
-		}
-		mapaV.push_back(aux);
-	}
-
-	// Debug, imprime cada elemento del mapa y su fila y columna
-	//for (size_t row = 0; row < mapaV.size(); ++row) {
-	//	for (size_t col = 0; col < mapaV[row].size(); ++col) {
-	//		cout << "(" << row << ", " << col << ") -> " << mapaV[row][col] << endl;
-	//	}
-	//	cout << endl;
-	//}
-
-	background_spritesheet = g->getTexture(Game::TextureName::BACKGROUND);
-}
-
 Collision Tilemap::hit(const SDL_Rect& rect, bool fromPlayer)
 {
 	Collision c;
-	c.collides = false;
-	c.damages = false;
 
 	Texture* texture;
 
 	constexpr int OBSTACLE_THRESHOLD = 4; // constante
 
-	// Celda del nivel que contiene la esquina superior izquierda del rectángulo
+	// Celda del nivel que contiene la esquina superior izquierda del rectangulo
 	int row0 = rect.y / Game::TILE_SIDE;
 	int col0 = rect.x / Game::TILE_SIDE;
 
-	// Celda del nivel que contiene la esquina inferior derecha del rectángulo
+	// Celda del nivel que contiene la esquina inferior derecha del rectangulo
 	int row1 = (rect.y + rect.h - 1) / Game::TILE_SIDE;
 	int col1 = (rect.x + rect.w - 1) / Game::TILE_SIDE;
 
 	for (int row = row0; row <= row1; ++row) {
 		for (int col = col0; col <= col1; ++col) {
+
 			int indice = mapaV[row][col];
 
 			if (indice != -1 && indice % background_spritesheet->getNumColumns() < OBSTACLE_THRESHOLD) {
 				c.collides = true;
+				c.result = Collision::OBSTACLE; // ??
 				return c;
 			}
 		}
 	}
-
 	return c;
 }

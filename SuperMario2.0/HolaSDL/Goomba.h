@@ -1,9 +1,10 @@
 #ifndef Goomba_h
 #define Goomba_h
 
+//#include "SceneObject.h"
+
 #include "checkML.h"
 #include <SDL.h>
-#include "Vector2D.h"
 #include "Texture.h"
 #include <istream>
 #include <iostream>
@@ -16,7 +17,7 @@ class Game;
 using uint = unsigned int;
 using namespace std;
 
-class Goomba
+class Goomba //: public SceneObject
 {
 private:
 	Texture* texture = nullptr;	// puntero a su textura
@@ -32,7 +33,7 @@ private:
 	bool frozen = true; // inactivo si no se ve en pantalla pantalla
 	bool alive;	// vida
 
-	bool grounded;
+	bool grounded = true;
 
 	int goombaFrame; // animacion
 	int animationFrame = 0;   // Contador para el ciclo de caminar

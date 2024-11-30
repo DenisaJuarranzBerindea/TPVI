@@ -139,38 +139,46 @@ void Game::loadMap()
 {
 	const string map_ = "../assets/maps/world" + std::to_string(map) + ".csv";
 	cout << map_ << endl;
-	mapa = new Tilemap(map_, this);
-	cout << "Tilemap creado (fichero Game.cpp)" << endl;
-
 	ifstream file("../assets/maps/world" + std::to_string(map) + ".txt");
 	string line;
 
-	while (getline(file, line)) {
-		stringstream lineStream(line);
-		char tipo;
-		lineStream >> tipo;
+	// mapa
+	getline(file, line);
+	stringstream bgLineStream(line);
 
+	vector<int> background = { 0, 0, 0 };
+	for (int& c : background) bgLineStream >> c;
+
+	mapa = new Tilemap(background, map_, this);
+	cout << "Tilemap creado (fichero Game.cpp)" << endl;
+	//mapa
+
+	while (getline(file, line)) {
+		stringstream lineStream(line);		
+		char tipo;
+
+		lineStream >> tipo;
 		cout << "Tipo: " << tipo << endl;
 
 		switch (tipo) {
 		case 'M': {
-			player = new Player(this, lineStream, MARIO_SPEED_X, MARIO_SPEED_Y);
+			player = new Player(this, lineStream);
 			cout << "Player creado en game.cpp, loadMap" << endl;
 			break;
 		}
 		case 'B':
-			block = new Block(this, lineStream);
-			blocks.push_back(block);
+			//block = new Block(this, lineStream);
+			//blocks.push_back(block);
 			break;
 		case 'G':
-			goomba = new Goomba(this, lineStream);
-			goombas.push_back(goomba);
+			//goomba = new Goomba(this, lineStream);
+			//goombas.push_back(goomba);
 			break;
 		case 'K':
 			break;
 		case 'H':
 			break;
-		// Add more cases as needed
+			// Add more cases as needed
 		default:
 			break;
 		}
@@ -178,7 +186,10 @@ void Game::loadMap()
 }
 
 void Game::cargarMapa(int map_) {
-	
+
+	setMapOffset(0);
+	cambioMapa = false;
+
 	cout << "cargarMapa" << endl;
 
 	for (int i = 0; i < blocks.size(); i++)
@@ -189,15 +200,17 @@ void Game::cargarMapa(int map_) {
 	{
 		delete goombas[i];
 	}
+	
 	for (Texture* texture : textures) delete texture;
+	
 	delete mapa;
 
 	map = map_;
 
+	//player->setX(1);
+	//player->setY(7);
 
-	init();
-
-	player = nullptr;
+   	init();
 
 }
 
@@ -229,22 +242,19 @@ void Game::run()
 			startTime = SDL_GetTicks();
 		}
 		render(); // renderiza todos los objetos de juego
-
 		handleEvents();
+
+		if (cambioMapa) {
+			cargarMapa(map);
+		}
 	}
 }
 
 // Update
 void Game::update()
 {
-	int map_temp = map;
 	// Actualiza los objetos del juego
 	player->update();
-
-	if (map_temp != map) {
-		cout << map_temp << map << endl;
-		return;
-	}
 
 	for (int i = 0; i < goombas.size(); i++)
 	{

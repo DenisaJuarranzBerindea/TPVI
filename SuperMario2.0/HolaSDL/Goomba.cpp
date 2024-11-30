@@ -54,6 +54,8 @@ void Goomba::update()
 
 	moveGoomba();
 
+	//cout << "Update goomba" << endl;
+
 	colRect.h = texture->getFrameHeight() * 2;
 	colRect.w = texture->getFrameWidth() * 2;
 	colRect.x = x * game->TILE_SIDE;

@@ -2,7 +2,7 @@
 #include "Game.h"
 
 
-Player::Player(Game* game_, std::istream& in, double speedX_, double speedY_)
+Player::Player(Game* game_, std::istream& in)
 {
 
 	game = game_;
@@ -10,11 +10,10 @@ Player::Player(Game* game_, std::istream& in, double speedX_, double speedY_)
 	cout << "Llamando constructor player" << endl;
 	double tempX, tempY;
 	in >> tempX >> tempY >> lifes;
-	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien a mario //en world1.txt, y = 14
-	direction = Vector2D<int>(0, 0);
-	speed = Vector2D<double>(speedX_, speedY_);
+	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien a mario
+
+	speed = Vector2D<double>(X_SPEED, Y_SPEED);
 	
-	//double fallSpeed = speed.getY();
 	texture = game->getTexture(Game::TextureName::MARIO); // textura inicial de mario
 
 	marioState = 'm';
@@ -42,49 +41,37 @@ void Player::render() const
 
 void Player::update()
 {
-	//cout << (position.getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
-	//cout << (getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
-	
-	Vector2D<double> tempSpeed = speed;
-	bool canMoveX = true;
-	bool canMoveY = true;
+	if ((position.getX()) * game->TILE_SIDE <= game->getMapOffset() && speed.getX() < 0) position.setX(game->getMapOffset() / (double)game->TILE_SIDE);
+
+	if (position.getX() * (double)game->TILE_SIDE + game->WIN_WIDTH >= 215 * game->TILE_SIDE && speed.getX() > 0) {
+		game->cambioMapa = true;
+		game->map += 1;
+	}
 
 	colRect.h = texture->getFrameHeight();
 	colRect.w = texture->getFrameWidth();
-	SDL_Rect tempCol = colRect;
-
-	colRect.y = position.getY() * (double)(game->TILE_SIDE) - direction.getY() * speed.getY();
-	collisionMario = game->checkCollision(colRect, true);
-	if (collisionMario.collides) {
-		//cout << "Colisionando en Y" << endl;
-		grounded = true;
-		isFalling = false;
-
-		canMoveY = false;
-		colRect = tempCol;
+	
+	Collision move = tryToMove(speed, Collision::ENEMIES); // Collision::ENEMIES equivale a fromPlayer, es 1
+	if (move.vertical <= 0 && move.result == Collision::NONE) {
+		speed.setY(speed.getY() + GRAVITY);
+	}
+	if (move.horizontal) {
+		speed.setX(0);
 	}
 
-	colRect.x = position.getX() * (double)(game->TILE_SIDE) + direction.getX() * speed.getX();
-	collisionMario = game->checkCollision(colRect, true);
-	if (collisionMario.collides) {
-		cout << "Colisionando en X" << endl;
-		canMoveX = false;
-		colRect = tempCol;
-	}
 
-	moveMario(canMoveX, canMoveY);
+	moveMarioY();
+	moveMarioX();
 	updateOffset();
-	updateAnims();
 
-	speed = tempSpeed;
-	canMoveX = true;
-	canMoveY = true;
+	updateAnims();
 
 	//vidas (a futuro) // vidas por update
 	//if (lifes > 0) lifes--;
 	//else isAlive = false;
 }
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Collision Player::hit(SDL_Rect, bool) //no es necesario, implementado para que funcione herencia, preguntar
 {
 	return Collision();
@@ -165,65 +152,60 @@ void Player::updateOffset()
 	// si llega a la mitad actual en pantalla en ese momento
 	// actualiza el offset
 
-	//cout << x * game->TILE_SIDE - game->getMapOffset() << " > " << game->WIN_WIDTH / 2 << endl;
-	if (position.getX() * game->TILE_SIDE - game->getMapOffset() > game->WIN_WIDTH / 2.) game->setMapOffset(position.getX() * (double)game->TILE_SIDE - game->WIN_WIDTH / 2.);
+	int mitad = game->getMapOffset() + game->WIN_WIDTH / 2.;
 
+	if (position.getX() * game->TILE_SIDE > mitad)
+		game->setMapOffset(position.getX() * (double)game->TILE_SIDE - game->WIN_WIDTH / 2.);
 
 }
 
-bool Player::checkFall()
-{
-	return (position.getY() * game->TILE_SIDE - game->getMapOffset()) >= game->WIN_HEIGHT + texture->getFrameHeight();
-}
-
-void Player::moveMario(bool canMoveX, bool canMoveY)
+void Player::moveMarioX()
 {
 	if (keyA == keyD) {
-		direction = Vector2D<int>(0, 0);
+		speed.setX(0);
 	}
 
 	else if (keyA != keyD) {
-		//cout << dx << " " << x << endl;
 		if (keyA) {
-			direction = Vector2D<int>(-1, 0);
+			speed.setX(-X_SPEED); //seguro?
 			flipSprite = true;  // Activa el flip al mover a la izquierda
 		}
 		else if (keyD) {
-			direction = Vector2D<int>(1, 0);
+			speed.setX(X_SPEED); //seguro?
 			flipSprite = false; // Desactiva el flip al mover a la derecha
 		}
 	}
 
-	if (canMoveX) position.setX(position.getX() + (direction.getX() * speed.getX()));
-	
-	if (keySpace && grounded && !isFalling) {
-		direction.setY(-1);
-		maxHeight = position.getY() - 4.;
+	position.setX(position.getX() + speed.getX());
+}
+
+void Player::moveMarioY()
+{
+	if (keySpace && grounded && canJump) {
+		speed.setY(-Y_SPEED);
+		maxHeight = position.getY() - 4;
 		grounded = false;
-		//cout << 'S' << endl;
-	}
-	else direction.setY(0);
-
-	if (position.getY() > maxHeight && keySpace && !isFalling && (canMoveY || direction.getY() == -1)) { //saltando dirY es -1
-		position.setY(position.getY() - speed.getY());
-	}
-	//si se puede mover y su direccion es para abajo, caer
-	else if (canMoveY && (position.getY() <= maxHeight || direction.getY() == 0)) { //cayendo dirY es 0
-		isFalling = true;
-		position.setY(position.getY() + fallSpeed);
 	}
 
-	//if (position.getX() < 0) position.setX(0);
-	if (position.getX() * (double)game->TILE_SIDE - game->getMapOffset() <= 0 && direction.getX() == -1) position.setX(game->getMapOffset() / (double)game->TILE_SIDE);
-	if (position.getX() * (double)game->TILE_SIDE + game->WIN_WIDTH >= 220 * game->TILE_SIDE && direction.getX() == 1) {
-		game->map += 1;
-		game->cargarMapa(game->map);
+	if (canJump && keySpace) {
+		speed.setY(-Y_SPEED);
 	}
+	
+	if (!keySpace || position.getY() < maxHeight) {
+		speed.setY(Y_SPEED);
+		canJump = false;
+	}
+
+	position.setY(position.getY() + speed.getY() + (grounded ? 0 : GRAVITY));
+
+	//COMPROBACIONES
+
+	if (position.getY() > 13.5) { position.setY(13.5); grounded = true; canJump = true; } //definir grounded y canJump en las colisiones
 
 	if (position.getY() > 14.5) {
-		position.setY(10);
-		game->setMapOffset(0);
-		position.setX(1);
+		position.setY(7);
+		//game->setMapOffset(0); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//position.setX(1);
 	}
 }
 
