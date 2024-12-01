@@ -3,7 +3,9 @@
 #include <string>
 #include <iostream>
 #include <istream>
+
 #include "Player.h"
+#include "Goomba.h"
 
 using namespace std;
 
@@ -207,8 +209,7 @@ void Game::cargarMapa(int map_) {
 
 	map = map_;
 
-	//player->setX(1);
-	//player->setY(7);
+	player = nullptr;
 
    	init();
 
@@ -337,60 +338,63 @@ void Game::handleEvents()
 	}
 }
 
-Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
+Collision Game::checkCollision(const SDL_Rect& rect, Collision::Target target) {
 	
 	Collision c;
-	c.collides = false;
-	c.damages = false;
-
-	// hit mapa
-	c = mapa->hit(rect, fromPlayer);
-	if (c.collides) { return c; }
-
-	// hit goombas
-	/*for (int i = 0; i < goombas.size(); i++)
-	{
-		c = goombas[i]->hit(rect, fromPlayer);
-		if (c.collides)
+	if (target == Collision::Target::ENEMIES) {
+		// hit mapa
+		c = mapa->hit(rect, target);
+		//cout << "llamar hit mapa en game.cpp , c.result: " << c.result << endl;
+		if (c.result != Collision::NONE) return c;
+	}
+	
+	if (target == Collision::Target::PLAYER) {
+		// hit goombas
+		for (int i = 0; i < goombas.size(); i++)
 		{
-			if (!c.damages)
+			c = goombas[i]->hit(rect, target);
+			if (c.collides)
 			{
-				goombas[i]->killGoomba();
-			}
-			else
-			{
-				player->damage();
-			}
+				if (!c.damages)
+				{
+					goombas[i]->killGoomba();
+				}
+				else
+				{
+					player->damage();
+				}
 
-			return c;
+				return c;
+			}
 		}
-	}*/
-
-	// hit blocks
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		c = blocks[i]->hit(rect, fromPlayer);
-
-		if (c.collides)
+		/*
+		// hit blocks
+		for (int i = 0; i < blocks.size(); i++)
 		{
-			if (c.collides && !c.damages && c.killBrick)
-			{
-				blocks[i]->setDead();
-			}
-			else if (c.collides && c.spawnSeta)
-			{
-				//Lógica seta
-				blocks[i]->setaSpawn();
+			c = blocks[i]->hit(rect, fromPlayer);
 
-				//mushroom = new Mushroom(this, blockVec[i]->getPos());
-				//setas.push_back(mushroom);
-			}
+			if (c.collides)
+			{
+				if (c.collides && !c.damages && c.killBrick)
+				{
+					blocks[i]->setDead();
+				}
+				else if (c.collides && c.spawnSeta)
+				{
+					//Lógica seta
+					blocks[i]->setaSpawn();
 
-			return c;
-		}
+					//mushroom = new Mushroom(this, blockVec[i]->getPos());
+					//setas.push_back(mushroom);
+				}
+
+				return c;
+			}
+		}*/
 	}
 
-	return c;
+
+	return { Collision::NONE, 0, 0 };
 
 }
 

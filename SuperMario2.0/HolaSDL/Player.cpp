@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "Game.h"
 
-
 Player::Player(Game* game_, std::istream& in)
 {
 
@@ -41,29 +40,38 @@ void Player::render() const
 
 void Player::update()
 {
-	if ((position.getX()) * game->TILE_SIDE <= game->getMapOffset() && speed.getX() < 0) position.setX(game->getMapOffset() / (double)game->TILE_SIDE);
-
-	if (position.getX() * (double)game->TILE_SIDE + game->WIN_WIDTH >= 215 * game->TILE_SIDE && speed.getX() > 0) {
-		game->cambioMapa = true;
-		game->map += 1;
-	}
-
 	colRect.h = texture->getFrameHeight();
 	colRect.w = texture->getFrameWidth();
-	
-	Collision move = tryToMove(speed, Collision::ENEMIES); // Collision::ENEMIES equivale a fromPlayer, es 1
-	if (move.vertical <= 0 && move.result == Collision::NONE) {
-		speed.setY(speed.getY() + GRAVITY);
-	}
-	if (move.horizontal) {
-		speed.setX(0);
-	}
-
 
 	moveMarioY();
 	moveMarioX();
-	updateOffset();
 
+	//Orden: tryToMove, game->checkCollision, mapa->hit
+	Collision move = tryToMove(speed, Collision::ENEMIES, texture); // no encuentro otra forma de pasarle los datos que pasarle la texture
+
+	if (move.result != Collision::NONE) {
+		speed.setY(0);
+
+		//Distinguir si es por arriba o por abajo para cambiar grounded/canJump
+		if (move.vertical < 0) { //por abajo
+			cout << "Colision por abajo" << endl;
+			canJump = true;
+			grounded = true;
+		}
+		else if (move.vertical > 0) { //por arriba
+			cout << "Colision por arriba" << endl;
+			canJump = false;
+		}
+	}
+	position.setY(position.getY() /* + speed.getY()*/);
+
+	if (move.horizontal) {
+		cout << "Colision horizontal" << endl;
+		speed.setX(0);
+	}
+	position.setX(position.getX() + speed.getX());
+	
+	updateOffset();
 	updateAnims();
 
 	//vidas (a futuro) // vidas por update
@@ -72,7 +80,7 @@ void Player::update()
 }
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-Collision Player::hit(SDL_Rect, bool) //no es necesario, implementado para que funcione herencia, preguntar
+Collision Player::hit(SDL_Rect, Collision::Target) //no es necesario, implementado para que funcione herencia, preguntar
 {
 	return Collision();
 }
@@ -149,13 +157,28 @@ void Player::updateAnims()
 
 void Player::updateOffset()
 {
-	// si llega a la mitad actual en pantalla en ese momento
-	// actualiza el offset
+	// No se sale por la izquierda
+	if ((position.getX()) * game->TILE_SIDE <= game->getMapOffset() && speed.getX() < 0) position.setX(game->getMapOffset() / (double)game->TILE_SIDE);
 
+	// Mueve offset
 	int mitad = game->getMapOffset() + game->WIN_WIDTH / 2.;
-
-	if (position.getX() * game->TILE_SIDE > mitad)
+	if (position.getX() * game->TILE_SIDE > mitad) {
 		game->setMapOffset(position.getX() * (double)game->TILE_SIDE - game->WIN_WIDTH / 2.);
+	}
+	
+	// Agujeros
+	if (position.getY() > 14.5) {
+		position.setY(2);
+		//game->setMapOffset(0); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//position.setX(1);
+	}
+
+	// Cambio de mapa
+	if (position.getX() * (double)game->TILE_SIDE + game->WIN_WIDTH >= 215 * game->TILE_SIDE && speed.getX() > 0) {
+		game->cambioMapa = true;
+		game->map += 1;
+	}
+
 
 }
 
@@ -167,16 +190,14 @@ void Player::moveMarioX()
 
 	else if (keyA != keyD) {
 		if (keyA) {
-			speed.setX(-X_SPEED); //seguro?
+			speed.setX(-X_SPEED);
 			flipSprite = true;  // Activa el flip al mover a la izquierda
 		}
 		else if (keyD) {
-			speed.setX(X_SPEED); //seguro?
+			speed.setX(X_SPEED);
 			flipSprite = false; // Desactiva el flip al mover a la derecha
 		}
 	}
-
-	position.setX(position.getX() + speed.getX());
 }
 
 void Player::moveMarioY()
@@ -192,20 +213,8 @@ void Player::moveMarioY()
 	}
 	
 	if (!keySpace || position.getY() < maxHeight) {
-		speed.setY(Y_SPEED);
+		speed.setY(Y_SPEED /*+ GRAVITY*/);
 		canJump = false;
-	}
-
-	position.setY(position.getY() + speed.getY() + (grounded ? 0 : GRAVITY));
-
-	//COMPROBACIONES
-
-	if (position.getY() > 13.5) { position.setY(13.5); grounded = true; canJump = true; } //definir grounded y canJump en las colisiones
-
-	if (position.getY() > 14.5) {
-		position.setY(7);
-		//game->setMapOffset(0); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//position.setX(1);
 	}
 }
 

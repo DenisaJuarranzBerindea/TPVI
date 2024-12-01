@@ -11,8 +11,6 @@ struct Collision {
     SDL_Rect intersection = SDL_Rect();       // rectangulo de interseccion de la colision
     void* collider = nullptr;    // puntero al objeto con el que se colisiono
 
-    operator bool() const { return collides; }
-
     // BLOQUES
     bool killBrick = false;
 
@@ -37,8 +35,10 @@ struct Collision {
 	};
 
 	Result result = NONE;
-	int horizontal = 0;   // profundidad de la colisión horizontal
-	int vertical = 0;     // profundidad de la colisión vertical
+	double horizontal = 0;   // profundidad de la colisión horizontal
+	double vertical = 0;     // profundidad de la colisión vertical
+
+	operator bool() const { return collides; }
 };
 
 #endif

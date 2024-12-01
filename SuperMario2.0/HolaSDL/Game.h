@@ -27,7 +27,7 @@ struct Collision;
 //Objetos de juego
 class Player;
 #include "Block.h"
-#include "Goomba.h"
+class Goomba;
 #include "Mushroom.h"
 #include "Koopa.h"
 
@@ -117,7 +117,7 @@ public:
 	// input del jugador y otros eventos
 	void handleEvents();
 	// gestionar colisiones
-	Collision checkCollision(const SDL_Rect& rect, bool fromPlayer);
+	Collision checkCollision(const SDL_Rect& rect, Collision::Target);
 
 	// getters
 	double getMapOffset();

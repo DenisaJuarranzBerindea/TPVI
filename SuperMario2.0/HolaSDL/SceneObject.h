@@ -14,12 +14,13 @@ protected:
 	double width;
 	double height;
 	Vector2D<double> speed;
+	Texture* texture; // no se como pasar la informacion de la textura asi que la inicializo en el tryToMove
 
 	SDL_Rect rectCol;
 public:
-	virtual Collision hit(SDL_Rect, bool) = 0;
+	virtual Collision hit(SDL_Rect, Collision::Target) = 0;
 protected:
-	Collision tryToMove(const Vector2D<double>& speed, Collision::Target target);
+	Collision tryToMove(const Vector2D<double>& speed, Collision::Target target, Texture* texture);
 	SDL_Rect getCollisionRect() const;
 	SDL_Rect getRenderRect() const;
 };

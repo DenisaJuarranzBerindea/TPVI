@@ -1,7 +1,7 @@
 #ifndef Goomba_h
 #define Goomba_h
 
-//#include "SceneObject.h"
+#include "SceneObject.h"
 
 #include "checkML.h"
 #include <SDL.h>
@@ -17,25 +17,22 @@ class Game;
 using uint = unsigned int;
 using namespace std;
 
-class Goomba //: public SceneObject
+class Goomba : public SceneObject
 {
 private:
 	Texture* texture = nullptr;	// puntero a su textura
 	Game* game = nullptr;		// puntero al juego
 
-	//Point2D<double> position;	// posicion actual en Point2D
-	//Vector2D<int> direction;	// direccion de movimiento
-	double x, y;
-	int dx, dy;
-	double speed = 0.003;			// velocidad de movimiento
-
-
+	const double X_SPEED = 0.01;
+	const double Y_SPEED = 0.015;
+	const double GRAVITY = 0.0025;
+	
 	bool frozen = true; // inactivo si no se ve en pantalla pantalla
-	bool alive;	// vida
+	bool alive = true;	// vida
 
 	bool grounded = true;
 
-	int goombaFrame; // animacion
+	int goombaFrame = 0; // animacion
 	int animationFrame = 0;   // Contador para el ciclo de caminar
 	int frameTimer = 0;
 
@@ -47,9 +44,9 @@ public:
 
 	Goomba(Game* g, std::istream& in);
 
-	void render() const;
-	void update();
-	Collision hit(const SDL_Rect& rect, bool fromPlayer);
+	void render() const override;
+	void update() override;
+	Collision hit(SDL_Rect, Collision::Target) override;
 
 	void killGoomba() { alive = false; }
 

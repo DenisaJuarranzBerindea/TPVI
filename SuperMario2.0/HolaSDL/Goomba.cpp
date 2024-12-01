@@ -1,26 +1,21 @@
 #include "Goomba.h"
 #include "Game.h"
-#include "Block.h"
 
-Goomba::Goomba(Game* g, std::istream& in)
-	: game(g)
+Goomba::Goomba(Game* game_, std::istream& in)
 {
+
+	game = game_;
+
 	cout << "Llamando constructor goomba" << endl;
+	double tempX, tempY;
+	in >> tempX >> tempY;
+	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien al goomba
 
-	//in >> position;
-	in >> x >> y;
-	y -= 1;
-
-	//direction = Vector2D<int>(0, 0);
-	dx = 0;
-	dy = 0;
+	speed = Vector2D<double>(X_SPEED, Y_SPEED);
 
 	texture = game->getTexture(Game::GOOMBA); // textura inicial de goomba
 
-	goombaFrame = 0;
-
-	frozen = true;
-	alive = true;
+	cout << "Goomba creado" << endl;
 }
 
 void Goomba::render() const
@@ -34,8 +29,8 @@ void Goomba::render() const
 	//// posicion
 	//destRect.x = (position.getX() * game->TILE_SIDE) - game->getMapOffset();
 	//destRect.y = (position.getY() * game->TILE_SIDE);
-	destRect.x = x * (double)(game->TILE_SIDE) - game->getMapOffset();
-	destRect.y = y * (double)(game->TILE_SIDE);
+	destRect.x = position.getX() * (double)(game->TILE_SIDE) - game->getMapOffset();
+	destRect.y = position.getY() * (double)(game->TILE_SIDE);
 
 	texture->renderFrame(destRect, 0, goombaFrame);
 }
@@ -43,26 +38,35 @@ void Goomba::render() const
 void Goomba::update()
 {
 	// si la pos del goomba es menor que el offset mas el ancho de la pantalla -> se activa
-	if ((x * game->TILE_SIDE) - texture->getFrameWidth() < (game->getMapOffset() + game->WIN_WIDTH)) {
+	if ((position.getX() * game->TILE_SIDE) - texture->getFrameWidth() < (game->getMapOffset() + game->WIN_WIDTH)) {
 		frozen = false;
 	}
 	else frozen = true;
 
-	if ((x * game->TILE_SIDE + texture->getFrameWidth() * 2) < (game->getMapOffset())) {
+	if ((position.getX() * game->TILE_SIDE + texture->getFrameWidth() * 2) < (game->getMapOffset())) {
 		frozen = true;
 	}
 
 	moveGoomba();
 
-	//cout << "Update goomba" << endl;
+	//Orden: tryToMove, game->checkCollision, mapa->hit
+	Collision move = tryToMove(speed, Collision::ENEMIES, texture); // no encuentro otra forma de pasarle los datos que pasarle la texture
 
-	colRect.h = texture->getFrameHeight() * 2;
-	colRect.w = texture->getFrameWidth() * 2;
-	colRect.x = x * game->TILE_SIDE;
-	colRect.y = y * game->TILE_SIDE;
+	if (move.result != Collision::NONE) {
+		speed.setY(0);
+		grounded = true;
+	}
+	position.setY(position.getY() + speed.getY());
+
+	if (move.horizontal) {
+		speed.setX(0);
+	}
+	position.setX(position.getX() + speed.getX());
+
+	//cout << "Update goomba" << endl;
 }
 
-Collision Goomba::hit(const SDL_Rect& rect, bool fromPlayer)
+Collision Goomba::hit(SDL_Rect rect, Collision::Target)
 {
 	Collision c;
 
@@ -72,7 +76,7 @@ Collision Goomba::hit(const SDL_Rect& rect, bool fromPlayer)
 		c.collides = true;
 
 		// si se origina en mario...
-		if (fromPlayer)
+		if (Collision::Target::ENEMIES)
 		{
 			// si la colision es por: arr -> muere el goomba
 			if (((rect.y - rect.h) <= colRect.y) && (rect.x >= colRect.x && rect.x <= (colRect.x + colRect.w)))
@@ -89,12 +93,12 @@ Collision Goomba::hit(const SDL_Rect& rect, bool fromPlayer)
 			// choca por la izq -> va a der
 			if (colRect.x <= (rect.x + rect.w))
 			{
-				dx = 1;
+				speed.setX(X_SPEED);
 			}
 			// choca por la der -> va a izq
 			else if ((colRect.x + colRect.w) >= rect.x)
 			{
-				dx = -1;
+				speed.setX(-X_SPEED);
 			}
 		}
 
@@ -105,25 +109,18 @@ Collision Goomba::hit(const SDL_Rect& rect, bool fromPlayer)
 void Goomba::moveGoomba()
 {
 	//cout << "Goomba update frozen = " << frozen << endl;
-	//direction = Vector2D<int>(0, 0);
-	dx = 0;
-	dy = 0;
 
 	if (!frozen)
 	{
 		//debug comprueba que el goomba no se mueve fuera de la pantalla
 		//cout << (x * game->TILE_SIDE + texture->getFrameWidth() * 2) - (game->getMapOffset()) << endl;
 		
-		//direction = Vector2D<int>(-1, 0);
-		dx = -1;
-		dy = 0;
-
-		//position.setX(position.getX() + (direction.getX() * speed));
-		x += dx * speed;
+		speed.setX(-X_SPEED);
+		speed.setY(-Y_SPEED);
 	}
 
 	//Animaciones
-	if (x != 0)
+	if (position.getX() != 0)
 	{
 		frameTimer++;
 		if (frameTimer >= 800) {  // Velocidad del ciclo
@@ -138,5 +135,5 @@ void Goomba::moveGoomba()
 }
 
 void Goomba::printPos() {
-	cout << "x: " << x << ", y: " << y << endl;
+	cout << "x: " << position.getX() << ", y: " << position.getY() << endl;
 }
