@@ -1,96 +1,132 @@
 #include "Player.h"
 #include "Game.h"
 
-
-Player::Player(Game* game_, std::istream& in, double speedX_, double speedY_)
+// Constructora
+Player::Player(Game* g, Point2D<double> p, Texture* t, int l, Vector2D<double> s)
+	: SceneObject(g, p, t, s), lifes(l)
 {
-
-	game = game_;
-
-	cout << "Llamando constructor player" << endl;
-	double tempX, tempY;
-	in >> tempX >> tempY >> lifes;
-	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien a mario //en world1.txt, y = 14
-	direction = Vector2D<int>(0, 0);
-	speed = Vector2D<double>(speedX_, speedY_);
-	
-	//double fallSpeed = speed.getY();
-	texture = game->getTexture(Game::TextureName::MARIO); // textura inicial de mario
-
-	marioState = 'm';
-
 	cout << "Player creado" << endl;
+
+	lifes = 3;
+	canMove = true;
+	velX = 2.5;
+	grounded = false;
+	jumping = false;
+
+	walkFrame = 0;
+	flipSprite = true;
+	flip = SDL_FLIP_NONE;
+
+	marioState = MARIO;
+	textureM = game->getTexture(Game::MARIO);		// textura inicial de mario
+	textureS = game->getTexture(Game::SUPERMARIO);	// textura supermario
+
+	invencible = false;
 }
 
-void Player::render() const
+// Clon
+SceneObject* Player::clone() const
 {
-	SDL_Rect destRect = SDL_Rect();
-
-	// tamano
-	destRect.w = texture->getFrameWidth();
-	destRect.h = texture->getFrameHeight();
-
-	// posicion
-	destRect.x = position.getX() * (double)(game->TILE_SIDE) - game->getMapOffset();
-	destRect.y = position.getY() * (double)(game->TILE_SIDE);
-
-	// Usa el flip segun la direccion
-	SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-
-	texture->renderFrame(destRect, 0, marioFrame, 0.0, nullptr, flip);
+	return new Player(*this);
 }
 
+// Render 
+void Player::render()
+{
+	SceneObject::render();
+	updateAnim();
+}
+
+// Actualizacion a nivel logico
 void Player::update()
 {
-	//cout << (position.getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
-	//cout << (getX() * g->TILE_SIDE) - g->getMapOffset() << endl;
-	
-	Vector2D<double> tempSpeed = speed;
-	bool canMoveX = true;
-	bool canMoveY = true;
+	// Velocidad salto
+	if (speed.getY() < game->SPEED_LIMIT)
+		speed = speed + Vector2D<double>(0, game->GRAVITY);
 
-	colRect.h = texture->getFrameHeight();
-	colRect.w = texture->getFrameWidth();
-	SDL_Rect tempCol = colRect;
+	// Movimiento sin colisiones
+	if (canMove)
+		c = tryToMove(speed, Collision::ENEMIES);
+	else if (!canMove && speed.getY() != 0)
+		c = tryToMove({ 0, speed.getY() }, Collision::ENEMIES);
 
-	colRect.y = position.getY() * (double)(game->TILE_SIDE) - direction.getY() * speed.getY();
-	collisionMario = game->checkCollision(colRect, true);
-	if (collisionMario.collides) {
-		//cout << "Colisionando en Y" << endl;
-		grounded = true;
-		isFalling = false;
+	// Colisión vertical
+	if (c.vertical)
+	{
+		if (speed.getY() > 0)
+		{
+			grounded = true;
+			jumping = false;
+		}
 
-		canMoveY = false;
-		colRect = tempCol;
+		speed.setY(0);
 	}
 
-	colRect.x = position.getX() * (double)(game->TILE_SIDE) + direction.getX() * speed.getX();
-	collisionMario = game->checkCollision(colRect, true);
-	if (collisionMario.collides) {
-		cout << "Colisionando en X" << endl;
-		canMoveX = false;
-		colRect = tempCol;
+	// Moviminento derecha
+	if (speed.getX() > 0)
+	{
+		flip = SDL_FLIP_NONE;
+
+		// Limites
+		if (position.getX() - game->getMapOffset() >= game->WIN_WIDTH / 2
+			&& game->getMapOffset() <= MAP_MAX_OFFSET)
+		{
+			game->setMapOffset(game->getMapOffset() + speed.getX());
+		}
+		canMove = true;
+	}
+	// Movimiento izquierda
+	else if (speed.getX() < 0)
+	{
+		flip = SDL_FLIP_HORIZONTAL;
+
+		// Limites pantalla
+		if (position.getX() - game->getMapOffset() < game->TILE_SIDE) canMove = false;
 	}
 
-	moveMario(canMoveX, canMoveY);
-	updateOffset();
-	updateAnims();
+	updateTexture();
 
-	speed = tempSpeed;
-	canMoveX = true;
-	canMoveY = true;
+	checkFall();
 
-	//vidas (a futuro) // vidas por update
-	//if (lifes > 0) lifes--;
-	//else isAlive = false;
+	finishLevel();
+
+	marioState = game->getMarioState();
 }
 
-Collision Player::hit(SDL_Rect, bool) //no es necesario, implementado para que funcione herencia, preguntar
+// Actualizacion a nivel grafico
+void Player::updateTexture()
 {
-	return Collision();
+	if (marioState == MARIO)
+	{
+		setScale(2);
+		texture = textureM;
+	}
+	else
+	{
+		setScale(1.5);
+		texture = textureS;
+	}
 }
 
-void Player::handleEvents(const SDL_Event& event)
+// Comprueba colisiones y las maneja
+Collision Player::hit(const SDL_Rect& region, Collision::Target target)  
+{
+	// Comprueba si hay colision
+	SDL_Rect colRect = getCollisionRect();
+
+	// si la colision es con los enemies
+	if (target == Collision::PLAYER && SDL_HasIntersection(&colRect, &region))
+	{
+		manageDamage();
+	}
+
+	Collision col;
+	return col;
+	//return Collision->NO_COLLISION; // constante Collision{}
+}
+
+// Input
+void Player::handleEvent(const SDL_Event& event)
 {
 	// Recibe tecla
 	SDL_Scancode key = event.key.keysym.scancode;
@@ -98,85 +134,142 @@ void Player::handleEvents(const SDL_Event& event)
 	// pulsar
 	if (event.type == SDL_KEYDOWN)
 	{
-		// IZQD
-		if (key == SDL_SCANCODE_A) keyA = true;
-
-		// DCHA
-		else if (key == SDL_SCANCODE_D) keyD = true;
-
-		// ABAJO
+		// Izqd (A)
+		if (key == SDL_SCANCODE_A)
+		{
+			speed.setX(-velX);
+			keyA = true;
+		}
+		// Dcha (D)
+		else if (key == SDL_SCANCODE_D)
+		{
+			speed.setX(velX);
+			keyD = true;
+		}
+		// Abajo (S)
 		else if (key == SDL_SCANCODE_S) keyS = true;
 
-		// SALTAR
-		else if (key == SDL_SCANCODE_SPACE) keySpace = true;
+		// Salto (Space)
+		else if (key == SDL_SCANCODE_SPACE)
+		{
+			keySpace = true;
+			if (!jumping && grounded)
+			{
+				grounded = false;
+				jumping = true;
 
-		// SALIR
+				speed.setY(-30);
+			}
+		}
+		// Salir (S)
 		else if (key == SDL_SCANCODE_E) keyE = true;
 
+		// Offset mapa (->)
+		else if (key == SDL_SCANCODE_RIGHT) keyDcha = true;
 	}
 
-	// despulsar
+	// No pulsar
 	else if (event.type == SDL_KEYUP)
 	{
-		// IZQ
-		if (key == SDL_SCANCODE_A) keyA = false;
-
-		// DER
-		else if (key == SDL_SCANCODE_D) keyD = false;
-
-		// ABJ
+		// Izqd
+		if (key == SDL_SCANCODE_A)
+		{
+			speed.setX(0);
+			keyA = false;
+		}
+		// Dcha
+		else if (key == SDL_SCANCODE_D)
+		{
+			speed.setX(0);
+			keyD = false;
+		}
+		// Abjs
 		else if (key == SDL_SCANCODE_S) keyS = false;
 
-		// SALTAR
+		// Salto
 		else if (key == SDL_SCANCODE_SPACE) keySpace = false;
 
-		// SALIR
+		// Salir
 		else if (key == SDL_SCANCODE_E) keyE = false;
 
+		// Offset mapa
+		else if (key == SDL_SCANCODE_RIGHT) keyDcha = false;
 	}
 }
 
-void Player::updateAnims()
+// Actualizacion animaciones
+void Player::updateAnim()
 {
-	if (!grounded) {
-		//Frame del salto
-		marioFrame = 6;
-	}
-	else if (keyA != keyD) {
+	// Andando en el suelo
+	if (speed.getX() != 0 && grounded)
+	{
 		frameTimer++;
-		if (frameTimer >= 50) {  // Velocidad del ciclo
+		if (frameTimer >= 1)
+		{
 			frameTimer = 0;
-			animationFrame = (animationFrame + 1) % 4;  // Ciclo 0,1,2,3, y luego se reinicie 
 
-			// Ciclo de caminar 2 -> 3 -> 4 -> 3
-			if (animationFrame == 0 || animationFrame == 3) marioFrame = 2;
-			else if (animationFrame == 1) marioFrame = 3;
-			else if (animationFrame == 2) marioFrame = 4;
+			int cycleLength = immune ? 4 : 5;
+			walkFrame = (walkFrame + 1) % cycleLength;
+
+			// Asigna el frame correspondiente
+			if (walkFrame == 0 || walkFrame == (cycleLength - 1)) {
+				frame = 2;
+			}
+			else if (walkFrame == 1) {
+				frame = 3;
+			}
+			else if (walkFrame == 2) {
+				frame = 4;
+			}
+			else if (immune && walkFrame == 3) {
+				frame = -1;
+			}
 		}
 	}
+	// Saltando 
+	else if (!grounded) {
+		frame = 6;
+	}
+	// Idle
 	else {
-		//Cuando esta quieto
-		marioFrame = 0;
+		frame = 0;
 	}
 }
 
+// Mapa
 void Player::updateOffset()
 {
 	// si llega a la mitad actual en pantalla en ese momento
 	// actualiza el offset
 
-	//cout << x * game->TILE_SIDE - game->getMapOffset() << " > " << game->WIN_WIDTH / 2 << endl;
-	if (position.getX() * game->TILE_SIDE - game->getMapOffset() > game->WIN_WIDTH / 2.) game->setMapOffset(position.getX() * (double)game->TILE_SIDE - game->WIN_WIDTH / 2.);
+	int screenX = position.getX() * game->TILE_SIDE - game->getMapOffset();
 
-
+	if (screenX > game->TILE_SIDE * game->WIN_WIDTH / 2 && game->getMapOffset() < MAP_MAX_OFFSET)
+	{
+		game->addMapOffset(1);
+	}
 }
 
-bool Player::checkFall()
+// Caida por agujeros
+void Player::checkFall()
 {
-	return (position.getY() * game->TILE_SIDE - game->getMapOffset()) >= game->WIN_HEIGHT + texture->getFrameHeight();
+	// Si se ha caído por un agujero
+	if (position.getY() > deadH)
+	{
+		position.setY(10 * game->TILE_SIDE);
+		game->setFallen(true);
+
+		game->reloadWorld(to_string(game->getCurrentLevel()), "../assets/maps/world");
+		game->setFallen(false);
+		position.setX(20);
+		marioState = MARIO;
+		lifes--;
+
+	}
 }
 
-void Player::moveMario(bool canMoveX, bool canMoveY)
+// Movimiento
+/*void Player::moveMario(bool canMoveX, bool canMoveY)
 {
 	if (keyA == keyD) {
 		direction = Vector2D<int>(0, 0);
@@ -225,17 +318,90 @@ void Player::moveMario(bool canMoveX, bool canMoveY)
 		game->setMapOffset(0);
 		position.setX(1);
 	}
+}*/
+
+// Salto
+void Player::jump()
+{
+	if (!jumping && grounded)
+	{
+		grounded = false;
+		jumping = true;
+
+		speed.setY(-30);
+	}
 }
 
-void Player::damage()
+// Gestion colisiones externas
+void Player::manageCollisions(Collision collision)
 {
-	if (marioState == 's')
+	// si el target soy yo...
+	if (collision.target == Collision::PLAYER)
 	{
-		marioState = 'm';
+		if (collision.result == Collision::DAMAGE)
+		{
+			manageDamage();
+		}
+	}
+}
+
+// Gestion daño
+void Player::manageDamage()
+{
+	// No lo acaban de pegar
+	if (!invencible)
+	{
+		if (marioState == SUPERMARIO)
+		{
+			marioState = MARIO;
+		}
+		else
+		{
+			if (lifes > 0)
+			{
+				invencible = true;
+				lifes--;
+			}
+
+			if (lifes <= 0) isAlive = false;
+		}
+	}
+
+	// Como le acaban de pegar...
+	invencible = true;
+}
+
+// Gestion invencible (tras colision)
+void Player::manageInvencible()
+{
+	if ((invCounter < maxInvCounter) && invencible)
+	{
+		invCounter++;
 	}
 	else
 	{
-		if (lifes > 0) lifes--;
-		else isAlive = false;
+		invCounter = 0;
+		invencible = false;
 	}
 }
+
+/*void Player::finishLevel()
+{
+	if (position.getX() >= flagPosition && game->getCurrentLevel() == 1)
+	{
+		velX = 0;
+		cout << "FINAL" << endl;
+		game->setCurrentLevel(game->getCurrentLevel() + 1);
+		game->setVictory(true);
+
+		if (game->getCurrentLevel() > game->getMaxWorlds())
+		{
+			game->EndGame();
+
+		}
+		else
+		{
+			game->loadLevel(to_string(game->getCurrentLevel()), "../assets/maps/world");
+		}
+	}
+}*/

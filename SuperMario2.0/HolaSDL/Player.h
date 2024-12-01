@@ -51,6 +51,7 @@ public:
 	bool keyS = false; //Abajo
 	bool keySpace = false; //Salto
 	bool keyE = false; //Salir
+	bool keyDcha = false; //Offset mapa
 		
 	// Colisiones player
 	SDL_Rect colRect = SDL_Rect();
@@ -61,50 +62,73 @@ public:
 	int frameTimer = 0;
 	bool flipSprite = false;
 
-public:
-	//Constructora
-	Player(Game* game_, std::istream& in, double speedX_, double speedY_); // La textura tambien?
+	// Fin nivel
+	int flagPosition = 6306;
 	
-	//Destructora
-	//~Player() override;
+	// Estados
+	int marioState;
+	enum State {
+		MARIO, SUPERMARIO
+	};
 
+	Texture* textureM = nullptr;
+	Texture* textureS = nullptr;
+
+	//Constructora
+	Player(Game* game, Point2D<double> pos, Texture* t, int l, Vector2D<double> s);
+	
 	// Render
-	void render() const override;
-	// Actualizacion
+	void render() override;
+	// Actualizacion parte logica
 	void update() override;
-	// Hit (no necesario?) No implementado
-	Collision hit(SDL_Rect, bool) override;
+	// Actualizacion parte grafica
+	void updateTexture();
+	// Hit
+	Collision hit(const SDL_Rect& region, Collision::Target target) override;
+	// Clon
+	SceneObject* clone() const override;
 	// Eventos, sobre todo input   
-	void handleEvents(const SDL_Event& event);
+	void handleEvent(const SDL_Event& event) override;
 	// Efectos de colisiones
-	void damage();
+	virtual void manageCollisions(Collision c) override;
+	void manageInvencible();
+	void manageDamage();
 
 	// Animaciones
-	void updateAnims();
+	void updateAnim() override;
+
 	// Para bloquear pantalla cuando avanza
 	void updateOffset();
 
+	// Salto
+	void jump();
+
+	//Caídas
+	void checkFall();
+
+	// Movimiento
+	void moveMario(bool, bool);
+
+	// Fin nivel
+	void finishLevel();
 
 	// Getters
 	double getX() const { return position.getX(); }
 	double getY() const { return position.getY(); }
 	int getDx() const { return direction.getX(); }
 	int getDy() const { return direction.getY(); }
-	char getState() { return marioState; }
+	int getState() { return marioState; }
+	int getLifes() { return lifes; }
 
 	// Setters
 	void setX(double newX) { position.setX(newX); }
 	void setY(double newY) { position.setY(newY); }
 	void setDx(int newDx) { direction.setX(newDx); }
 	void setDy(int newDy) { direction.setY(newDy); }
-	void setState(char newState) { marioState = newState; }
+	void setState(int newState) { marioState = newState; }
+	void setLifes(int n) { lifes = n; }
+	void setGrounded(bool g) { grounded = g;}
 
-private:
-	// Movimiento
-	void moveMario(bool, bool);
-
-	//Ca das
-	bool checkFall();
 };
 
 #endif	

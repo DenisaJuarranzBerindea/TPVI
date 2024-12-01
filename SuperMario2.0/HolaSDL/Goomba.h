@@ -10,13 +10,14 @@
 #include <fstream>
 #include <string>
 #include "Collision.h"
+#include "Enemy.h"
 
 class Game;
 
 using uint = unsigned int;
 using namespace std;
 
-class Goomba
+class Goomba : public Enemy
 {
 private:
 	Texture* texture = nullptr;	// puntero a su textura

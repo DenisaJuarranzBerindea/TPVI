@@ -1,29 +1,27 @@
 #include "Block.h"
 #include "Game.h"
 
-Block::Block(Game* g, std::istream& in)
-	: game(g)
+Block::Block(Game* g, Point2D<double> position, Texture* t, char tipoL, char accionL)
+	: SceneObject(g, position, t)
 {
 	cout << "Llamando constructor block" << endl;
-	//in >> position;
-	//position = position - Point2D<double>(0, 1);
-	in >> x >> y >> tipoL;
-	y -= 1;
-	if (tipoL != 'B') in >> accionL;
-
-	// Asignamos el tipo de bloque basado en el car�cter le�do
+	setScale(2);
+	frame = 0;
+	frameTimer = 0;
+	flip = SDL_FLIP_NONE;
+	// Asignamos el tipo de bloque basado en el caracter leido
 	switch (tipoL) {
 	case 'B':
 		tipo = LADRILLO;
-		blockFrame = 5;
+		frame = 5;
 		break;
 	case '?':
 		tipo = SORPRESA;
-		blockFrame = 0;  // Comienza la animaci�n del bloque sorpresa desde el primer frame
+		frame = 0;  // Comienza la animacion del bloque sorpresa desde el primer frame
 		break;
 	case 'H':
 		tipo = OCULTO;
-		blockFrame = 4;
+		frame = 4;
 		break;
 	}
 
@@ -36,75 +34,98 @@ Block::Block(Game* g, std::istream& in)
 		accion = MONEDA;
 		break;
 	}
+	alive = true;
 
 	texture = game->getTexture(Game::BLOCK); // textura inicial del bloque
 	
 }
 
-void Block::render() const
+void Block::render()
 {
-	SDL_Rect destRect;
-
-	// tamano (son de 16*16, pero los queremos de 32*32, as� que * 2
-	destRect.w = texture->getFrameWidth() * 2;
-	destRect.h = texture->getFrameHeight() * 2;
-
-	// posicion
-	destRect.x = (x * (double)game->TILE_SIDE) - game->getMapOffset();
-	destRect.y = (y * (double)game->TILE_SIDE);
-
-	texture->renderFrame(destRect, 0, blockFrame);
+	SceneObject::render();
+	updateAnim();
 }
 
 void Block::update()
 {
 	if (tipo == SORPRESA) {
 		frameTimer++;
-		if (frameTimer >= 1050) {  // Velocidad del ciclo
+		if (frameTimer >= 5) {  // Velocidad del ciclo
 			frameTimer = 0;
-			animationFrame = (animationFrame + 1) % 3;  // Ciclo 0,1,2,3, y luego se reinicie 
+			frame = (frame + 1) % 3;  // Ciclo 0,1,2,3, y luego se reinicie 
 
-			if (animationFrame == 0) blockFrame = 1;
-			else if (animationFrame == 1) blockFrame = 2;
-			else if (animationFrame == 2) blockFrame = 0;
+			// Ciclo de caminar 2 -> 3 -> 4 -> 3
+			if (frame == 0) frame = 1;
+			else if (frame == 1) frame = 2;
+			else if (frame == 2) frame = 0;
 		}
 	}
 }
 
-Collision Block::hit(const SDL_Rect& rect, bool fromPlayer)
+Collision Block::hit(const SDL_Rect& rect, Collision::Target t)
 {
-	Collision c;
-	c.collides = false;
-	c.damages = false;
+	// Calcula la interseccion
+	SDL_Rect intersection;
+	SDL_Rect ownRect = getCollisionRect();
+	bool hasIntersection = SDL_IntersectRect(&ownRect, &rect, &intersection);
 
-	// si hay colision
-	if (SDL_HasIntersection(&rect, &colRect))
+	if (hasIntersection)
 	{
-		cout << "Colisiona con bloque" << endl;
-		c.collides = true;
-		c.damages = false;
+		Collision c{ Collision::EMPTY, Collision::OBSTACLE, intersection.w, intersection.h };
+
 		// si se origina en mario...
-		if (fromPlayer)
+		if (t == Collision::ENEMIES)
 		{
 			// si la colision es por: abj 
-			if (rect.y <= (colRect.y + colRect.h))
+			if ((rect.y) >= (colRect.y + colRect.h) - 8)
 			{
-				if (tipo == LADRILLO && (game->getMarioState() == 1))
+				if (tipo == LADRILLO && game->getMarioState() == 1)
 				{
-					c.killBrick = true;
+					cout << "ladrillo" << endl;
+					delete this;
+					setAlive(false);
 				}
 				else if (tipo == SORPRESA || tipo == OCULTO)
 				{
-					c.spawnSeta = true;
+					cout << "sorpresa" << endl;
+
+					manageSorpresa();
+
+					// seta
+					if (accion == POTENCIADOR)
+					{
+						game->createSeta(position);
+					}
+					// moneda
+					else
+					{
+						game->addPoints(200);
+					}
 				}
 			}
 		}
+
+		return c;
 	}
+
 	return c;
 }
 
-void Block::setaSpawn()
+
+
+void Block::manageSorpresa()
 {
 	setTipo(3);
-	blockFrame = 4;
+	frame = 4;
 }
+
+void Block::manageCollisions(Collision col)
+{
+
+}
+
+SceneObject* Block::clone() const
+{
+	return new Block(*this);
+}
+

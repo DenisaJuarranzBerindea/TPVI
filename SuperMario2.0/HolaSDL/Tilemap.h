@@ -13,16 +13,14 @@ class Tilemap
 {
 
 protected:
-	Game* g;
+	Game* game;
 	SDL_Rect rect;
 	vector<vector<int>> mapaV;
 	Texture* background_spritesheet;
 
 public:
-	Tilemap(const string&, Game*);
+	Tilemap(vector<int>, const string&, Game*);
 	void renderMapa();
 	void handleEvents(const SDL_Event&);
-	Collision hit(const SDL_Rect& rect, bool fromPlayer);
+	Collision hit(const SDL_Rect& rect, Collision::Target);
 };
-
-

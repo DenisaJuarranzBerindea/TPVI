@@ -3,7 +3,6 @@
 
 #include "checkML.h"
 #include <SDL.h>
-//#include "Vector2D.h"
 #include "Texture.h"
 #include "Collision.h"
 #include <istream>
@@ -11,23 +10,18 @@
 #include <fstream>
 #include <string>
 
+#include "Collision.h"
+#include "SceneObject.h"
+
 class Game;
 
 using uint = unsigned int;
 using namespace std;
 
-class Block
+class Block : public SceneObject
 {
 
 private:
-	Texture* texture = nullptr;	// puntero a su textura
-	Game* game = nullptr;		// puntero al juego
-	int blockFrame;
-	int animationFrame = 0;   // Contador para el ciclo de caminar
-	int frameTimer = 0;
-
-	//Point2D<double> position;	// posicion actual en Point2D
-	double x, y;
 
 	char tipoL;
 	int tipo;
@@ -50,29 +44,36 @@ private:
 
 	bool alive;
 
-public:
-
 	// Colisiones bloque
 	SDL_Rect colRect = SDL_Rect();
 
-	Block(Game* g, std::istream& in);
+public:
 
-	void render() const;
+	Block(Game* g, Point2D<double> p, Texture* t, char tipoL, char accionL);
 
-	void update();
+	void render() override;
 
-	Collision hit(const SDL_Rect& rect, bool fromPlayer);
+	void update() override;
+
+	Collision hit(const SDL_Rect& rect, Collision::Target t) override;
 
 	//Getters y setters
 	int getTipo() const { return tipo; }
 	bool getAlive() { return alive; }
+	Point2D<double> getPos() const { return position; }
 
 	// Setters
 	void setTipo(int t) { tipo = t; }
 	void setDead() { alive = false; }
 
 	// Auxiliar para que aparezca la seta
-	void setaSpawn();
+	void manageSorpresa();
+
+	virtual void manageCollisions(Collision col) override;
+
+	SceneObject* clone() const override;
+
+	void updateAnim() override;
 };
 
 #endif

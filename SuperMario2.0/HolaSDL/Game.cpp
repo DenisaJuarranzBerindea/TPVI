@@ -3,7 +3,10 @@
 #include <string>
 #include <iostream>
 #include <istream>
-#include "Player.h"
+
+//#include "Coin.h"
+//#include "Lift.h"
+#include "TileMap.h"
 
 using namespace std;
 
@@ -27,13 +30,21 @@ const array<TextureSpec, Game::TextureName::NUM_TEXTURES> textureSpec{
 		{"koopa.png", 4, 1},
 		{"mushroom.png", 1, 1},
 		{"blocks.png", 6, 1},
-	
+		{"coin.png", 4, 1},
+		{"lift.png", 1, 1}
 	}
 };
 
 Game::Game()
 {
 	cout << "Game constructor" << endl;
+
+	nextObject = 0;
+	maxWorlds = 3;
+	currentWorld = 1;
+	isVictory = false;
+	marioState = 0;
+	mapOffset = 0;
 
 	int winX, winY; // Posición de la ventana
 	winX = winY = SDL_WINDOWPOS_CENTERED;
@@ -64,24 +75,8 @@ Game::Game()
 
 Game::~Game()
 {
-	// Elimina los objetos del juego
-	//delete player;
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		delete blocks[i];
-	}
-	for (int i = 0; i < goombas.size(); i++)
-	{
-		delete goombas[i];
-	}
-	//for (int i = 0; i < koopas.size(); i++)
-	//{
-	//	delete koopas[i];
-	//}
-	//for (int i = 0; i < mushrooms.size(); i++)
-	//{
-	//	delete mushrooms[i];
-	//}
+	// Elimina las texturas
+	for (Texture* texture : textures) delete texture;
 
 	// Elimina las texturas
 	for (Texture* texture : textures)
@@ -97,7 +92,7 @@ Game::~Game()
 void Game::init()
 {
 	loadTextures();
-	loadMap();
+	loadLevel(to_string(currentWorld), "../assets/maps/world");
 }
 
 // Carga texturas, mapa y objetos
@@ -135,162 +130,213 @@ void Game::loadTextures()
 	cout << endl;
 }
 
-void Game::loadMap()
+void Game::loadMap(std::ifstream& mapa)
 {
-	const string map_ = "../assets/maps/world" + std::to_string(map) + ".csv";
-	cout << map_ << endl;
-	mapa = new Tilemap(map_, this);
 	cout << "Tilemap creado (fichero Game.cpp)" << endl;
 
-	ifstream file("../assets/maps/world" + std::to_string(map) + ".txt");
 	string line;
 
-	while (getline(file, line)) {
+	int i = 0;
+	while (getline(mapa, line)) {
 		stringstream lineStream(line);
+
+		// Color fondo
+		if (i == 0)
+		{
+			lineStream >> r >> g >> b;
+		}
+
+		Point2D<double> pos;
 		char tipo;
 		lineStream >> tipo;
 
 		cout << "Tipo: " << tipo << endl;
 
-		switch (tipo) {
-		case 'M': {
-			player = new Player(this, lineStream, MARIO_SPEED_X, MARIO_SPEED_Y);
-			cout << "Player creado en game.cpp, loadMap" << endl;
-			break;
+		// Mario
+		if (tipo == 'M' && !fallen)
+		{
+			int lifes;
+			cout << fallen << endl;
+			lineStream >> pos;
+
+			pos.setX(pos.getX() * TILE_SIDE);
+			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
+
+			lineStream >> lifes;
+
+			if (player == nullptr)
+			{
+				cout << "Nuevo jugador" << endl;
+				player = new Player(this, pos, getTexture(MARIO), lifes, Vector2D<double>(0, 0));
+				objectQueue.push_back(player);
+			}
 		}
-		case 'B':
-			block = new Block(this, lineStream);
-			blocks.push_back(block);
-			break;
-		case 'G':
-			goomba = new Goomba(this, lineStream);
-			goombas.push_back(goomba);
-			break;
-		case 'K':
-			break;
-		case 'H':
-			break;
-		// Add more cases as needed
-		default:
-			break;
+		// Goomba
+		/*else if (tipo == 'G')
+		{
+			lineStream >> pos;
+
+			pos.setX(pos.getX() * TILE_SIDE);
+			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
+
+			SceneObject* goomba = new Goomba(this, pos, getTexture(GOOMBA), Vector2D<double>(-7, 0));
+			objectQueue.push_back(goomba);
+		}*/
+		// Block
+		/*else if (tipo == 'B')
+		{
+			char tipoL;
+			char accionL;
+
+			lineStream >> pos;
+			pos.setX(pos.getX() * TILE_SIDE);
+			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
+
+
+			lineStream >> tipoL;
+			lineStream >> accionL;
+
+			SceneObject* block = new Block(this, pos, getTexture(BLOCK), tipoL, accionL);
+
+			objectQueue.push_back(block);
+		}*/
+		// Koopa
+		/*else if (tipo == 'K')
+		{
+			lineStream >> pos;
+			pos.setX(pos.getX() * TILE_SIDE);
+			pos.setY(pos.getY() * TILE_SIDE - (TILE_SIDE * 2));
+
+			SceneObject* koopa = new Koopa(this, pos, getTexture(KOOPA), Vector2D<int>(-7, 0));
+			objectQueue.push_back(koopa);
+		}*/
+		// Lift
+	/*	else if (tipo == 'L')
+		{
+			lineStream >> pos;
+			pos.setX(pos.getX() * TILE_SIDE);
+			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
+
+
+			Vector2D<int> speed;
+			double x = 0;
+			double y = 0;
+			lineStream >> y;
+			speed.setY(y);
+
+			SceneObject* lift = new Lift(this, pos, getTexture(LIFT), speed);
+			objectQueue.push_back(lift);
+		}*/
+		// Coin
+		//else if (tipo == 'C')
+		//{
+		//	lineStream >> pos;
+		//	pos.setX(pos.getX() * TILE_SIDE);
+		//	pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
+
+		//	Pickable* coin = new Coin(this, pos, getTexture(COIN));
+		//	objectQueue.push_back(coin);
+		//}
+		// Piranha
+		else if (tipo == 'P')
+		{
+
 		}
+
+		getline(mapa, line);
+
+		i++;
 	}
 }
 
-void Game::cargarMapa(int map_) {
-	
-	cout << "cargarMapa" << endl;
-
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		delete blocks[i];
-	}
-	for (int i = 0; i < goombas.size(); i++)
-	{
-		delete goombas[i];
-	}
-	for (Texture* texture : textures) delete texture;
-	delete mapa;
-
-	map = map_;
-
-
-	init();
-
-	player = nullptr;
-
-}
-
-Texture* Game::getTexture(TextureName name) const
+void Game::loadLevel(const string& file, const string& root)
 {
-	cout << "Textura " << name << " cargada" << " (fichero Game.cpp)\n" << endl;
-	return textures[name];
-}
+	// TILEMAP
+	std::ifstream tiles(root + file + ".csv");
+	//std::ifstream tiles("../assets/maps/world1.csv");
+	cout << root + file + ".csv" << endl;
+	// control de errores
+	if (!tiles.is_open())
+	{
+		std::cout << "Error cargando el tilemap";
+	}
 
-int Game::getMarioState()
-{
-	return player->getState(); 
+	Point2D<double> pos = Point2D<double>(0, 0);
+	tilemap = new TileMap(this, tiles, pos, getTexture(BACKGROUND));
+	objectQueue.push_back(tilemap);
+	tiles.close();
+
+	// MAPA
+	std::ifstream mapa(root + file + ".txt");
+	// control de errores
+	if (!mapa.is_open())
+	{
+		std::cout << "Error cargando el mapa";
+	}
+	loadMap(mapa);
+
+	mapa.close();
+
+	if (isVictory)
+	{
+		mapOffset = 0;
+		nextObject = 2;
+	}
 }
 
 // Loop del juego
 void Game::run()
 {
-
 	cout << "Game running" << endl;
-	// get ticks al inicio del bucle
-	startTime = SDL_GetTicks();
 
 	while (!exit)
 	{
-		// tiempo desde ultima actualizacion
-		frameTime = SDL_GetTicks() - startTime;
-		if (frameTime > TIME_BY_FRAME) {
-			update(); // actualiza todos los objetos de juego
-			startTime = SDL_GetTicks();
-		}
-		render(); // renderiza todos los objetos de juego
+		// get ticks al inicio del bucle
+		startTime = SDL_GetTicks();
 
 		handleEvents();
+		update(); // actualiza todos los objetos de juego
+		render(); // renderiza todos los objetos de juego
+
+		// Tiempo que se ha tardado en ejecutar lo anterior
+		int elapsed = SDL_GetTicks() - startTime;
+
+		// Duerme el resto de la duracion del frame
+		if (elapsed < FRAME_RATE) SDL_Delay(FRAME_RATE - elapsed);
 	}
+
+	// Al salir, se borra todo
+	deleteEntities();
 }
 
 // Update
 void Game::update()
 {
-	int map_temp = map;
-	// Actualiza los objetos del juego
-	player->update();
+	addVisibleEntities();
 
-	if (map_temp != map) {
-		cout << map_temp << map << endl;
-		return;
+	for (auto obj : gameList) {
+		obj->update();
 	}
 
-	for (int i = 0; i < goombas.size(); i++)
-	{
-		goombas[i]->update();
-	}
-
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		blocks[i]->update();
-	}
-
-	for (int i = 0; i < koopas.size(); i++)
-	{
-		//koopas[i]->update();
-	}
-	
-	//mushroom->update();
+	// si muere el player acaba el juego
+	//if (!player->getAlive()) EndGame();
 
 }
 
 // Render
-void Game::render() const
+void Game::render()
 {
+	// limpia pantalla
 	SDL_RenderClear(renderer);
 
-	// Pinta los objetos del juego
-	mapa->renderMapa();
-	player->render();
-	for (int i = 0; i < goombas.size(); i++)
-	{
-		//cout << "Render goomba" << endl;
-		goombas[i]->render();
-		//goombas[0]->printPos();
-	}
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		blocks[i]->render();
+	// Fondo azul
+	SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+
+	for (auto obj : gameList) {
+		obj->render();
 	}
 
-	//for (int i = 0; i < koopas.size(); i++)
-	//{
-	//	koopas[i]->render();
-	//}
-
-	//mushroom->render();
-
+	// presenta la escena en pantalla
 	SDL_RenderPresent(renderer);
 }
 
@@ -310,7 +356,7 @@ void Game::handleEvents()
 		// MANEJO DE EVENTOS DE OBJETOS DE JUEGO
 		else {
 			mapa->handleEvents(event);
-			player->handleEvents(event);
+			player->handleEvent(event);
 		// 	mushroom->handleEvents(event);
 		//  koopa->handleEvents(event);
 		// 
@@ -327,59 +373,21 @@ void Game::handleEvents()
 	}
 }
 
-Collision Game::checkCollision(const SDL_Rect& rect, bool fromPlayer) {
+Collision Game::checkCollisions(const SDL_Rect& rect, Collision::Target target) {
 	
 	Collision c;
 	c.collides = false;
 	c.damages = false;
 
-	// hit mapa
-	c = mapa->hit(rect, fromPlayer);
-	if (c.collides) { return c; }
-
-	// hit goombas
-	/*for (int i = 0; i < goombas.size(); i++)
+	for (auto obj : gameList)
 	{
-		c = goombas[i]->hit(rect, fromPlayer);
-		if (c.collides)
+		c = obj->hit(rect, target);
+
+		if (c.result != Collision::NONE)
 		{
-			if (!c.damages)
-			{
-				goombas[i]->killGoomba();
-			}
-			else
-			{
-				player->damage();
-			}
-
-			return c;
-		}
-	}*/
-
-	// hit blocks
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		c = blocks[i]->hit(rect, fromPlayer);
-
-		if (c.collides)
-		{
-			if (c.collides && !c.damages && c.killBrick)
-			{
-				blocks[i]->setDead();
-			}
-			else if (c.collides && c.spawnSeta)
-			{
-				//Lógica seta
-				blocks[i]->setaSpawn();
-
-				//mushroom = new Mushroom(this, blockVec[i]->getPos());
-				//setas.push_back(mushroom);
-			}
-
 			return c;
 		}
 	}
-
 	return c;
 
 }
@@ -396,5 +404,99 @@ void Game::playerLife()
 	//cout << "VIDAS RESTANTES: " <<  << endl;
 }
 
-double Game::getMapOffset() { return mapOffset; }
-void Game::setMapOffset(double par_) { mapOffset = par_; }
+void Game::addObject(SceneObject* o)
+{
+	if (nextObject == 1)
+	{
+		gameList.push_front(o);
+	}
+	else if (nextObject == 2)
+	{
+		player = o;
+		gameList.push_back(o);
+	}
+	else
+	{
+		gameList.push_back(o);
+	}
+}
+
+void Game::addVisibleEntities()
+{
+	// Borde derecho del mapa (+ una casilla)
+	const int rightThreshold = mapOffset + WIN_WIDTH + TILE_SIDE;
+
+	while (nextObject < objectQueue.size() && objectQueue[nextObject]->getPosition().getX() < rightThreshold)
+	{
+		addObject(objectQueue[nextObject++]->clone());
+	}
+}
+
+void Game::deleteEntities()
+{
+	// Si se ha perdido
+	if (exit)
+	{
+		for (SceneObject* obj : gameList)
+		{
+			delete obj;
+		}
+		for (auto obj : objectQueue)
+		{
+			delete obj;
+		}
+	}
+}
+
+void Game::reloadWorld(const string& file, const string& root)
+{
+	// todos los objetos del juego (salvo el jugador y el tilemap) se destruyen
+	for (auto obj : gameList)
+	{
+		if (obj != player && obj != tilemap)
+		{
+
+			delete obj;
+		}
+	}
+
+	// Reseteamos el offset
+	mapOffset = 0;
+	// Ya se ha cargado mario y mapa
+	nextObject = 2;
+
+	// Tilemap (csv)
+	std::ifstream tiles(root + file + ".csv");
+	//std::ifstream tiles("../assets/maps/world1.csv");
+	cout << root + file + ".csv" << endl;
+	// control de errores
+	if (!tiles.is_open())
+	{
+		std::cout << "Error cargando el tilemap";
+	}
+
+	Point2D<double> pos = Point2D<double>(0, 0);
+	tilemap = new TileMap(this, tiles, pos, getTexture(BACKGROUND));
+	gameList.push_front(tilemap);
+	tiles.close();
+
+	// Objetos del mapa (txt entidades)
+	std::ifstream mapa(root + file + ".txt");
+	// control de errores
+	if (!mapa.is_open())
+	{
+		std::cout << "Error cargando el mapa";
+	}
+	loadMap(mapa);
+
+	mapa.close();
+}
+
+//void Game::createSeta(Point2D<double> p)
+//{
+//	p.setY(p.getY() - TILE_SIDE);
+//
+//	SceneObject* seta = new Mushroom(this, p, getTexture(MUSHROOM));
+//
+//	gameList.push_back(seta);
+//}
