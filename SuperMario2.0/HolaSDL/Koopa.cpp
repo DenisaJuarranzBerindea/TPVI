@@ -1,21 +1,43 @@
+#include "Game.h"
 #include "Koopa.h"
 
-Koopa::Koopa()
+Koopa::Koopa(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s)
+	: Enemy(g, p, t, s)
 {
-
-}
-
-void Koopa::render() const
-{
-
+	frame = 0;
+	frameTimer = 0;
+	flip = SDL_FLIP_NONE;
 }
 
 void Koopa::update()
 {
+	//Hacer la logica del caparazon
+	Enemy::update();
+}
+
+void Koopa::collisionResult()
+{
 
 }
 
-void Koopa::hit(SDL_Rect* rect)
+SceneObject* Koopa::clone() const
+{
+	return new Koopa(*this);
+}
+
+void Koopa::render()
 {
 
+	Enemy::render();
+	updateAnim();
+}
+
+void Koopa::updateAnim()
+{
+	frameTimer++;
+	if (frameTimer >= 5)
+	{
+		frameTimer = 0;
+		frame = (frame + 1) % 2;
+	}
 }

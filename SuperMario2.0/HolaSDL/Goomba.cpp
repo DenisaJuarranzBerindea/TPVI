@@ -2,65 +2,45 @@
 #include "Game.h"
 #include "Block.h"
 
-Goomba::Goomba(Game* g, std::istream& in)
-	: game(g)
+Goomba::Goomba(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s)
+	: Enemy(g, p, t, s)
 {
-	cout << "Llamando constructor goomba" << endl;
-
-	//in >> position;
-	in >> x >> y;
-	y -= 1;
-
-	//direction = Vector2D<int>(0, 0);
-	dx = 0;
-	dy = 0;
-
-	texture = game->getTexture(Game::GOOMBA); // textura inicial de goomba
-
-	goombaFrame = 0;
-
-	frozen = true;
-	alive = true;
+	frame = 0;
+	frameTimer = 0;
 }
 
-void Goomba::render() const
+SceneObject* Goomba::clone() const
 {
-	SDL_Rect destRect;
-
-	// tamano (son de 16*16, pero los queremos de 32*32, as� que * 2
-	destRect.w = texture->getFrameWidth() * 2;
-	destRect.h = texture->getFrameHeight() * 2;
-
-	//// posicion
-	//destRect.x = (position.getX() * game->TILE_SIDE) - game->getMapOffset();
-	//destRect.y = (position.getY() * game->TILE_SIDE);
-	destRect.x = x * (double)(game->TILE_SIDE) - game->getMapOffset();
-	destRect.y = y * (double)(game->TILE_SIDE);
-
-	texture->renderFrame(destRect, 0, goombaFrame);
+	return new Goomba(*this);
 }
+
+void Goomba::render()
+{
+	Enemy::render();
+	updateAnim();
+}
+
 
 void Goomba::update()
 {
-	// si la pos del goomba es menor que el offset mas el ancho de la pantalla -> se activa
-	if ((x * game->TILE_SIDE) - texture->getFrameWidth() < (game->getMapOffset() + game->WIN_WIDTH)) {
-		frozen = false;
-	}
-	else frozen = true;
-
-	if ((x * game->TILE_SIDE + texture->getFrameWidth() * 2) < (game->getMapOffset())) {
-		frozen = true;
-	}
-
-	moveGoomba();
-
-	colRect.h = texture->getFrameHeight() * 2;
-	colRect.w = texture->getFrameWidth() * 2;
-	colRect.x = x * game->TILE_SIDE;
-	colRect.y = y * game->TILE_SIDE;
+	Enemy::update();
 }
 
-Collision Goomba::hit(const SDL_Rect& rect, bool fromPlayer)
+void Goomba::collisionResult()
+{
+
+}
+
+void Goomba::updateAnim()
+{
+	frameTimer++;
+	if (frameTimer >= 3) {
+		frameTimer = 0;
+		frame = (frame + 1) % 2;
+	}
+}
+
+/*Collision Goomba::hit(const SDL_Rect& rect, bool fromPlayer)
 {
 	Collision c;
 
@@ -133,7 +113,7 @@ void Goomba::moveGoomba()
 			else if (animationFrame == 1) goombaFrame = 0;
 		}
 	}
-}
+}*/
 
 void Goomba::printPos() {
 	cout << "x: " << x << ", y: " << y << endl;

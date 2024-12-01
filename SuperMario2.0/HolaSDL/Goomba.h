@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
 #include "Collision.h"
 #include "Enemy.h"
 
@@ -45,11 +46,18 @@ public:
 	// Colisiones goomba
 	SDL_Rect colRect = SDL_Rect();
 
-	Goomba(Game* g, std::istream& in);
+	Goomba(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s);
 
-	void render() const;
-	void update();
-	Collision hit(const SDL_Rect& rect, bool fromPlayer);
+	void render() override;
+	void update() override;
+
+	SceneObject* clone() const override;
+
+	virtual void collisionResult() override;
+
+	virtual void updateAnim() override;
+	
+	//Collision hit(const SDL_Rect& rect, bool fromPlayer);
 
 	void killGoomba() { alive = false; }
 

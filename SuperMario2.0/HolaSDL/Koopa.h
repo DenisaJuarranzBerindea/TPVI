@@ -10,26 +10,30 @@
 #include <fstream>
 #include <string>
 
+#include "Collision.h"
+#include "Enemy.h"
+
 class Game;
 
 using uint = unsigned int;
 using namespace std;
 
-class Koopa
+class Koopa : public Enemy
 {
 private:
-	Texture* texture = nullptr;	// puntero a su textura
-	Game* game = nullptr;		// puntero al juego
 
-	Point2D<double> position;	// posicion actual en Point2D
-	Vector2D<int> direction;	// direccion de movimiento
 
 public:
-	Koopa();
+	Koopa(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s);
 
-	void render() const;
-	void update();
-	void hit(SDL_Rect* rect);
+	void update() override;
+
+	virtual void collisionResult() override;
+	SceneObject* clone() const override;
+
+	void render() override;
+
+	virtual void updateAnim() override;
 };
 
 #endif
