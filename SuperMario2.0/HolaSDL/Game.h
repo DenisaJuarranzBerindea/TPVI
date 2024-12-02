@@ -21,13 +21,12 @@
 #include <random>
 
 #include "Texture.h"
-#include "Tilemap.h"
-//class Collision;
 #include "Vector2D.h"
 #include "Collision.h"
-class TileMap;
+#include "gameList.h"
 
 //Objetos de juego
+#include "Tilemap.h"
 #include "Player.h"
 #include "Block.h"
 #include "Goomba.h"
@@ -152,7 +151,7 @@ public:
 	// input del jugador y otros eventos
 	void handleEvents();
 	// gestionar colisiones
-	Collision checkCollisions(const SDL_Rect& rect, Collision::Target target);
+	Collision checkCollision(const SDL_Rect& rect, Collision::Target target);
 
 	// Objetos de escena
 	void deleteEntities();

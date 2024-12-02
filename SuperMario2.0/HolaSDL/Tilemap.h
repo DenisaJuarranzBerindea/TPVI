@@ -6,21 +6,31 @@
 #include <string>
 #include "Texture.h"
 #include "Collision.h"
+#include "SceneObject.h"
 
 using namespace std;
 class Game;
-class Tilemap
-{
 
-protected:
-	Game* game;
-	SDL_Rect rect;
-	vector<vector<int>> mapaV;
-	Texture* background_spritesheet;
+class Tilemap : public SceneObject
+{
+private:
+	vector<vector<int>> indices;
+	int x, y;
 
 public:
-	Tilemap(vector<int>, const string&, Game*);
-	void renderMapa();
-	void handleEvents(const SDL_Event&);
-	Collision hit(const SDL_Rect& rect, Collision::Target);
+	//TileMap();
+	TileMap(Game* g, std::istream& in, Point2D<double> p, Texture* t);
+	~TileMap();
+
+	void render() override;
+	void update() override;
+	void load(std::istream& file);
+
+	// detecta colisiones
+	Collision hit(const SDL_Rect& rect, Collision::Target t);
+
+	void manageCollisions(Collision c) override;
+	SceneObject* clone() const override;
+
+	void updateAnim() override {};
 };

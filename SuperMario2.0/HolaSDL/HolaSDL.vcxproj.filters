@@ -26,6 +26,8 @@
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="gameList.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Pickable.h" />
+    <ClInclude Include="Coin.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp">
@@ -59,6 +61,12 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Pickable.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>

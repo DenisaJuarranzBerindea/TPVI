@@ -310,3 +310,7 @@ public:
 };
 
 #endif // GAME_LIST
+
+class gameList
+{
+};

@@ -69,7 +69,7 @@ void Player::update()
 
 		// Limites
 		if (position.getX() - game->getMapOffset() >= game->WIN_WIDTH / 2
-			&& game->getMapOffset() <= MAP_MAX_OFFSET)
+			&& game->getMapOffset() <= game->MAP_MAX_OFFSET)
 		{
 			game->setMapOffset(game->getMapOffset() + speed.getX());
 		}
@@ -120,9 +120,7 @@ Collision Player::hit(const SDL_Rect& region, Collision::Target target)
 		manageDamage();
 	}
 
-	Collision col;
-	return col;
-	//return Collision->NO_COLLISION; // constante Collision{}
+	return game->NO_COLLISION; // constante Collision{}
 }
 
 // Input
@@ -244,7 +242,7 @@ void Player::updateOffset()
 
 	int screenX = position.getX() * game->TILE_SIDE - game->getMapOffset();
 
-	if (screenX > game->TILE_SIDE * game->WIN_WIDTH / 2 && game->getMapOffset() < MAP_MAX_OFFSET)
+	if (screenX > game->TILE_SIDE * game->WIN_WIDTH / 2 && game->getMapOffset() < game->MAP_MAX_OFFSET)
 	{
 		game->addMapOffset(1);
 	}
@@ -385,7 +383,7 @@ void Player::manageInvencible()
 	}
 }
 
-/*void Player::finishLevel()
+void Player::finishLevel()
 {
 	if (position.getX() >= flagPosition && game->getCurrentLevel() == 1)
 	{
@@ -404,4 +402,4 @@ void Player::manageInvencible()
 			game->loadLevel(to_string(game->getCurrentLevel()), "../assets/maps/world");
 		}
 	}
-}*/
+}

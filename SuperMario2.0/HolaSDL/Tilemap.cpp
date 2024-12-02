@@ -1,72 +1,79 @@
-#include "Tilemap.h"
-#include <iostream>
-#include <sstream>
-#include <fstream>
 #include <vector>
-#include "Game.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "Tilemap.h"
+
+class Game;
 
 using namespace std;
 
-Tilemap::Tilemap(vector<int> background, const string& fichero, Game* game_) {
-	game = game_;
+constexpr int SPEED = 10;
+constexpr int FRAME_PERIOD = 20;
 
-	//color de fondo
-	SDL_SetRenderDrawColor(game->getRenderer(), background[0], background[1], background[2], 255);
-
-	ifstream input(fichero);
-	if (!input) return;
-
-	string line;
-	while (getline(input, line)) {
-		vector<int> aux;
-		stringstream ss(line);
-		int c;
-		while (ss >> c) {
-			aux.push_back(c);
-			if (ss.peek() == ',') ss.ignore();
-		}
-		mapaV.push_back(aux);
+TileMap::TileMap(Game* g, std::istream& file, Point2D<double> p, Texture* t) : SceneObject(g, p, t)
+{
+	std::ifstream archivo("../assets/maps/world" + to_string(game->getCurrentLevel()) + ".csv");
+	if (!archivo.is_open()) {
+		std::cerr << "Error al abrir el archivo" << std::endl;
+		return;
 	}
 
-	// Debug, imprime cada elemento del mapa y su fila y columna
-	//for (size_t row = 0; row < mapaV.size(); ++row) {
-	//	for (size_t col = 0; col < mapaV[row].size(); ++col) {
-	//		cout << "(" << row << ", " << col << ") -> " << mapaV[row][col] << endl;
-	//	}
-	//	cout << endl;
-	//}
+	std::string linea;
+	while (std::getline(archivo, linea)) {
+		std::vector<int> fila;
+		std::stringstream ss(linea);
+		std::string valor;
 
-	background_spritesheet = game->getTexture(Game::TextureName::BACKGROUND);
+		while (std::getline(ss, valor, ',')) {
+			fila.push_back(std::stoi(valor));
+		}
+
+		indices.push_back(fila);
+	}
+
+	archivo.close();
 }
 
-void Tilemap::renderMapa() {
+TileMap::~TileMap()
+{
 
-	int x0 = game->getMapOffset() / game->TILE_MAP;
-	int d0 = (int)game->getMapOffset() % game->TILE_MAP;
-	//preguntar por esta linea porque no entiendo que es el TILE_MAP ni la division del offset,
-	//esta relacionado con las expresiones estaticas en game.h
+}
 
+void TileMap::render()
+{
+	// Primera columna de la matriz del mapa visible en la ventana
+	int x0 = game->getMapOffset() / game->TILE_SIDE;
+	// Anchura oculta de esa primera columna
+	int d0 = game->getMapOffset() % game->TILE_SIDE;
+
+	// tamaño del cuadro a pintarse
+	SDL_Rect rect;
 	rect.w = game->TILE_SIDE;
 	rect.h = game->TILE_SIDE;
 
-	for (int i = 0; i < game->TILE_WINDOW_WIDTH + 1; ++i) { //mas anchura de la necesaria, a proposito
-		for (int j = 0; j < game->TILE_WINDOW_HEIGHT; ++j) {
-			int indice = mapaV[j][x0 + i]; //esto es el elemento del csv
-			int fx = indice % 9; //esto es la fila del spritesheet
-			int fy = indice / 9; //esto es la columna del spritesheet
+	// Pintamos los WINDOW_WIDTH + 1 (aunque se salga) x WINDOW_HEIGHT recuadros del mapa
+	for (int i = 0; i < game->WINDOW_WIDTH + 1; ++i)
+	{
+		for (int j = 0; j < game->WINDOW_HEIGHT; ++j)
+		{
+			// indice en el conjunto de patrones de la matriz de ?ndices
+			int indice = indices[j][i + x0];
 
-			//cout << "(" << x0 + i << ", " << j << ") -> ";
-			//cout << indice;
-			//cout << ", renderizando: " << fy << ", " << fx << endl;
+			// Separa numero de fila y de columna
+			int fx = indice % 9;
+			int fy = indice / 9;
 
-			rect.x = -d0 + i * game->TILE_SIDE; //la posicion del rect a dibujar, indice por pixeles del tile
+			rect.x = -d0 + i * game->TILE_SIDE;
 			rect.y = j * game->TILE_SIDE;
 
-			if (indice == -1) fx = fy = 0;
-			background_spritesheet->renderFrame(rect, fy, fx);
+			// Usa renderFrame para pintar la tesela
+			texture->renderFrame(rect, fy, fx);
 		}
 	}
 }
+
+void TileMap::update() { }
 
 //sobra porque ya no mueves el mapa
 void Tilemap::handleEvents(const SDL_Event& event)
@@ -81,58 +88,62 @@ void Tilemap::handleEvents(const SDL_Event& event)
 
 }
 
-Collision Tilemap::hit(const SDL_Rect& rect, Collision::Target)
-{
-	Collision collision;
+Collision TileMap::hit(const SDL_Rect& rect, Collision::Target t) {
 
-	constexpr int OBSTACLE_THRESHOLD = 4; // constante
+	Collision c; // Inicializa una instancia de Collision
 
+	// Calcula las celdas del nivel que contienen las esquinas del rectángulo
 	// Celda del nivel que contiene la esquina superior izquierda del rectángulo
-	int row0 = rect.y / (Game::TILE_SIDE);
-	int col0 = rect.x / (Game::TILE_SIDE);
+	int row0 = rect.y / game->TILE_SIDE;
+	int col0 = rect.x / game->TILE_SIDE;
 
 	// Celda del nivel que contiene la esquina inferior derecha del rectángulo
-	int row1 = (rect.y + rect.h - 1) / (Game::TILE_SIDE);
-	int col1 = (rect.x + rect.w - 1) / (Game::TILE_SIDE);
+	int row1 = (rect.y + rect.h - 1) / game->TILE_SIDE;
+	int col1 = (rect.x + rect.w - 1) / game->TILE_SIDE;
 
-	//cout << "row0: " << row0 << " col0: " << col0 << " row1: " << row1 << " col1: " << col1 << endl;
+	//ajuste para que no pete
+	row0 = max(0, row0);
+	row1 = min(static_cast<int>(indices.size()) - 1, row1);
+	col0 = max(0, col0);
+	col1 = min(static_cast<int>(indices[0].size()) - 1, col1);
 
-	for (int row = row0; row <= row1; ++row) {
-		for (int col = col0; col <= col1; ++col) {
+	for (int row = row0; row <= row1; ++row)
+	{
+		for (int col = col0; col <= col1; ++col)
+		{
+			int index = indices[row][col];
 
-			// COMPROBACIONES DE JAVI
-			//if (row >= mapaV.size()) { row = mapaV.size() - 1; return collision; }
-			//if (row < 0) { row = 0; return collision; }
-			//if (col >= mapaV[0].size()) { col = mapaV[0].size() - 1; return collision; }
-			//if (col < 0) { col = 0; return collision; }
-
-			int indice = mapaV[row][col];
-
-			if (indice != -1 && indice % background_spritesheet->getNumColumns() < OBSTACLE_THRESHOLD)
+			// Verifica si hay colisión con un obstáculo 
+			if (index != -1 && index % texture->getNumColumns() < game->OBSTACLE_THRESHOLD) // ESTO CONFIRMA COLISION
 			{
-				SDL_Rect rectArreglado;
-				rectArreglado.x = rect.x / (double)Game::TILE_SIDE;
-				rectArreglado.y = rect.y / (double)Game::TILE_SIDE;
-				rectArreglado.w = rect.w;
-				rectArreglado.h = rect.h;
+				//cout << "col";
+				SDL_Rect auxRect{
+					col * game->TILE_SIDE,
+					row * game->TILE_SIDE,
+					game->TILE_SIDE,
+					game->TILE_SIDE
+				};
 
-				SDL_Rect obstacleRect;
-				Vector2D<float> dif(col, row);
-				obstacleRect.x = dif.getX();
-				obstacleRect.y = dif.getY();
-				obstacleRect.w = Game::TILE_SIDE;
-				obstacleRect.h = Game::TILE_SIDE;
-
-				SDL_Rect intersection;
-				SDL_IntersectRect(&rectArreglado, &obstacleRect, &intersection);
-
-				collision.horizontal = intersection.w / (double)Game::TILE_SIDE;
-				collision.vertical = intersection.h / (double)Game::TILE_SIDE;
-				collision.result = collision.OBSTACLE;
-
-				return collision;
+				// Calculamos la interseccion
+				if (SDL_IntersectRect(&rect, &auxRect, &c.intersectionRect))
+				{
+					c.result = Collision::OBSTACLE; // el resultado sera obstacle porque el tilemap no hace damage
+					c.horizontal = c.intersectionRect.w;
+					c.vertical = c.intersectionRect.h;
+					return c;
+				}
 			}
 		}
 	}
-	return collision;
+
+	return c; // Retorna la instancia sin colisión si no encontró obstáculos
+}
+
+void TileMap::manageCollisions(Collision c)
+{
+}
+
+SceneObject* TileMap::clone() const
+{
+	return new TileMap(*this);
 }

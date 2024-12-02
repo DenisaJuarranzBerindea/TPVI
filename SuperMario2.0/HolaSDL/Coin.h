@@ -1,5 +1,5 @@
-#ifndef MUSHROOM_H
-#define MUSHROOM_H
+#ifndef COIN_H
+#define COIN_H
 
 #include "checkML.h"
 #include <SDL.h>
@@ -17,25 +17,22 @@ class Game;
 using uint = unsigned int;
 using namespace std;
 
-class Mushroom : public Pickable
+class Coin : public Pickable
 {
-private:
-	int moveDelay = 5;
-
 public:
-	Mushroom(Game* g, Point2D<double> p, Texture* t);
+	Coin(Game* g, Point2D<double> p, Texture* t);
 
 	void render() override;
 
 	void update() override;
-
-	void moveSeta();
 
 	void triggerAction() override;
 
 	SceneObject* clone() const override;
 
 	void updateAnim() override;
+private:
+	int coinFrame;
 };
 
 #endif

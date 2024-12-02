@@ -37,7 +37,7 @@ private:
 	bool flipSprite = false;
 	int marioFrame = 0;
 
-	//double deadH = 14 * 32;
+	double deadH = 15 * 32; //Altura desde la que es muerto (15 * TILE_SIDE, pero no me deja meter el game)
 	double bgSpeed = 1.0;
 	double velX;
 

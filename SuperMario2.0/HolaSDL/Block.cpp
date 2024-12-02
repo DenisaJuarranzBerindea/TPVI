@@ -108,7 +108,7 @@ Collision Block::hit(const SDL_Rect& rect, Collision::Target t)
 		return c;
 	}
 
-	return c;
+	return game->NO_COLLISION;
 }
 
 

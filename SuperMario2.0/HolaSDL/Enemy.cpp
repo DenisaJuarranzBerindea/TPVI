@@ -10,14 +10,14 @@ Enemy::Enemy(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s)
 void Enemy::update()
 {
 	// Acelra la velocidad con la gravedad
-	if (speed.getY() < SPEED_LIMIT)
-		speed = speed + Vector2D<double>(0, GRAVITY);
+	if (speed.getY() < game->SPEED_LIMIT)
+		speed = speed + Vector2D<double>(0, game->GRAVITY);
 
 	// Velocidad en este ciclo (no siempre avanza lateralmente)
 	Vector2D<double> realSpeed = speed;
 
 	if (moveDelay-- == 0)
-		moveDelay = MOVE_PERIOD;
+		moveDelay = game->MOVE_PERIOD;
 	else
 		realSpeed.setX(0);
 
@@ -68,7 +68,7 @@ Collision Enemy::hit(const SDL_Rect& rect, Collision::Target t)
 		return c;
 	}
 
-	return c;
+	return game->NO_COLLISION;
 }
 
 void Enemy::collisionResult()

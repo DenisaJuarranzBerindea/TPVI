@@ -4,7 +4,7 @@
 #include <iostream>
 #include <istream>
 
-//#include "Coin.h"
+#include "Coin.h"
 //#include "Lift.h"
 #include "TileMap.h"
 
@@ -172,7 +172,7 @@ void Game::loadMap(std::ifstream& mapa)
 			}
 		}
 		// Goomba
-		/*else if (tipo == 'G')
+		else if (tipo == 'G')
 		{
 			lineStream >> pos;
 
@@ -181,9 +181,9 @@ void Game::loadMap(std::ifstream& mapa)
 
 			SceneObject* goomba = new Goomba(this, pos, getTexture(GOOMBA), Vector2D<double>(-7, 0));
 			objectQueue.push_back(goomba);
-		}*/
+		}
 		// Block
-		/*else if (tipo == 'B')
+		else if (tipo == 'B')
 		{
 			char tipoL;
 			char accionL;
@@ -199,19 +199,19 @@ void Game::loadMap(std::ifstream& mapa)
 			SceneObject* block = new Block(this, pos, getTexture(BLOCK), tipoL, accionL);
 
 			objectQueue.push_back(block);
-		}*/
+		}
 		// Koopa
-		/*else if (tipo == 'K')
+		else if (tipo == 'K')
 		{
 			lineStream >> pos;
 			pos.setX(pos.getX() * TILE_SIDE);
 			pos.setY(pos.getY() * TILE_SIDE - (TILE_SIDE * 2));
 
-			SceneObject* koopa = new Koopa(this, pos, getTexture(KOOPA), Vector2D<int>(-7, 0));
+			SceneObject* koopa = new Koopa(this, pos, getTexture(KOOPA), Vector2D<double>(-7, 0));
 			objectQueue.push_back(koopa);
-		}*/
+		}
 		// Lift
-	/*	else if (tipo == 'L')
+		/*else if (tipo == 'L')
 		{
 			lineStream >> pos;
 			pos.setX(pos.getX() * TILE_SIDE);
@@ -228,15 +228,15 @@ void Game::loadMap(std::ifstream& mapa)
 			objectQueue.push_back(lift);
 		}*/
 		// Coin
-		//else if (tipo == 'C')
-		//{
-		//	lineStream >> pos;
-		//	pos.setX(pos.getX() * TILE_SIDE);
-		//	pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
+		else if (tipo == 'C')
+		{
+			lineStream >> pos;
+			pos.setX(pos.getX() * TILE_SIDE);
+			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
 
-		//	Pickable* coin = new Coin(this, pos, getTexture(COIN));
-		//	objectQueue.push_back(coin);
-		//}
+			Pickable* coin = new Coin(this, pos, getTexture(COIN));
+			objectQueue.push_back(coin);
+		}
 		// Piranha
 		else if (tipo == 'P')
 		{
@@ -373,7 +373,7 @@ void Game::handleEvents()
 	}
 }
 
-Collision Game::checkCollisions(const SDL_Rect& rect, Collision::Target target) {
+Collision Game::checkCollision(const SDL_Rect& rect, Collision::Target target) {
 	
 	Collision c;
 	c.collides = false;
@@ -492,11 +492,11 @@ void Game::reloadWorld(const string& file, const string& root)
 	mapa.close();
 }
 
-//void Game::createSeta(Point2D<double> p)
-//{
-//	p.setY(p.getY() - TILE_SIDE);
-//
-//	SceneObject* seta = new Mushroom(this, p, getTexture(MUSHROOM));
-//
-//	gameList.push_back(seta);
-//}
+void Game::createSeta(Point2D<double> p)
+{
+	p.setY(p.getY() - TILE_SIDE);
+
+	SceneObject* seta = new Mushroom(this, p, getTexture(MUSHROOM));
+
+	gameList.push_back(seta);
+}
