@@ -4,9 +4,15 @@
 #include <iostream>
 #include <istream>
 
+#include "Tilemap.h"
+#include "Player.h"
+#include "Block.h"
+#include "Goomba.h"
+#include "Mushroom.h"
+#include "Koopa.h"
+
 #include "Coin.h"
 //#include "Lift.h"
-#include "TileMap.h"
 
 using namespace std;
 
@@ -179,7 +185,7 @@ void Game::loadMap(std::ifstream& mapa)
 			pos.setX(pos.getX() * TILE_SIDE);
 			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
 
-			SceneObject* goomba = new Goomba(this, pos, getTexture(GOOMBA), Vector2D<double>(-7, 0));
+			goomba = new Goomba(this, pos, getTexture(GOOMBA), Vector2D<double>(-7, 0));
 			objectQueue.push_back(goomba);
 		}
 		// Block
@@ -196,7 +202,7 @@ void Game::loadMap(std::ifstream& mapa)
 			lineStream >> tipoL;
 			lineStream >> accionL;
 
-			SceneObject* block = new Block(this, pos, getTexture(BLOCK), tipoL, accionL);
+			block = new Block(this, pos, getTexture(BLOCK), tipoL, accionL);
 
 			objectQueue.push_back(block);
 		}
@@ -207,7 +213,7 @@ void Game::loadMap(std::ifstream& mapa)
 			pos.setX(pos.getX() * TILE_SIDE);
 			pos.setY(pos.getY() * TILE_SIDE - (TILE_SIDE * 2));
 
-			SceneObject* koopa = new Koopa(this, pos, getTexture(KOOPA), Vector2D<double>(-7, 0));
+			koopa = new Koopa(this, pos, getTexture(KOOPA), Vector2D<double>(-7, 0));
 			objectQueue.push_back(koopa);
 		}
 		// Lift
@@ -355,7 +361,6 @@ void Game::handleEvents()
 
 		// MANEJO DE EVENTOS DE OBJETOS DE JUEGO
 		else {
-			mapa->handleEvents(event);
 			player->handleEvent(event);
 		// 	mushroom->handleEvents(event);
 		//  koopa->handleEvents(event);
@@ -500,3 +505,7 @@ void Game::createSeta(Point2D<double> p)
 
 	gameList.push_back(seta);
 }
+
+
+double Game::getMapOffset() { return mapOffset; }
+void Game::setMapOffset(double par_) { mapOffset = par_; }

@@ -12,34 +12,26 @@ using namespace std;
 class Player : public SceneObject
 {
 
-private:
-	Texture* texture;	
-
+	private:
 	// Gestión de vidas
 	int maxLifes = 3;
 	int lifes;
-	bool immune;
-	bool isAlive = true;
 	// Invencibilidad
 	int invCounter = 0;
 	int maxInvCounter = 5;
 	bool invencible = false;
 
 	// Gestión de movimiento
-	Vector2D<int> direction;	
-	double fallSpeed = 0.01;
-	bool grounded, jumping;
+	const double X_SPEED = 0.01;
+	const double Y_SPEED = 0.015;
+	bool canMove = true;
+	bool grounded = false;
+	bool jumping = false;
 	bool isFalling = true;
 	int maxHeight;
 
-	// Animación
-	int walkFrame;
-	bool flipSprite = false;
-	int marioFrame = 0;
-
-	double deadH = 15 * 32; //Altura desde la que es muerto (15 * TILE_SIDE, pero no me deja meter el game)
+	double deadH = 15 * Game::TILE_SIDE; //Altura desde la que es muerto (15 * TILE_SIDE, pero no me deja meter el game)
 	double bgSpeed = 1.0;
-	double velX;
 
 	char marioState; // m(mario), s(supermario)
 
@@ -51,42 +43,34 @@ public:
 	bool keyS = false; //Abajo
 	bool keySpace = false; //Salto
 	bool keyE = false; //Salir
-	bool keyDcha = false; //Offset mapa
 		
 	// Colisiones player
-	SDL_Rect colRect = SDL_Rect();
+	SDL_Rect colRect;
 	Collision collisionMario;
-
-	// Animacion
-	int animationFrame = 0;   // Contador para el ciclo de caminar
-	int frameTimer = 0;
-	bool flipSprite = false;
 
 	// Fin nivel
 	int flagPosition = 6306;
 	
 	// Estados
-	int marioState;
 	enum State {
 		MARIO, SUPERMARIO
 	};
+	int marioState = State::MARIO;
 
 	Texture* textureM = nullptr;
 	Texture* textureS = nullptr;
 
 	//Constructora
-	Player(Game* game, Point2D<double> pos, Texture* t, int l, Vector2D<double> s);
-	
+	Player(Game* game_, std::istream& in);
+
 	// Render
-	void render() override;
+	void render() const override;
 	// Actualizacion parte logica
 	void update() override;
 	// Actualizacion parte grafica
 	void updateTexture();
 	// Hit
-	Collision hit(const SDL_Rect& region, Collision::Target target) override;
-	// Clon
-	SceneObject* clone() const override;
+	Collision hit(SDL_Rect, Collision::Target) override;
 	// Eventos, sobre todo input   
 	void handleEvent(const SDL_Event& event) override;
 	// Efectos de colisiones
@@ -106,25 +90,18 @@ public:
 	//Caídas
 	void checkFall();
 
-	// Movimiento
-	void moveMario(bool, bool);
-
 	// Fin nivel
 	void finishLevel();
 
 	// Getters
 	double getX() const { return position.getX(); }
 	double getY() const { return position.getY(); }
-	int getDx() const { return direction.getX(); }
-	int getDy() const { return direction.getY(); }
 	int getState() { return marioState; }
 	int getLifes() { return lifes; }
 
 	// Setters
 	void setX(double newX) { position.setX(newX); }
 	void setY(double newY) { position.setY(newY); }
-	void setDx(int newDx) { direction.setX(newDx); }
-	void setDy(int newDy) { direction.setY(newDy); }
 	void setState(int newState) { marioState = newState; }
 	void setLifes(int n) { lifes = n; }
 	void setGrounded(bool g) { grounded = g;}

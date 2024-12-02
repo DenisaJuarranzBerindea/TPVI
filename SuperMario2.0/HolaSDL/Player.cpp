@@ -2,38 +2,31 @@
 #include "Game.h"
 
 // Constructora
-Player::Player(Game* g, Point2D<double> p, Texture* t, int l, Vector2D<double> s)
-	: SceneObject(g, p, t, s), lifes(l)
+Player::Player(Game* game_, std::istream& in)
 {
+	game = game_;
+
+	cout << "Llamando constructor player" << endl;
+	double tempX, tempY;
+	in >> tempX >> tempY >> lifes;
+	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien a mario
+	speed = Vector2D<double>(X_SPEED, Y_SPEED);
+
+	textureM = game->getTexture(Game::TextureName::MARIO);		// textura inicial de mario
+	textureS = game->getTexture(Game::TextureName::SUPERMARIO);	// textura supermario
+
 	cout << "Player creado" << endl;
-
-	lifes = 3;
-	canMove = true;
-	velX = 2.5;
-	grounded = false;
-	jumping = false;
-
-	walkFrame = 0;
-	flipSprite = true;
-	flip = SDL_FLIP_NONE;
-
-	marioState = MARIO;
-	textureM = game->getTexture(Game::MARIO);		// textura inicial de mario
-	textureS = game->getTexture(Game::SUPERMARIO);	// textura supermario
-
-	invencible = false;
 }
 
-// Clon
-SceneObject* Player::clone() const
+void Player::render() const
 {
-	return new Player(*this);
-}
+	SDL_Rect destRect = getCollisionRect();
 
-// Render 
-void Player::render()
-{
-	SceneObject::render();
+	// Usa el flip segun la direccion
+	SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+
+	texture->renderFrame(destRect, 0, marioFrame, 0.0, nullptr, flip);
+
 	updateAnim();
 }
 
@@ -44,6 +37,7 @@ void Player::update()
 	if (speed.getY() < game->SPEED_LIMIT)
 		speed = speed + Vector2D<double>(0, game->GRAVITY);
 
+	Collision c;
 	// Movimiento sin colisiones
 	if (canMove)
 		c = tryToMove(speed, Collision::ENEMIES);
@@ -51,7 +45,7 @@ void Player::update()
 		c = tryToMove({ 0, speed.getY() }, Collision::ENEMIES);
 
 	// Colisión vertical
-	if (c.vertical)
+	if (c.vertical > 0)
 	{
 		if (speed.getY() > 0)
 		{
@@ -84,6 +78,8 @@ void Player::update()
 		if (position.getX() - game->getMapOffset() < game->TILE_SIDE) canMove = false;
 	}
 
+	manageInvencible();
+
 	updateTexture();
 
 	checkFall();
@@ -109,8 +105,9 @@ void Player::updateTexture()
 }
 
 // Comprueba colisiones y las maneja
-Collision Player::hit(const SDL_Rect& region, Collision::Target target)  
+Collision Player::hit(SDL_Rect region, Collision::Target target)  
 {
+	Collision c;
 	// Comprueba si hay colision
 	SDL_Rect colRect = getCollisionRect();
 
@@ -120,7 +117,7 @@ Collision Player::hit(const SDL_Rect& region, Collision::Target target)
 		manageDamage();
 	}
 
-	return game->NO_COLLISION; // constante Collision{}
+	return c; // constante Collision{}
 }
 
 // Input
@@ -135,13 +132,13 @@ void Player::handleEvent(const SDL_Event& event)
 		// Izqd (A)
 		if (key == SDL_SCANCODE_A)
 		{
-			speed.setX(-velX);
+			speed.setX(-X_SPEED);
 			keyA = true;
 		}
 		// Dcha (D)
 		else if (key == SDL_SCANCODE_D)
 		{
-			speed.setX(velX);
+			speed.setX(X_SPEED);
 			keyD = true;
 		}
 		// Abajo (S)
@@ -206,7 +203,7 @@ void Player::updateAnim()
 		{
 			frameTimer = 0;
 
-			int cycleLength = immune ? 4 : 5;
+			int cycleLength = invencible ? 4 : 5;
 			walkFrame = (walkFrame + 1) % cycleLength;
 
 			// Asigna el frame correspondiente
@@ -219,7 +216,7 @@ void Player::updateAnim()
 			else if (walkFrame == 2) {
 				frame = 4;
 			}
-			else if (immune && walkFrame == 3) {
+			else if (invencible && walkFrame == 3) {
 				frame = -1;
 			}
 		}
@@ -237,14 +234,14 @@ void Player::updateAnim()
 // Mapa
 void Player::updateOffset()
 {
+	// No se sale por la izquierda
+	if ((position.getX()) * game->TILE_SIDE <= game->getMapOffset() && speed.getX() < 0) position.setX(game->getMapOffset() / (double)game->TILE_SIDE);
+
 	// si llega a la mitad actual en pantalla en ese momento
 	// actualiza el offset
-
-	int screenX = position.getX() * game->TILE_SIDE - game->getMapOffset();
-
-	if (screenX > game->TILE_SIDE * game->WIN_WIDTH / 2 && game->getMapOffset() < game->MAP_MAX_OFFSET)
-	{
-		game->addMapOffset(1);
+	int mitad = game->getMapOffset() + game->WIN_WIDTH / 2.;
+	if (position.getX() * game->TILE_SIDE > mitad) {
+		game->setMapOffset(position.getX() * (double)game->TILE_SIDE - game->WIN_WIDTH / 2.);
 	}
 }
 
@@ -266,58 +263,6 @@ void Player::checkFall()
 	}
 }
 
-// Movimiento
-/*void Player::moveMario(bool canMoveX, bool canMoveY)
-{
-	if (keyA == keyD) {
-		direction = Vector2D<int>(0, 0);
-	}
-
-	else if (keyA != keyD) {
-		//cout << dx << " " << x << endl;
-		if (keyA) {
-			direction = Vector2D<int>(-1, 0);
-			flipSprite = true;  // Activa el flip al mover a la izquierda
-		}
-		else if (keyD) {
-			direction = Vector2D<int>(1, 0);
-			flipSprite = false; // Desactiva el flip al mover a la derecha
-		}
-	}
-
-	if (canMoveX) position.setX(position.getX() + (direction.getX() * speed.getX()));
-	
-	if (keySpace && grounded && !isFalling) {
-		direction.setY(-1);
-		maxHeight = position.getY() - 4.;
-		grounded = false;
-		//cout << 'S' << endl;
-	}
-	else direction.setY(0);
-
-	if (position.getY() > maxHeight && keySpace && !isFalling && (canMoveY || direction.getY() == -1)) { //saltando dirY es -1
-		position.setY(position.getY() - speed.getY());
-	}
-	//si se puede mover y su direccion es para abajo, caer
-	else if (canMoveY && (position.getY() <= maxHeight || direction.getY() == 0)) { //cayendo dirY es 0
-		isFalling = true;
-		position.setY(position.getY() + fallSpeed);
-	}
-
-	//if (position.getX() < 0) position.setX(0);
-	if (position.getX() * (double)game->TILE_SIDE - game->getMapOffset() <= 0 && direction.getX() == -1) position.setX(game->getMapOffset() / (double)game->TILE_SIDE);
-	if (position.getX() * (double)game->TILE_SIDE + game->WIN_WIDTH >= 220 * game->TILE_SIDE && direction.getX() == 1) {
-		game->map += 1;
-		game->cargarMapa(game->map);
-	}
-
-	if (position.getY() > 14.5) {
-		position.setY(10);
-		game->setMapOffset(0);
-		position.setX(1);
-	}
-}*/
-
 // Salto
 void Player::jump()
 {
@@ -326,20 +271,16 @@ void Player::jump()
 		grounded = false;
 		jumping = true;
 
-		speed.setY(-30);
+		speed.setY(-Y_SPEED);
 	}
 }
 
 // Gestion colisiones externas
 void Player::manageCollisions(Collision collision)
 {
-	// si el target soy yo...
-	if (collision.target == Collision::PLAYER)
+	if (collision.result == Collision::DAMAGE)
 	{
-		if (collision.result == Collision::DAMAGE)
-		{
-			manageDamage();
-		}
+		manageDamage();
 	}
 }
 
@@ -387,7 +328,6 @@ void Player::finishLevel()
 {
 	if (position.getX() >= flagPosition && game->getCurrentLevel() == 1)
 	{
-		velX = 0;
 		cout << "FINAL" << endl;
 		game->setCurrentLevel(game->getCurrentLevel() + 1);
 		game->setVictory(true);

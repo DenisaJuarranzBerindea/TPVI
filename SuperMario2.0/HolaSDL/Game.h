@@ -26,12 +26,12 @@
 #include "gameList.h"
 
 //Objetos de juego
-#include "Tilemap.h"
-#include "Player.h"
-#include "Block.h"
-#include "Goomba.h"
-#include "Mushroom.h"
-#include "Koopa.h"
+class Tilemap;
+class Player;
+class Block;
+class Goomba;
+class Mushroom;
+class Koopa;
 
 using uint = unsigned int;
 
@@ -49,7 +49,6 @@ public:
 	// Constante globales
 	const int FRAME_RATE = 50;
 	const int TIME_BY_FRAME = 1 / FRAME_RATE;
-	const double MARIO_SPEED = 0.01;
 	const double GOOMBA_SPEED = 0.01;
 	const double KOOPA_SPEED = 0.01;
 	const double MUSHROOM_SPEED = 0.01;
@@ -66,7 +65,6 @@ public:
 	static constexpr uint OBSTACLE_THRESHOLD = 4; // constante
 	static constexpr double MAP_MAX_OFFSET = 6100;
 	static constexpr uint GRAVITY = 3;
-	const Collision NO_COLLISION = { Collision::EMPTY, Collision::NONE, 0, 0 };
 
 	// declaración de los elementos de juego
 	Tilemap* mapa = nullptr;
@@ -180,10 +178,7 @@ public:
 	void setCurrentLevel(int c) { currentWorld = c; }
 	void setFallen(bool f) { fallen = f; }
 	void setMarioState(int s) { marioState = s; }
-	void setMapOffset(int newOffset) { mapOffset = newOffset; }
 	void setVictory(bool v) { isVictory = v; }
-
-	void addMapOffset(int newOffset) { mapOffset += newOffset; }
 	void addPoints(int p)
 	{
 		points += p;

@@ -11,7 +11,7 @@ using namespace std;
 constexpr int SPEED = 10;
 constexpr int FRAME_PERIOD = 20;
 
-TileMap::TileMap(Game* g, std::istream& file, Point2D<double> p, Texture* t) : SceneObject(g, p, t)
+Tilemap::Tilemap(Game* g, std::istream& file, Point2D<double> p, Texture* t) : SceneObject(g, p, t)
 {
 	std::ifstream archivo("../assets/maps/world" + to_string(game->getCurrentLevel()) + ".csv");
 	if (!archivo.is_open()) {
@@ -35,12 +35,12 @@ TileMap::TileMap(Game* g, std::istream& file, Point2D<double> p, Texture* t) : S
 	archivo.close();
 }
 
-TileMap::~TileMap()
+Tilemap::~Tilemap()
 {
 
 }
 
-void TileMap::render()
+void Tilemap::render()
 {
 	// Primera columna de la matriz del mapa visible en la ventana
 	int x0 = game->getMapOffset() / game->TILE_SIDE;
@@ -73,7 +73,7 @@ void TileMap::render()
 	}
 }
 
-void TileMap::update() { }
+void Tilemap::update() { }
 
 //sobra porque ya no mueves el mapa
 void Tilemap::handleEvents(const SDL_Event& event)
@@ -88,7 +88,7 @@ void Tilemap::handleEvents(const SDL_Event& event)
 
 }
 
-Collision TileMap::hit(const SDL_Rect& rect, Collision::Target t) {
+Collision Tilemap::hit(const SDL_Rect& rect, Collision::Target t) {
 
 	Collision c; // Inicializa una instancia de Collision
 
@@ -139,11 +139,11 @@ Collision TileMap::hit(const SDL_Rect& rect, Collision::Target t) {
 	return c; // Retorna la instancia sin colisión si no encontró obstáculos
 }
 
-void TileMap::manageCollisions(Collision c)
+void Tilemap::manageCollisions(Collision c)
 {
 }
 
-SceneObject* TileMap::clone() const
+SceneObject* Tilemap::clone() const
 {
 	return new TileMap(*this);
 }

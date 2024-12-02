@@ -68,11 +68,11 @@ Collision Block::hit(const SDL_Rect& rect, Collision::Target t)
 	SDL_Rect intersection;
 	SDL_Rect ownRect = getCollisionRect();
 	bool hasIntersection = SDL_IntersectRect(&ownRect, &rect, &intersection);
-
+	Collision c;
 	if (hasIntersection)
 	{
-		Collision c{ Collision::EMPTY, Collision::OBSTACLE, intersection.w, intersection.h };
-
+		c.result = Collision::OBSTACLE;
+		c.intersection = intersection;
 		// si se origina en mario...
 		if (t == Collision::ENEMIES)
 		{
@@ -108,7 +108,7 @@ Collision Block::hit(const SDL_Rect& rect, Collision::Target t)
 		return c;
 	}
 
-	return game->NO_COLLISION;
+	return c;
 }
 
 
@@ -123,9 +123,3 @@ void Block::manageCollisions(Collision col)
 {
 
 }
-
-SceneObject* Block::clone() const
-{
-	return new Block(*this);
-}
-

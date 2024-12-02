@@ -1,21 +1,21 @@
 #include "SceneObject.h"
 #include "Game.h"
 
-SceneObject::SceneObject(Game* g, Point2D<double> pos, Texture* t)
-    : GameObject(g), position(pos), texture(t), scale(1), isAlive(true), colRect(),
-    frame(0), frameTimer(0)
-{
-    width = g->TILE_SIDE;
-    height = g->TILE_SIDE;
-}
-
-SceneObject::SceneObject(Game* g, Point2D<double> pos, Texture* texture, Vector2D<double> speed)
-    : GameObject(g), position(pos), texture(texture), scale(1), isAlive(true), colRect(),
-    speed(speed), frame(0), frameTimer(0)
-{
-    width = g->TILE_SIDE;
-    height = g->TILE_SIDE;
-}
+//SceneObject::SceneObject(Game* g, Point2D<double> pos, Texture* t)
+//    : GameObject(g), position(pos), texture(t), scale(1), isAlive(true), colRect(),
+//    frame(0), frameTimer(0)
+//{
+//    width = g->TILE_SIDE;
+//    height = g->TILE_SIDE;
+//}
+//
+//SceneObject::SceneObject(Game* g, Point2D<double> pos, Texture* texture, Vector2D<double> speed)
+//    : GameObject(g), position(pos), texture(texture), scale(1), isAlive(true), colRect(),
+//    speed(speed), frame(0), frameTimer(0)
+//{
+//    width = g->TILE_SIDE;
+//    height = g->TILE_SIDE;
+//}
 
 // Constructora de copia
 SceneObject::SceneObject(const SceneObject& s)
@@ -76,24 +76,6 @@ SceneObject& SceneObject::operator=(const SceneObject& s)
         canMove = s.canMove;
     }
     return *this;
-}
-
-void SceneObject::render()
-{
-    colRect.x = position.getX() - game->getMapOffset();
-    colRect.h = texture->getFrameHeight() * scale;
-    colRect.w = texture->getFrameWidth() * scale;
-
-    if (texture == game->getTexture(Game::SUPERMARIO))
-    {
-        colRect.y = position.getY() - game->TILE_SIDE / 2;
-    }
-    else
-    {
-        colRect.y = position.getY();
-    }
-
-    texture->renderFrame(colRect, 0, frame, 0, nullptr, flip);
 }
 
 SDL_Rect SceneObject::getCollisionRect() const
