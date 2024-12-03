@@ -54,16 +54,14 @@ void Player::update()
 
 		//Distinguir si es por arriba o por abajo para cambiar grounded/canJump
 		if (move.vertical < 0) { //por abajo
-			cout << "Colision por abajo" << endl;
 			canJump = true;
 			grounded = true;
 		}
 		else if (move.vertical > 0) { //por arriba
-			cout << "Colision por arriba" << endl;
 			canJump = false;
 		}
 	}
-	position.setY(position.getY() /* + speed.getY()*/);
+	position.setY(position.getY()/* + speed.getY()*/);
 
 	if (move.horizontal) {
 		cout << "Colision horizontal" << endl;

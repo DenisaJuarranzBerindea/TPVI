@@ -21,7 +21,6 @@ class Goomba : public SceneObject
 {
 private:
 	Texture* texture = nullptr;	// puntero a su textura
-	Game* game = nullptr;		// puntero al juego
 
 	const double X_SPEED = 0.01;
 	const double Y_SPEED = 0.015;
@@ -42,7 +41,7 @@ public:
 	// Colisiones goomba
 	SDL_Rect colRect = SDL_Rect();
 
-	Goomba(Game* g, std::istream& in);
+	Goomba(Game* game_, std::istream& in);
 
 	void render() const override;
 	void update() override;

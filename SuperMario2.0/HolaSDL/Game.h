@@ -26,15 +26,20 @@ struct Collision;
 
 //Objetos de juego
 class Player;
-#include "Block.h"
+class Block;
 class Goomba;
 #include "Mushroom.h"
 #include "Koopa.h"
+
+#include "gameList.h"
 
 using uint = unsigned int;
 
 class Game
 {
+public:
+	GameList<SceneObject*> gameList;
+protected:
 	// Ventana de la SDL (se destruirá en el destructor)
 	SDL_Window* window = nullptr;
 	// Renderizador de la SDL (para dibujar)
@@ -87,7 +92,7 @@ public:
 	std::array<Texture*, NUM_TEXTURES> textures = {};
 
 	// Interruptor de mapa
-	int map = 1;
+	int map = 2;
 	bool cambioMapa = false;
 
 	//En tiles

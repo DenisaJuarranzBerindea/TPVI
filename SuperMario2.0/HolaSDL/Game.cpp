@@ -6,6 +6,7 @@
 
 #include "Player.h"
 #include "Goomba.h"
+#include "Block.h"
 
 using namespace std;
 
@@ -67,15 +68,18 @@ Game::Game()
 Game::~Game()
 {
 	// Elimina los objetos del juego
+	delete mapa;
+	for (SceneObject* obj : gameList)
+		delete obj;
 	//delete player;
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		delete blocks[i];
-	}
-	for (int i = 0; i < goombas.size(); i++)
-	{
-		delete goombas[i];
-	}
+	//for (int i = 0; i < blocks.size(); i++)
+	//{
+	//	delete blocks[i];
+	//}
+	//for (int i = 0; i < goombas.size(); i++)
+	//{
+	//	delete goombas[i];
+	//}
 	//for (int i = 0; i < koopas.size(); i++)
 	//{
 	//	delete koopas[i];
@@ -86,8 +90,8 @@ Game::~Game()
 	//}
 
 	// Elimina las texturas
-	for (Texture* texture : textures)
-		delete texture;
+	//for (Texture* texture : textures)
+	//	delete texture;
 
 	// Desactiva la SDL
 	SDL_DestroyRenderer(renderer);
@@ -152,6 +156,7 @@ void Game::loadMap()
 	for (int& c : background) bgLineStream >> c;
 
 	mapa = new Tilemap(background, map_, this);
+	//gameList.push_back(mapa);
 	cout << "Tilemap creado (fichero Game.cpp)" << endl;
 	//mapa
 
@@ -165,16 +170,17 @@ void Game::loadMap()
 		switch (tipo) {
 		case 'M': {
 			player = new Player(this, lineStream);
+			gameList.push_back(player);
 			cout << "Player creado en game.cpp, loadMap" << endl;
 			break;
 		}
 		case 'B':
-			//block = new Block(this, lineStream);
-			//blocks.push_back(block);
+			block = new Block(this, lineStream);
+			gameList.push_back(block);
 			break;
 		case 'G':
-			//goomba = new Goomba(this, lineStream);
-			//goombas.push_back(goomba);
+			goomba = new Goomba(this, lineStream);
+			gameList.push_back(goomba);
 			break;
 		case 'K':
 			break;
@@ -194,19 +200,14 @@ void Game::cargarMapa(int map_) {
 
 	cout << "cargarMapa" << endl;
 
-	for (int i = 0; i < blocks.size(); i++)
+	for (SceneObject* obj : gameList)
 	{
-		delete blocks[i];
-	}
-	for (int i = 0; i < goombas.size(); i++)
-	{
-		delete goombas[i];
+		delete obj;
 	}
 	
-	for (Texture* texture : textures) delete texture;
+	//for (Texture* texture : textures) delete texture;
 	
 	delete mapa;
-
 	map = map_;
 
 	player = nullptr;
@@ -254,22 +255,9 @@ void Game::run()
 // Update
 void Game::update()
 {
-	// Actualiza los objetos del juego
-	player->update();
-
-	for (int i = 0; i < goombas.size(); i++)
+	for (SceneObject* obj : gameList)
 	{
-		goombas[i]->update();
-	}
-
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		blocks[i]->update();
-	}
-
-	for (int i = 0; i < koopas.size(); i++)
-	{
-		//koopas[i]->update();
+		obj->update();
 	}
 	
 	//mushroom->update();
@@ -283,22 +271,11 @@ void Game::render() const
 
 	// Pinta los objetos del juego
 	mapa->renderMapa();
-	player->render();
-	for (int i = 0; i < goombas.size(); i++)
-	{
-		//cout << "Render goomba" << endl;
-		goombas[i]->render();
-		//goombas[0]->printPos();
-	}
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		blocks[i]->render();
-	}
 
-	//for (int i = 0; i < koopas.size(); i++)
-	//{
-	//	koopas[i]->render();
-	//}
+	for (SceneObject* obj : gameList)
+	{
+		obj->render();
+	}
 
 	//mushroom->render();
 

@@ -19,10 +19,14 @@ protected:
 	SDL_Rect rectCol;
 public:
 	virtual Collision hit(SDL_Rect, Collision::Target) = 0;
+	virtual void handleEvents(const SDL_Event& event) = 0;
 protected:
 	Collision tryToMove(const Vector2D<double>& speed, Collision::Target target, Texture* texture);
 	SDL_Rect getCollisionRect() const;
 	SDL_Rect getRenderRect() const;
+
+	GameList<SceneObject>::anchor anchor;
+	void setListAnchor(GameList<SceneObject>::anchor&& anchor);
 };
 
 #endif

@@ -151,7 +151,6 @@ Collision Tilemap::hit(const SDL_Rect& rect, Collision::Target)
 
 				SDL_Rect intersection;
 				SDL_IntersectRect(&rectArreglado, &obstacleRect, &intersection);
-
 				collision.horizontal = intersection.w / (double) Game::TILE_SIDE;
 				collision.vertical = intersection.h / (double) Game::TILE_SIDE;
 				collision.result = collision.OBSTACLE;

@@ -1,6 +1,8 @@
 #ifndef Block_h
 #define Block_h
 
+#include "SceneObject.h"
+
 #include "checkML.h"
 #include <SDL.h>
 //#include "Vector2D.h"
@@ -16,7 +18,7 @@ class Game;
 using uint = unsigned int;
 using namespace std;
 
-class Block
+class Block : public SceneObject
 {
 
 private:
@@ -57,11 +59,9 @@ public:
 
 	Block(Game* g, std::istream& in);
 
-	void render() const;
-
-	void update();
-
-	Collision hit(const SDL_Rect& rect, bool fromPlayer);
+	void render() const override;
+	void update() override;
+	Collision hit(SDL_Rect, Collision::Target) override;
 
 	//Getters y setters
 	int getTipo() const { return tipo; }

@@ -1,9 +1,10 @@
 #include "Block.h"
 #include "Game.h"
 
-Block::Block(Game* g, std::istream& in)
-	: game(g)
+Block::Block(Game* game_, std::istream& in)
 {
+	game = game_;
+
 	cout << "Llamando constructor block" << endl;
 	//in >> position;
 	//position = position - Point2D<double>(0, 1);
@@ -72,56 +73,57 @@ void Block::update()
 }
 
 //HIT BLOCK HERENCIA RUBEN
-//Collision
-//Block::hit(const SDL_Rect& region, Collision::Target target)
-//{
-//	// Calcula la intersección
-//	SDL_Rect intersection;
-//	SDL_Rect ownRect = getCollisionRect();
-//	bool hasIntersection = SDL_IntersectRect(&ownRect, &region, &intersection);
-//
-//	if (hasIntersection) {
-//		Collision collision{ Collision::OBSTACLE, intersection.w, intersection.h };
-//
-//		// [...] Manejo del efecto del bloque
-//
-//		return collision;
-//	}
-//
-//	return NO_COLLISION;
-//}
-
-Collision Block::hit(const SDL_Rect& rect, bool fromPlayer)
+Collision
+Block::hit(SDL_Rect region, Collision::Target target)
 {
 	Collision c;
-	c.collides = false;
-	c.damages = false;
+	// Calcula la intersección
+	SDL_Rect intersection;
+	SDL_Rect ownRect = getCollisionRect();
+	bool hasIntersection = SDL_IntersectRect(&ownRect, &region, &intersection);
 
-	// si hay colision
-	if (SDL_HasIntersection(&rect, &colRect))
-	{
-		cout << "Colisiona con bloque" << endl;
-		c.collides = true;
-		c.damages = false;
-		// si se origina en mario...
-		if (fromPlayer)
-		{
-			// si la colision es por: abj 
-			if (rect.y <= (colRect.y + colRect.h))
-			{
-				if (tipo == LADRILLO && (game->getMarioState() == 1))
-				{
-					c.killBrick = true;
-				}
-				else if (tipo == SORPRESA || tipo == OCULTO)
-				{
-					c.spawnSeta = true;
-				}
-			}
-		}
+	if (hasIntersection) {
+		Collision collision{ Collision::OBSTACLE, intersection.w, intersection.h };
+
+		// [...] Manejo del efecto del bloque
+
+		return collision;
 	}
+
 	return c;
 }
+
+//Collision Block::hit(SDL_Rect rect, Collision::Target target)
+//{
+//	Collision c;
+//	c.collides = false;
+//	c.damages = false;
+//
+//	// si hay colision
+//	if (SDL_HasIntersection(&rect, &colRect))
+//	{
+//		cout << "Colisiona con bloque" << endl;
+//		c.collides = true;
+//		c.damages = false;
+//		// si se origina en mario...
+//		if (target)
+//		{
+//			// si la colision es por: abj 
+//			if (rect.y <= (colRect.y + colRect.h))
+//			{
+//				if (tipo == LADRILLO && (game->getMarioState() == 1))
+//				{
+//					c.killBrick = true;
+//				}
+//				else if (tipo == SORPRESA || tipo == OCULTO)
+//				{
+//					c.spawnSeta = true;
+//				}
+//			}
+//		}
+//	}
+//	return c;
+//}
 
 void Block::setaSpawn()
 {

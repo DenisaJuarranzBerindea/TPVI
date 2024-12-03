@@ -116,7 +116,7 @@ void Goomba::moveGoomba()
 		//cout << (x * game->TILE_SIDE + texture->getFrameWidth() * 2) - (game->getMapOffset()) << endl;
 		
 		speed.setX(-X_SPEED);
-		speed.setY(-Y_SPEED);
+		speed.setY(Y_SPEED);
 	}
 
 	//Animaciones

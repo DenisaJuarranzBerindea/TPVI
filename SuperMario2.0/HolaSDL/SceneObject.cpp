@@ -1,6 +1,9 @@
 #include "SceneObject.h"
 #include "Game.h"
 
+void SceneObject::setListAnchor(GameList<SceneObject>::anchor&& anchor) {
+	this->anchor = std::move(anchor);
+}
 
 //SDL_Rect SceneObject::getRenderRect() const
 //{
