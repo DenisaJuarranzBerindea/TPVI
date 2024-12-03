@@ -22,23 +22,26 @@
 
 #include "Texture.h"
 #include "Tilemap.h"
+#include "Mushroom.h"
+#include "Koopa.h"
+
+#include "gameList.h"
 struct Collision;
 
 //Objetos de juego
 class Player;
 class Block;
 class Goomba;
-#include "Mushroom.h"
-#include "Koopa.h"
 
-#include "gameList.h"
+class SceneObject;
 
 using uint = unsigned int;
+
 
 class Game
 {
 public:
-	GameList<SceneObject*> gameList;
+	GameList<SceneObject> gameList;
 protected:
 	// Ventana de la SDL (se destruirá en el destructor)
 	SDL_Window* window = nullptr;

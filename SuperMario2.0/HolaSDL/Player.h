@@ -71,7 +71,7 @@ public:
 	// Hit (no necesario?) No implementado
 	Collision hit(SDL_Rect, Collision::Target) override;
 	// Eventos, sobre todo input   
-	void handleEvents(const SDL_Event& event) override;
+	void handleEvents(const SDL_Event& event);
 	// Efectos de colisiones
 	void damage();
 

@@ -137,3 +137,7 @@ void Goomba::moveGoomba()
 void Goomba::printPos() {
 	cout << "x: " << position.getX() << ", y: " << position.getY() << endl;
 }
+
+Goomba::~Goomba() {
+
+}

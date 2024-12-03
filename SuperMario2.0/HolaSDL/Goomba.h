@@ -20,7 +20,6 @@ using namespace std;
 class Goomba : public SceneObject
 {
 private:
-	Texture* texture = nullptr;	// puntero a su textura
 
 	const double X_SPEED = 0.01;
 	const double Y_SPEED = 0.015;
@@ -46,6 +45,7 @@ public:
 	void render() const override;
 	void update() override;
 	Collision hit(SDL_Rect, Collision::Target) override;
+	~Goomba();
 
 	void killGoomba() { alive = false; }
 

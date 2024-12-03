@@ -22,8 +22,6 @@ class Block : public SceneObject
 {
 
 private:
-	Texture* texture = nullptr;	// puntero a su textura
-	Game* game = nullptr;		// puntero al juego
 	int blockFrame;
 	int animationFrame = 0;   // Contador para el ciclo de caminar
 	int frameTimer = 0;
@@ -62,10 +60,11 @@ public:
 	void render() const override;
 	void update() override;
 	Collision hit(SDL_Rect, Collision::Target) override;
+	~Block() override;
 
 	//Getters y setters
 	int getTipo() const { return tipo; }
-	bool getAlive() { return alive; }
+	bool getAlive() const { return alive; }
 
 	// Setters
 	void setTipo(int t) { tipo = t; }

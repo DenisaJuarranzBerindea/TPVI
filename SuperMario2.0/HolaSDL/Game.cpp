@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "SceneObject.h"
 
 #include <string>
 #include <iostream>
@@ -272,7 +273,7 @@ void Game::render() const
 	// Pinta los objetos del juego
 	mapa->renderMapa();
 
-	for (SceneObject* obj : gameList)
+	for (const SceneObject* obj : gameList)
 	{
 		obj->render();
 	}

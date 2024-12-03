@@ -130,3 +130,8 @@ void Block::setaSpawn()
 	setTipo(3);
 	blockFrame = 4;
 }
+
+Block::~Block()
+{
+
+}
