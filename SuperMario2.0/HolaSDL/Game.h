@@ -55,9 +55,9 @@ protected:
 	const int FRAME_RATE = 50;
 	const int TIME_BY_FRAME = 1 / FRAME_RATE;
 
-	const double GOOMBA_SPEED = 0.01;
-	const double KOOPA_SPEED = 0.01;
-	const double MUSHROOM_SPEED = 0.01;
+	static constexpr double GOOMBA_SPEED = 0.01;
+	static constexpr double KOOPA_SPEED = 0.01;
+	static constexpr double MUSHROOM_SPEED = 0.01;
 
 	// Interruptor para terminar el juego
 	bool exit;
@@ -67,13 +67,10 @@ protected:
 	// declaración de los elementos de juego
 	Tilemap* mapa = nullptr;
 	Player* player = nullptr;
-	Goomba* goomba = nullptr;
-	Koopa* koopa = nullptr;
-	Block* block = nullptr;
 
-	vector<Goomba*> goombas;
-	vector<Block*> blocks;
-	vector<Koopa*> koopas;
+	//vector<Goomba*> goombas;
+	//vector<Block*> blocks;
+	//vector<Koopa*> koopas;
 
 	int startTime, frameTime;	// manejo de tiempo en run
 
@@ -95,7 +92,7 @@ public:
 	std::array<Texture*, NUM_TEXTURES> textures = {};
 
 	// Interruptor de mapa
-	int map = 2;
+	int map = 1;
 	bool cambioMapa = false;
 
 	//En tiles

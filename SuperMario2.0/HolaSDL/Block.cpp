@@ -1,7 +1,7 @@
 #include "Block.h"
 #include "Game.h"
 
-Block::Block(Game* game_, std::istream& in)
+Block::Block(Game* game_, std::istream& in) : SceneObject()
 {
 	game = game_;
 

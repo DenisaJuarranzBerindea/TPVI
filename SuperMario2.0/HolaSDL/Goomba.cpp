@@ -1,7 +1,7 @@
 #include "Goomba.h"
 #include "Game.h"
 
-Goomba::Goomba(Game* game_, std::istream& in)
+Goomba::Goomba(Game* game_, std::istream& in) : SceneObject()
 {
 
 	game = game_;

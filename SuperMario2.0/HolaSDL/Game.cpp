@@ -170,18 +170,15 @@ void Game::loadMap()
 
 		switch (tipo) {
 		case 'M': {
-			player = new Player(this, lineStream);
-			gameList.push_back(player);
+			gameList.push_back(new Player(this, lineStream));
 			cout << "Player creado en game.cpp, loadMap" << endl;
 			break;
 		}
 		case 'B':
-			block = new Block(this, lineStream);
-			gameList.push_back(block);
+			gameList.push_back(new Block(this, lineStream));
 			break;
 		case 'G':
-			goomba = new Goomba(this, lineStream);
-			gameList.push_back(goomba);
+			//gameList.push_back(new Goomba(this, lineStream));
 			break;
 		case 'K':
 			break;
@@ -328,23 +325,23 @@ Collision Game::checkCollision(const SDL_Rect& rect, Collision::Target target) {
 	
 	if (target == Collision::Target::PLAYER) {
 		// hit goombas
-		for (int i = 0; i < goombas.size(); i++)
-		{
-			c = goombas[i]->hit(rect, target);
-			if (c.collides)
-			{
-				if (!c.damages)
-				{
-					goombas[i]->killGoomba();
-				}
-				else
-				{
-					player->damage();
-				}
+		//for (int i = 0; i < goombas.size(); i++)
+		//{
+		//	c = goombas[i]->hit(rect, target);
+		//	if (c.collides)
+		//	{
+		//		if (!c.damages)
+		//		{
+		//			goombas[i]->killGoomba();
+		//		}
+		//		else
+		//		{
+		//			player->damage();
+		//		}
 
-				return c;
-			}
-		}
+		//		return c;
+		//	}
+		//}
 		/*
 		// hit blocks
 		for (int i = 0; i < blocks.size(); i++)

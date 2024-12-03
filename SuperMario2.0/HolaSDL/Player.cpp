@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "Game.h"
 
-Player::Player(Game* game_, std::istream& in)
+Player::Player(Game* game_, std::istream& in) : SceneObject()
 {
 
 	game = game_;
@@ -167,8 +167,8 @@ void Player::updateOffset()
 	// Agujeros
 	if (position.getY() > 14.5) {
 		position.setY(2);
-		//game->setMapOffset(0); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//position.setX(1);
+		game->setMapOffset(0); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		position.setX(1);
 	}
 
 	// Cambio de mapa

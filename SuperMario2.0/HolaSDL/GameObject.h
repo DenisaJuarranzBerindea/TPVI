@@ -15,7 +15,8 @@ public:
 	virtual ~GameObject() = default;
 
 protected:
-	Game* game = nullptr;
+	Game* game;
+	GameObject(Game* g) : game(g) {};
 
 };
 
