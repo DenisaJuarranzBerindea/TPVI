@@ -17,35 +17,6 @@ SceneObject::SceneObject(Game* g, Point2D<double> pos, Texture* texture, Vector2
     height = g->TILE_SIDE;
 }
 
-// Constructora de copia
-SceneObject::SceneObject(const SceneObject& s)
-{
-    game = s.game;
-
-    // Movimiento
-    position = s.position;
-    speed = s.speed;
-    direction = s.direction;
-
-    // Representación gráfica
-    width = s.width;
-    height = s.height;
-    texture = s.texture;
-    flip = s.flip;
-    flipSprite = s.flipSprite;
-    scale = s.scale;
-    colRect = s.colRect;
-
-    // Animación
-    frame = s.frame;
-    frameTimer = s.frameTimer;
-
-    // Lógica interna
-    isAlive = s.isAlive;
-    c = s.c;
-    canMove = s.canMove;
-}
-
 SceneObject& SceneObject::operator=(const SceneObject& s)
 {
     if (this != &s)

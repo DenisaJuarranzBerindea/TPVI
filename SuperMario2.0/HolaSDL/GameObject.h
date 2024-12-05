@@ -15,10 +15,10 @@ protected:
 
 public:
 	//Estos métodos no tienen implementación, se overridean desde cada GO.
-	GameObject(Game* g);
+	GameObject(Game* g) : game(g) {};
 
 	// Destructora virtual
-	virtual ~GameObject();
+	virtual ~GameObject() {};
 
 	// Render
 	virtual void render() = 0;

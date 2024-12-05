@@ -22,7 +22,7 @@ class Mushroom : public Pickable
 {
 private:
 
-	int moveDelay = 5;
+	double moveDelay = 5;
 
 public:
 	Mushroom(Game* g, Point2D<double> p, Texture* t);

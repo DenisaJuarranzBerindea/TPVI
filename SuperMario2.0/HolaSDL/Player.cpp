@@ -229,7 +229,7 @@ void Player::updateOffset()
 	// si llega a la mitad actual en pantalla en ese momento
 	// actualiza el offset
 
-	int screenX = position.getX() * game->TILE_SIDE - game->getMapOffset();
+	double screenX = position.getX() * game->TILE_SIDE - game->getMapOffset();
 
 	if (screenX > game->TILE_SIDE * game->WIN_WIDTH / 2 && game->getMapOffset() < game->MAP_MAX_OFFSET)
 	{

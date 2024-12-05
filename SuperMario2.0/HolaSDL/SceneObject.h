@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gameList.h"
 #include "GameObject.h"
 #include "Collision.h"
 
@@ -31,7 +32,6 @@ protected:
 	bool isAlive = true;
 	Collision c;
 	bool canMove;
-	GameList<SceneObject>::anchor _anchor; // Ancla a la lista de objetos del juego
 
 public:
 
@@ -43,8 +43,6 @@ public:
 	// Destructora Virtual
 	virtual ~SceneObject() {}
 
-	// Constructora copia
-	SceneObject(const SceneObject& s);
 	// Asignación por copia
 	SceneObject& operator=(const SceneObject& s); 
 
@@ -69,6 +67,7 @@ public:
 
 	Point2D<double> getPosition() { return position; }
 
+	GameList<SceneObject>::anchor _anchor; // Ancla a la lista de objetos del juego
 	void setListAnchor(GameList<SceneObject>::anchor&& anchor) {
 		_anchor = std::move(anchor);
 	}

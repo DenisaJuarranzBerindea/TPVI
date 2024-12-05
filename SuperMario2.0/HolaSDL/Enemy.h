@@ -26,7 +26,7 @@ private:
 	bool alive;
 
 	bool grounded;
-	int moveDelay = 5;
+	double moveDelay = 5;
 
 public:
 	// Constructora
