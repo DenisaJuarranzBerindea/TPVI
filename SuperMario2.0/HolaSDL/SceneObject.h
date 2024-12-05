@@ -31,7 +31,7 @@ protected:
 	bool isAlive = true;
 	Collision c;
 	bool canMove;
-	//GameList<SceneObject>::anchor _anchor; // Ancla a la lista de objetos del juego
+	GameList<SceneObject>::anchor _anchor; // Ancla a la lista de objetos del juego
 
 public:
 
@@ -69,9 +69,9 @@ public:
 
 	Point2D<double> getPosition() { return position; }
 
-	//void setListAnchor(GameList<SceneObject>::anchor&& anchor) {
-		//_anchor = std::move(anchor);
-	//}
+	void setListAnchor(GameList<SceneObject>::anchor&& anchor) {
+		_anchor = std::move(anchor);
+	}
 protected:
 	Collision tryToMove(const Vector2D<double>& speed, Collision::Target target);
 

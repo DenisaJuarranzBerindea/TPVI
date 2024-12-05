@@ -211,7 +211,7 @@ void Game::loadMap(std::ifstream& mapa)
 			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
 
 
-			Vector2D<int> speed;
+			Vector2D<double> speed;
 			double x = 0;
 			double y = 0;
 			lineStream >> y;
