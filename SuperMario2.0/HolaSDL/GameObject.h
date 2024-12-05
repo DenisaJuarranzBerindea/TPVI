@@ -10,9 +10,14 @@ class Game;
 
 class GameObject
 {
+protected:
+	Game* game;
+
 public:
 	//Estos métodos no tienen implementación, se overridean desde cada GO.
-	GameObject(Game* game);
+	GameObject(Game* g) {
+		game = g;
+	};
 
 	// Destructora virtual
 	virtual ~GameObject();
@@ -22,10 +27,6 @@ public:
 
 	// Update
 	virtual void update() = 0;
-
-protected:
-	Game* game;
-
 };
 
 #endif

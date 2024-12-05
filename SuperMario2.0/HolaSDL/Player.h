@@ -42,7 +42,7 @@ private:
 	double bgSpeed = 1.0;
 	int velX = 1;
 
-	char marioState; // m(mario), s(supermario)
+	//char marioState; // m(mario), s(supermario)
 
 	// INPUT
 	bool keyA = false; //Izqd
@@ -62,7 +62,7 @@ public:
 
 	void updateTexture();
 
-	Collision hit(const SDL_Rect& region, Collision::Target target) override;
+	virtual Collision hit(SDL_Rect region, Collision::Target target) override;
 	virtual void manageCollisions(Collision c) override;
 	void manageInvencible();
 	void manageDamage();

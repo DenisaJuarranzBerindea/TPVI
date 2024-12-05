@@ -55,7 +55,7 @@ public:
 
 	void update() override;
 
-	Collision hit(const SDL_Rect& rect, Collision::Target t) override;
+	Collision hit(SDL_Rect rect, Collision::Target t) override;
 
 	//Getters y setters
 	int getTipo() const { return tipo; }

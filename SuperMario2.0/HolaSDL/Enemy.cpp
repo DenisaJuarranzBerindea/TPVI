@@ -33,7 +33,7 @@ void Enemy::update()
 	// SceneObject::update(); // si hiciera falta
 }
 
-Collision Enemy::hit(const SDL_Rect& rect, Collision::Target t)
+Collision Enemy::hit(SDL_Rect rect, Collision::Target t)
 {
 	// Calcula la interseccion
 	SDL_Rect intersection;

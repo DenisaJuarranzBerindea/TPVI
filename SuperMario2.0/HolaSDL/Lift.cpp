@@ -28,7 +28,7 @@ void Lift::updateAnim()
 //	return new Lift(*this);
 //}
 
-Collision Lift::hit(const SDL_Rect& rect, Collision::Target t)
+Collision Lift::hit(SDL_Rect rect, Collision::Target t)
 {
 	return Collision();
 }

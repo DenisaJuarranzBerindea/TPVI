@@ -1,4 +1,6 @@
-#pragma once
+#ifndef TILEMAP_H
+#define TILEMAP_H
+
 #include "checkML.h"
 
 #include <vector>
@@ -27,10 +29,12 @@ public:
 	void load(std::istream& file);
 
 	// detecta colisiones
-	Collision hit(const SDL_Rect& rect, Collision::Target t);
+	virtual Collision hit(SDL_Rect rect, Collision::Target t);
 
 	void manageCollisions(Collision c) override;
 	//SceneObject* clone() const override;
 
 	void updateAnim() override {};
 };
+
+#endif	

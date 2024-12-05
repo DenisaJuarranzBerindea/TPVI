@@ -27,7 +27,7 @@ public:
 	virtual void update() override;
 	virtual void updateAnim() override;
 
-	virtual Collision hit(const SDL_Rect& rect, Collision::Target t) override;
+	virtual Collision hit(SDL_Rect rect, Collision::Target t) override;
 
 	void manageCollisions(Collision c) override;
 

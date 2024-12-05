@@ -49,7 +49,7 @@ void Tilemap::render()
 	// Primera columna de la matriz del mapa visible en la ventana
 	int x0 = game->getMapOffset() / game->TILE_SIDE;
 	// Anchura oculta de esa primera columna
-	int d0 = game->getMapOffset() % game->TILE_SIDE;
+	int d0 = int(game->getMapOffset() % game->TILE_SIDE);
 
 	// tamaño del cuadro a pintarse
 	SDL_Rect rect;
@@ -57,15 +57,15 @@ void Tilemap::render()
 	rect.h = game->TILE_SIDE;
 
 	// Pintamos los WINDOW_WIDTH + 1 (aunque se salga) x WINDOW_HEIGHT recuadros del mapa
-	for (int i = 0; i < game->WINDOW_WIDTH + 1; ++i)
+	for (int i = 0; i < game->WIN_WIDTH + 1; ++i)
 	{
-		for (int j = 0; j < game->WINDOW_HEIGHT; ++j)
+		for (int j = 0; j < game->WIN_HEIGHT; ++j)
 		{
 			// indice en el conjunto de patrones de la matriz de ?ndices
 			int indice = indices[j][i + x0];
 
 			// Separa numero de fila y de columna
-			int fx = indice % 9;
+			int fx = double(indice % 9);
 			int fy = indice / 9;
 
 			rect.x = -d0 + i * game->TILE_SIDE;
@@ -79,7 +79,7 @@ void Tilemap::render()
 
 void Tilemap::update() { }
 
-Collision Tilemap::hit(const SDL_Rect& rect, Collision::Target t) {
+Collision Tilemap::hit(SDL_Rect rect, Collision::Target t) {
 
 	Collision c; // Inicializa una instancia de Collision
 
@@ -116,11 +116,11 @@ Collision Tilemap::hit(const SDL_Rect& rect, Collision::Target t) {
 				};
 
 				// Calculamos la interseccion
-				if (SDL_IntersectRect(&rect, &colRect, &c.intersectionRect))
+				if (SDL_IntersectRect(&rect, &colRect, &c.intersection))
 				{
 					c.result = Collision::OBSTACLE; // el resultado sera obstacle porque el tilemap no hace damage
-					c.horizontal = c.intersectionRect.w;
-					c.vertical = c.intersectionRect.h;
+					c.horizontal = c.intersection.w;
+					c.vertical = c.intersection.h;
 					return c;
 				}
 			}

@@ -33,7 +33,7 @@ public:
 
 	//SceneObject* clone() const override;
 
-	Collision hit(const SDL_Rect& rect, Collision::Target t) override;
+	Collision hit(SDL_Rect rect, Collision::Target t) override;
 
 	void manageCollisions(Collision c) override;
 

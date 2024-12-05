@@ -204,7 +204,7 @@ void Game::loadMap(std::ifstream& mapa)
 			objectQueue.push_back(new Koopa(this, pos, getTexture(KOOPA), Vector2D<double>(-7, 0)));
 		}
 		// Lift
-		/*else if (tipo == 'L')
+		else if (tipo == 'L')
 		{
 			lineStream >> pos;
 			pos.setX(pos.getX() * TILE_SIDE);
@@ -217,9 +217,9 @@ void Game::loadMap(std::ifstream& mapa)
 			lineStream >> y;
 			speed.setY(y);
 
-			SceneObject* lift = new Lift(this, pos, getTexture(LIFT), speed);
-			objectQueue.push_back(lift);
-		}*/
+			//SceneObject* lift = new Lift(this, pos, getTexture(LIFT), speed);
+			objectQueue.push_back(new Lift(this, pos, getTexture(LIFT), speed));
+		}
 		// Coin
 		else if (tipo == 'C')
 		{
@@ -475,5 +475,3 @@ void Game::createSeta(Point2D<double> p)
 	gameList.push_back(new Mushroom(this, p, getTexture(MUSHROOM)));
 }
 
-double Game::getMapOffset() { return mapOffset; }
-void Game::setMapOffset(double par_) { mapOffset = par_; }

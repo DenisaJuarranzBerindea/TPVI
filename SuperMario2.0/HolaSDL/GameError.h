@@ -1,5 +1,5 @@
 #ifndef GAMEERROR_H
-#define IGAMEERROR_H
+#define GAMEERROR_H
 
 #include <stdexcept>
 

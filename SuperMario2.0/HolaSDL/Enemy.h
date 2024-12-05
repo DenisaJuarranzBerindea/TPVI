@@ -36,7 +36,7 @@ public:
 	virtual void update() override;
 
 	// Hit
-	virtual Collision hit(const SDL_Rect& rect, Collision::Target t) override;
+	virtual Collision hit(SDL_Rect rect, Collision::Target t) override;
 
 	//virtual Collision tryToMove(Vector2D<int>& v, Collision::Target t) override;
 

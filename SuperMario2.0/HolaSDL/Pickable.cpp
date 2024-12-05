@@ -9,7 +9,7 @@ Pickable::Pickable(Game* g, Point2D<double> p, Texture* t)
 
 void Pickable::update() {}
 
-Collision Pickable::hit(const SDL_Rect& rect, Collision::Target t)
+Collision Pickable::hit(SDL_Rect rect, Collision::Target t)
 {
 	// Comprueba si hay colision
 	SDL_Rect colRect = getCollisionRect();

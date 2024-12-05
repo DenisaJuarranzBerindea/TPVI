@@ -51,7 +51,7 @@ void Block::update()
 
 }
 
-Collision Block::hit(const SDL_Rect& rect, Collision::Target t)
+Collision Block::hit(SDL_Rect rect, Collision::Target t)
 {
 	// Calcula la interseccion
 	SDL_Rect intersection;

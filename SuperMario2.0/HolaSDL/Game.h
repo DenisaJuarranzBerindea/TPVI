@@ -37,6 +37,8 @@ class Tilemap;
 #include "Goomba.h"
 #include "Mushroom.h"
 #include "Koopa.h"
+#include "Lift.h"
+#include "Coin.h"
 
 using uint = unsigned int;
 
@@ -86,7 +88,7 @@ private:
 	// Interruptor para terminar el juego
 	bool exit;
 	// Desplazamiento del mapa
-	double mapOffset = 0;
+	int mapOffset = 0;
 
 	// declaración de los elementos de juego
 	SceneObject* player;
@@ -164,7 +166,7 @@ public:
 	void loadLevel(const string& file, const string& root);
 
 	// getters
-	double getMapOffset() { return mapOffset; };
+	int getMapOffset() { return mapOffset; };
 	Texture* getTexture(TextureName name) const { return textures[name]; };
 	SDL_Renderer* getRenderer() { return renderer; }
 	bool GetExit() { return exit; }
@@ -174,7 +176,6 @@ public:
 	bool getFallen() const { return fallen; }
 
 	// setters
-	void setMapOffset(double);
 	void EndGame();
 	void setExit(bool aux) { exit = aux; }
 	void setCurrentLevel(int c) { currentWorld = c; }

@@ -18,7 +18,7 @@ class Game;
 using uint = unsigned int;
 using namespace std;
 
-class Mushroom
+class Mushroom : public Pickable
 {
 private:
 
@@ -35,7 +35,7 @@ public:
 
 	void triggerAction() override;
 
-	SceneObject* clone() const override;
+	//SceneObject* clone() const override;
 
 };
 

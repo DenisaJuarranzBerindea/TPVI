@@ -95,7 +95,7 @@ void Player::updateTexture()
 }
 
 // Comprueba colisiones y las maneja
-Collision Player::hit(const SDL_Rect& region, Collision::Target target)
+Collision Player::hit(SDL_Rect region, Collision::Target target)
 {
 	Collision c;
 	// Comprueba si hay colision
