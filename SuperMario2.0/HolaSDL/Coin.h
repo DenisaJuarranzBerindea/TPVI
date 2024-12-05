@@ -10,7 +10,7 @@
 #include <fstream>
 #include <string>
 #include "Collision.h"
-#include "Pickable.h"
+//#include "Pickable.h"
 
 class Game;
 
@@ -24,6 +24,7 @@ public:
 
 	void render() override;
 
+	// -- update --
 	void update() override;
 
 	void triggerAction() override;

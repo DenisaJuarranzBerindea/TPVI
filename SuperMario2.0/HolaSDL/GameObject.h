@@ -12,8 +12,6 @@ class GameObject
 {
 public:
 	//Estos métodos no tienen implementación, se overridean desde cada GO.
-	GameObject();
-
 	GameObject(Game* game);
 
 	// Destructora virtual

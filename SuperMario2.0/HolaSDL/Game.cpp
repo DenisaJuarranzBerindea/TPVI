@@ -5,14 +5,7 @@
 #include <istream>
 
 #include "Tilemap.h"
-#include "Player.h"
-#include "Block.h"
-#include "Goomba.h"
-#include "Mushroom.h"
-#include "Koopa.h"
 
-#include "Coin.h"
-//#include "Lift.h"
 
 using namespace std;
 
@@ -83,10 +76,6 @@ Game::~Game()
 {
 	// Elimina las texturas
 	for (Texture* texture : textures) delete texture;
-
-	// Elimina las texturas
-	for (Texture* texture : textures)
-		delete texture;
 
 	// Desactiva la SDL
 	SDL_DestroyRenderer(renderer);
@@ -173,11 +162,11 @@ void Game::loadMap(std::ifstream& mapa)
 			if (player == nullptr)
 			{
 				cout << "Nuevo jugador" << endl;
-				player = new Player(this, pos, getTexture(MARIO), lifes, Vector2D<double>(0, 0));
-				objectQueue.push_back(player);
+				//player = new Player(this, pos, getTexture(MARIO), lifes, Vector2D<double>(0, 0));
+				objectQueue.push_back(new Player(this, pos, getTexture(MARIO), lifes, Vector2D<double>(0, 0)));
 			}
 		}
-		// Goomba
+		//Goomba
 		else if (tipo == 'G')
 		{
 			lineStream >> pos;
@@ -185,10 +174,10 @@ void Game::loadMap(std::ifstream& mapa)
 			pos.setX(pos.getX() * TILE_SIDE);
 			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
 
-			goomba = new Goomba(this, pos, getTexture(GOOMBA), Vector2D<double>(-7, 0));
-			objectQueue.push_back(goomba);
+			//goomba = new Goomba(this, pos, getTexture(GOOMBA), Vector2D<double>(-7, 0));
+			objectQueue.push_back(new Goomba(this, pos, getTexture(GOOMBA), Vector2D<double>(-7, 0)));
 		}
-		// Block
+		//Block
 		else if (tipo == 'B')
 		{
 			char tipoL;
@@ -198,23 +187,21 @@ void Game::loadMap(std::ifstream& mapa)
 			pos.setX(pos.getX() * TILE_SIDE);
 			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
 
-
 			lineStream >> tipoL;
 			lineStream >> accionL;
 
-			block = new Block(this, pos, getTexture(BLOCK), tipoL, accionL);
-
-			objectQueue.push_back(block);
+			//block = new Block(this, pos, getTexture(BLOCK), tipoL, accionL);
+			objectQueue.push_back(new Block(this, pos, getTexture(BLOCK), tipoL, accionL));
 		}
-		// Koopa
+		//Koopa
 		else if (tipo == 'K')
 		{
 			lineStream >> pos;
 			pos.setX(pos.getX() * TILE_SIDE);
 			pos.setY(pos.getY() * TILE_SIDE - (TILE_SIDE * 2));
 
-			koopa = new Koopa(this, pos, getTexture(KOOPA), Vector2D<double>(-7, 0));
-			objectQueue.push_back(koopa);
+			//SceneObject* koopa = new Koopa(this, pos, getTexture(KOOPA), Vector2D<double>(-7, 0));
+			objectQueue.push_back(new Koopa(this, pos, getTexture(KOOPA), Vector2D<double>(-7, 0)));
 		}
 		// Lift
 		/*else if (tipo == 'L')
@@ -240,8 +227,8 @@ void Game::loadMap(std::ifstream& mapa)
 			pos.setX(pos.getX() * TILE_SIDE);
 			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
 
-			Pickable* coin = new Coin(this, pos, getTexture(COIN));
-			objectQueue.push_back(coin);
+			//Pickable* coin = new Coin(this, pos, getTexture(COIN));
+			objectQueue.push_back(new Coin(this, pos, getTexture(COIN)));
 		}
 		// Piranha
 		else if (tipo == 'P')
@@ -268,8 +255,8 @@ void Game::loadLevel(const string& file, const string& root)
 	}
 
 	Point2D<double> pos = Point2D<double>(0, 0);
-	tilemap = new TileMap(this, tiles, pos, getTexture(BACKGROUND));
-	objectQueue.push_back(tilemap);
+	//tilemap = new Tilemap(this, tiles, pos, getTexture(BACKGROUND));
+	objectQueue.push_back(new Tilemap(this, tiles, pos, getTexture(BACKGROUND)));
 	tiles.close();
 
 	// MAPA
@@ -351,38 +338,20 @@ void Game::handleEvents()
 {
 	SDL_Event event; 
 
-	// MIENTRAS HAYA EVENTOS
-		// si hay eventos &event se llena con el evento a ejecutar si no NULL
-		// es decir, pollea hasta que se hayan manejado todos los eventos
 	while (SDL_PollEvent(&event) && !exit) {
 
 		// si se solicita quit bool exit = true
 		if (event.type == SDL_QUIT) EndGame();
 
-		// MANEJO DE EVENTOS DE OBJETOS DE JUEGO
 		else {
 			player->handleEvent(event);
-		// 	mushroom->handleEvents(event);
-		//  koopa->handleEvents(event);
-		// 
-		//	for (int i = 0; i < goombas.size(); i++)
-		//	{
-		//		goombas[i]->handleEvents(event);
-		//	}
-		//
-		//	for (int i = 0; i < blocks.size(); i++)
-		//	{
-		//		blocks[i]->handleEvents(event);
-		//	}
 		}
 	}
 }
 
-Collision Game::checkCollision(const SDL_Rect& rect, Collision::Target target) {
+Collision Game::checkCollisions(const SDL_Rect& rect, Collision::Target target) {
 	
 	Collision c;
-	c.collides = false;
-	c.damages = false;
 
 	for (auto obj : gameList)
 	{
@@ -481,8 +450,8 @@ void Game::reloadWorld(const string& file, const string& root)
 	}
 
 	Point2D<double> pos = Point2D<double>(0, 0);
-	tilemap = new TileMap(this, tiles, pos, getTexture(BACKGROUND));
-	gameList.push_front(tilemap);
+	//tilemap = new Tilemap(this, tiles, pos, getTexture(BACKGROUND));
+	gameList.push_front(new Tilemap(this, tiles, pos, getTexture(BACKGROUND)));
 	tiles.close();
 
 	// Objetos del mapa (txt entidades)
@@ -497,15 +466,14 @@ void Game::reloadWorld(const string& file, const string& root)
 	mapa.close();
 }
 
+
 void Game::createSeta(Point2D<double> p)
 {
 	p.setY(p.getY() - TILE_SIDE);
 
-	SceneObject* seta = new Mushroom(this, p, getTexture(MUSHROOM));
-
-	gameList.push_back(seta);
+	//SceneObject* seta = new Mushroom(this, p, getTexture(MUSHROOM));
+	gameList.push_back(new Mushroom(this, p, getTexture(MUSHROOM)));
 }
-
 
 double Game::getMapOffset() { return mapOffset; }
 void Game::setMapOffset(double par_) { mapOffset = par_; }

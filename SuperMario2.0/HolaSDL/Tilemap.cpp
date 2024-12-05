@@ -3,15 +3,24 @@
 #include <fstream>
 #include <string>
 #include "Tilemap.h"
+#include "Game.h"
 
-class Game;
-
-using namespace std;
-
+// Velocidad y frecuencia de cambio de frame
 constexpr int SPEED = 10;
 constexpr int FRAME_PERIOD = 20;
 
-Tilemap::Tilemap(Game* g, std::istream& file, Point2D<double> p, Texture* t) : SceneObject(g, p, t)
+Tilemap::Tilemap(Game* g, std::istream& in, Point2D<double> p, Texture* t)
+	: SceneObject(g, p, t)
+{
+	load(in);
+}
+
+Tilemap::~Tilemap()
+{
+
+}
+
+void Tilemap::load(std::istream& file)
 {
 	std::ifstream archivo("../assets/maps/world" + to_string(game->getCurrentLevel()) + ".csv");
 	if (!archivo.is_open()) {
@@ -33,11 +42,6 @@ Tilemap::Tilemap(Game* g, std::istream& file, Point2D<double> p, Texture* t) : S
 	}
 
 	archivo.close();
-}
-
-Tilemap::~Tilemap()
-{
-
 }
 
 void Tilemap::render()
@@ -75,19 +79,6 @@ void Tilemap::render()
 
 void Tilemap::update() { }
 
-//sobra porque ya no mueves el mapa
-void Tilemap::handleEvents(const SDL_Event& event)
-{
-	// Recibe tecla
-	SDL_Scancode key = event.key.keysym.scancode;
-	bool keyA = false;
-	bool keyD = false;
-
-	int limite = 210 * 32 - 18 * 32; //nTiles * tamTile - WIN_WIDTH * tamTile
-	int velScroll = 50;
-
-}
-
 Collision Tilemap::hit(const SDL_Rect& rect, Collision::Target t) {
 
 	Collision c; // Inicializa una instancia de Collision
@@ -117,7 +108,7 @@ Collision Tilemap::hit(const SDL_Rect& rect, Collision::Target t) {
 			if (index != -1 && index % texture->getNumColumns() < game->OBSTACLE_THRESHOLD) // ESTO CONFIRMA COLISION
 			{
 				//cout << "col";
-				SDL_Rect auxRect{
+				SDL_Rect colRect{
 					col * game->TILE_SIDE,
 					row * game->TILE_SIDE,
 					game->TILE_SIDE,
@@ -125,7 +116,7 @@ Collision Tilemap::hit(const SDL_Rect& rect, Collision::Target t) {
 				};
 
 				// Calculamos la interseccion
-				if (SDL_IntersectRect(&rect, &auxRect, &c.intersectionRect))
+				if (SDL_IntersectRect(&rect, &colRect, &c.intersectionRect))
 				{
 					c.result = Collision::OBSTACLE; // el resultado sera obstacle porque el tilemap no hace damage
 					c.horizontal = c.intersectionRect.w;
@@ -145,5 +136,5 @@ void Tilemap::manageCollisions(Collision c)
 
 SceneObject* Tilemap::clone() const
 {
-	return new TileMap(*this);
+	return new Tilemap(*this);
 }

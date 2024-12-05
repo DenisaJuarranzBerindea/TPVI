@@ -1,8 +1,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#include "SceneObject.h"
-
 #include "checkML.h"
 #include <SDL.h>
 #include "Vector2D.h"
@@ -12,6 +10,7 @@
 #include <fstream>
 #include <string>
 
+#include "SceneObject.h"
 #include "Collision.h"
 
 class Game;
@@ -23,7 +22,7 @@ class Enemy : public SceneObject
 {
 private:
 
-	bool frozen; // para llevar control de objetos inactivos
+	bool frozen; 
 	bool alive;
 
 	bool grounded;

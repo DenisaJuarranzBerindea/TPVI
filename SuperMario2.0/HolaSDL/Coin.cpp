@@ -21,7 +21,7 @@ void Coin::update()
 
 void Coin::triggerAction()
 {
-	game->addPoints(200);
+	game->givePoints(200);
 }
 
 SceneObject* Coin::clone() const

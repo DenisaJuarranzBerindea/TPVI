@@ -12,10 +12,10 @@ void Pickable::update() {}
 Collision Pickable::hit(const SDL_Rect& rect, Collision::Target t)
 {
 	// Comprueba si hay colision
-	SDL_Rect ownRect = getCollisionRect();
+	SDL_Rect colRect = getCollisionRect();
 
 	// si la colision es con el mario (su target son los enemies)
-	if (t == Collision::ENEMIES && SDL_HasIntersection(&ownRect, &rect))
+	if (t == Collision::ENEMIES && SDL_HasIntersection(&colRect, &rect))
 	{
 		triggerAction();  // metodo que implementara la subclase
 		delete this;

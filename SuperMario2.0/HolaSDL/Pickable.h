@@ -9,8 +9,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "Collision.h"
 
+#include "Collision.h"
 #include "SceneObject.h"
 
 class Game;
@@ -25,13 +25,13 @@ public:
 
 	//virtual void render() override;
 	virtual void update() override;
+	virtual void updateAnim() override;
 
 	virtual Collision hit(const SDL_Rect& rect, Collision::Target t) override;
 
 	void manageCollisions(Collision c) override;
 
 	SceneObject* clone() const override;
-	virtual void updateAnim() override;
 
 protected:
 	virtual void triggerAction() = 0;

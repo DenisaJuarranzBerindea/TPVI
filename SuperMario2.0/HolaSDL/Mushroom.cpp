@@ -26,10 +26,10 @@ void Mushroom::moveSeta()
 {
 	// Acelra la velocidad con la gravedad
 	if (speed.getY() < game->SPEED_LIMIT)
-		speed = speed + Vector2D<double>(0, game->GRAVITY);
+		speed = speed + Vector2D<int>(0, game->GRAVITY);
 
 	// Velocidad en este ciclo (no siempre avanza lateralmente)
-	Vector2D<double> realSpeed = speed;
+	Vector2D<int> realSpeed = speed;
 
 	if (moveDelay-- == 0)
 		moveDelay = game->MOVE_PERIOD;

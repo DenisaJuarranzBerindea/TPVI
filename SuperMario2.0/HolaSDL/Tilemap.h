@@ -1,16 +1,15 @@
 #pragma once
+#include "checkML.h"
 
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include "Texture.h"
-#include "Collision.h"
 #include "SceneObject.h"
 
 using namespace std;
 class Game;
-
 class Tilemap : public SceneObject
 {
 private:
@@ -18,9 +17,9 @@ private:
 	int x, y;
 
 public:
-	//TileMap();
-	TileMap(Game* g, std::istream& in, Point2D<double> p, Texture* t);
-	~TileMap();
+	//Tilemap();
+	Tilemap(Game* g, std::istream& in, Point2D<double> p, Texture* t);
+	~Tilemap();
 
 	void render() override;
 	void update() override;

@@ -12,26 +12,34 @@ using namespace std;
 class Player : public SceneObject
 {
 
-	private:
+private:
+	Texture* texture;	
+
 	// Gestión de vidas
 	int maxLifes = 3;
 	int lifes;
+	bool immune;
+	bool isAlive = true;
 	// Invencibilidad
 	int invCounter = 0;
 	int maxInvCounter = 5;
 	bool invencible = false;
 
 	// Gestión de movimiento
-	const double X_SPEED = 0.01;
-	const double Y_SPEED = 0.015;
-	bool canMove = true;
-	bool grounded = false;
-	bool jumping = false;
+	Vector2D<int> direction;	
+	double fallSpeed = 0.01;
+	bool grounded, jumping;
 	bool isFalling = true;
 	int maxHeight;
 
-	double deadH = 15 * Game::TILE_SIDE; //Altura desde la que es muerto (15 * TILE_SIDE, pero no me deja meter el game)
+	// Animación
+	int walkFrame;
+	bool flipSprite = false;
+	int marioFrame = 0;
+
+	//double deadH = 14 * 32;
 	double bgSpeed = 1.0;
+	int VelX = 1;
 
 	char marioState; // m(mario), s(supermario)
 
@@ -43,10 +51,16 @@ public:
 	bool keyS = false; //Abajo
 	bool keySpace = false; //Salto
 	bool keyE = false; //Salir
+	bool keyDcha = false; //Offset mapa
 		
 	// Colisiones player
-	SDL_Rect colRect;
+	SDL_Rect colRect = SDL_Rect();
 	Collision collisionMario;
+
+	// Animacion
+	int animationFrame = 0;   // Contador para el ciclo de caminar
+	int frameTimer = 0;
+	bool flipSprite = false;
 
 	// Fin nivel
 	int flagPosition = 6306;
@@ -61,16 +75,18 @@ public:
 	Texture* textureS = nullptr;
 
 	//Constructora
-	Player(Game* game_, std::istream& in);
-
+	Player(Game* game, Point2D<double> pos, Texture* t, int l, Vector2D<double> s);
+	
 	// Render
-	void render() const override;
+	void render() override;
 	// Actualizacion parte logica
 	void update() override;
 	// Actualizacion parte grafica
 	void updateTexture();
 	// Hit
-	Collision hit(SDL_Rect, Collision::Target) override;
+	Collision hit(const SDL_Rect& region, Collision::Target target) override;
+	// Clon
+	SceneObject* clone() const override;
 	// Eventos, sobre todo input   
 	void handleEvent(const SDL_Event& event) override;
 	// Efectos de colisiones
@@ -89,6 +105,9 @@ public:
 
 	//Caídas
 	void checkFall();
+
+	// Movimiento
+	void moveMario(bool, bool);
 
 	// Fin nivel
 	void finishLevel();

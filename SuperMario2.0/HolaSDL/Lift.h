@@ -1,5 +1,5 @@
-#ifndef Mushroom_h
-#define Mushroom_h
+#ifndef LIFT_H
+#define LIFT_H
 
 #include "checkML.h"
 #include <SDL.h>
@@ -11,31 +11,34 @@
 #include <string>
 
 #include "Collision.h"
-#include "Pickable.h"
+#include "SceneObject.h"
 
 class Game;
 
 using uint = unsigned int;
 using namespace std;
 
-class Mushroom
+class Lift : public SceneObject
 {
 private:
 
-	int moveDelay = 5;
-
 public:
-	Mushroom(Game* g, Point2D<double> p, Texture* t);
+	Lift(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s);
 
 	void render() override;
 	void update() override;
 	void updateAnim() override;
 
-	void moveSeta();
-
-	void triggerAction() override;
+	Point2D<double> getPos() const { return position; }
 
 	SceneObject* clone() const override;
+
+	Collision hit(const SDL_Rect& rect, Collision::Target t) override;
+
+	void manageCollisions(Collision c) override;
+
+private:
+	void moveLift();
 
 };
 

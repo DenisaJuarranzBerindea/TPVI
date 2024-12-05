@@ -27,11 +27,16 @@
 
 //Objetos de juego
 class Tilemap;
-class Player;
-class Block;
-class Goomba;
-class Mushroom;
-class Koopa;
+//class Player;
+//class Block;
+//class Goomba;
+//class Mushroom;
+//class Koopa;
+#include "Player.h"
+#include "Block.h"
+#include "Goomba.h"
+#include "Mushroom.h"
+#include "Koopa.h"
 
 using uint = unsigned int;
 
@@ -49,13 +54,14 @@ public:
 	// Constante globales
 	const int FRAME_RATE = 50;
 	const int TIME_BY_FRAME = 1 / FRAME_RATE;
+	const double MARIO_SPEED = 0.01;
 	const double GOOMBA_SPEED = 0.01;
 	const double KOOPA_SPEED = 0.01;
 	const double MUSHROOM_SPEED = 0.01;
 	const double SPEED_LIMIT = 10;
 	const double MOVE_PERIOD = 5;
 
-	//En tiles
+	// Constantes estáticas
 	static constexpr uint TILE_MAP = 32;
 	static constexpr uint TILE_SIDE = 32;
 	static constexpr uint TILE_WINDOW_WIDTH = 18; // ancho ventana en tiles
@@ -63,22 +69,18 @@ public:
 	static constexpr uint WIN_WIDTH = TILE_SIDE * TILE_WINDOW_WIDTH;  // ancho ventana en px
 	static constexpr uint WIN_HEIGHT = TILE_SIDE * TILE_WINDOW_HEIGHT; // alto ventana en px
 	static constexpr uint OBSTACLE_THRESHOLD = 4; // constante
-	static constexpr double MAP_MAX_OFFSET = 6100;
+	static constexpr uint MAP_MAX_OFFSET = 6100;
 	static constexpr uint GRAVITY = 3;
+	const Collision NO_COLLISION = { Collision::EMPTY, Collision::NONE, 0, 0 };
 
-	// declaración de los elementos de juego
-	Tilemap* mapa = nullptr;
-	Player* player = nullptr;
-	Goomba* goomba = nullptr;
-	Koopa* koopa = nullptr;
-	Block* block = nullptr;
+	//// declaración de los elementos de juego
+	//Tilemap* mapa = nullptr;
+	//Player* player = nullptr;
+	//Goomba* goomba = nullptr;
+	//Koopa* koopa = nullptr;
+	//Block* block = nullptr;
 
-	vector<Goomba*> goombas;
-	vector<Block*> blocks;
-	vector<Koopa*> koopas;
-
-	int startTime, frameTime;	// manejo de tiempo en run
-
+	int startTime = 0, frameTime = 0;	// manejo de tiempo en run
 
 private:
 	// Interruptor para terminar el juego
@@ -149,7 +151,7 @@ public:
 	// input del jugador y otros eventos
 	void handleEvents();
 	// gestionar colisiones
-	Collision checkCollision(const SDL_Rect& rect, Collision::Target target);
+	Collision checkCollisions(const SDL_Rect& rect, Collision::Target target);
 
 	// Objetos de escena
 	void deleteEntities();
@@ -178,7 +180,10 @@ public:
 	void setCurrentLevel(int c) { currentWorld = c; }
 	void setFallen(bool f) { fallen = f; }
 	void setMarioState(int s) { marioState = s; }
+	void setMapOffset(int newOffset) { mapOffset = newOffset; }
 	void setVictory(bool v) { isVictory = v; }
+
+	void addMapOffset(int newOffset) { mapOffset += newOffset; }
 	void addPoints(int p)
 	{
 		points += p;
