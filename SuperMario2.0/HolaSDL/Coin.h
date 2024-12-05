@@ -10,7 +10,7 @@
 #include <fstream>
 #include <string>
 #include "Collision.h"
-//#include "Pickable.h"
+#include "Pickable.h"
 
 class Game;
 
@@ -29,7 +29,7 @@ public:
 
 	void triggerAction() override;
 
-	SceneObject* clone() const override;
+	//SceneObject* clone() const override;
 
 	void updateAnim() override;
 private:

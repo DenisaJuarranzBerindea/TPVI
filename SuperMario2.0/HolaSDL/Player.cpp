@@ -2,50 +2,45 @@
 #include "Game.h"
 
 // Constructora
-Player::Player(Game* game_, std::istream& in)
+Player::Player(Game* g, Point2D<double> p, Texture* t, int l, Vector2D<double> s)
+	: SceneObject(g, p, t, s), lifes(l)
 {
-	game = game_;
+	lifes = 3;
+	canMove = true;
+	velX = 6;
+	grounded = false;
+	jumping = false;
 
-	cout << "Llamando constructor player" << endl;
-	double tempX, tempY;
-	in >> tempX >> tempY >> lifes;
-	position = Point2D<double>(tempX, tempY) - Point2D<double>(0, 1); // coloca bien a mario
-	speed = Vector2D<double>(X_SPEED, Y_SPEED);
+	walkFrame = 0;
+	flipSprite = true;
+	flip = SDL_FLIP_NONE;
 
-	textureM = game->getTexture(Game::TextureName::MARIO);		// textura inicial de mario
-	textureS = game->getTexture(Game::TextureName::SUPERMARIO);	// textura supermario
+	marioState = MARIO;
+	textureM = game->getTexture(Game::MARIO);	   // textura inicial de mario
+	textureS = game->getTexture(Game::SUPERMARIO); // textura supermario
 
+	invencible = false;
 	cout << "Player creado" << endl;
 }
 
-void Player::render() const
+void Player::render() 
 {
-	SDL_Rect destRect = getCollisionRect();
-
-	// Usa el flip segun la direccion
-	SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-
-	texture->renderFrame(destRect, 0, marioFrame, 0.0, nullptr, flip);
-
+	SceneObject::render();
 	updateAnim();
 }
 
 // Actualizacion a nivel logico
 void Player::update()
 {
-	// Velocidad salto
 	if (speed.getY() < game->SPEED_LIMIT)
 		speed = speed + Vector2D<double>(0, game->GRAVITY);
 
-	Collision c;
-	// Movimiento sin colisiones
 	if (canMove)
 		c = tryToMove(speed, Collision::ENEMIES);
 	else if (!canMove && speed.getY() != 0)
 		c = tryToMove({ 0, speed.getY() }, Collision::ENEMIES);
 
-	// Colisión vertical
-	if (c.vertical > 0)
+	if (c.vertical)
 	{
 		if (speed.getY() > 0)
 		{
@@ -56,29 +51,24 @@ void Player::update()
 		speed.setY(0);
 	}
 
-	// Moviminento derecha
 	if (speed.getX() > 0)
 	{
 		flip = SDL_FLIP_NONE;
 
 		// Limites
 		if (position.getX() - game->getMapOffset() >= game->WIN_WIDTH / 2
-			&& game->getMapOffset() <= MAP_MAX_OFFSET)
+			&& game->getMapOffset() <= game->MAP_MAX_OFFSET)
 		{
 			game->setMapOffset(game->getMapOffset() + speed.getX());
 		}
 		canMove = true;
 	}
-	// Movimiento izquierda
 	else if (speed.getX() < 0)
 	{
 		flip = SDL_FLIP_HORIZONTAL;
 
-		// Limites pantalla
 		if (position.getX() - game->getMapOffset() < game->TILE_SIDE) canMove = false;
 	}
-
-	manageInvencible();
 
 	updateTexture();
 
@@ -105,7 +95,7 @@ void Player::updateTexture()
 }
 
 // Comprueba colisiones y las maneja
-Collision Player::hit(SDL_Rect region, Collision::Target target)  
+Collision Player::hit(const SDL_Rect& region, Collision::Target target)
 {
 	Collision c;
 	// Comprueba si hay colision
@@ -117,9 +107,7 @@ Collision Player::hit(SDL_Rect region, Collision::Target target)
 		manageDamage();
 	}
 
-	Collision col;
-	return col;
-	//return Collision->NO_COLLISION; // constante Collision{}
+	return game->NO_COLLISION; // constante Collision{}
 }
 
 // Input
@@ -134,13 +122,13 @@ void Player::handleEvent(const SDL_Event& event)
 		// Izqd (A)
 		if (key == SDL_SCANCODE_A)
 		{
-			speed.setX(-X_SPEED);
+			speed.setX(-speed.getX());
 			keyA = true;
 		}
 		// Dcha (D)
 		else if (key == SDL_SCANCODE_D)
 		{
-			speed.setX(X_SPEED);
+			speed.setX(speed.getX());
 			keyD = true;
 		}
 		// Abajo (S)
@@ -244,7 +232,7 @@ void Player::updateOffset()
 
 	int screenX = position.getX() * game->TILE_SIDE - game->getMapOffset();
 
-	if (screenX > game->TILE_SIDE * game->WIN_WIDTH / 2 && game->getMapOffset() < MAP_MAX_OFFSET)
+	if (screenX > game->TILE_SIDE * game->WIN_WIDTH / 2 && game->getMapOffset() < game->MAP_MAX_OFFSET)
 	{
 		game->addMapOffset(1);
 	}
@@ -276,16 +264,19 @@ void Player::jump()
 		grounded = false;
 		jumping = true;
 
-		speed.setY(-Y_SPEED);
+		speed.setY(-speed.getY());
 	}
 }
 
 // Gestion colisiones externas
 void Player::manageCollisions(Collision collision)
 {
-	if (collision.result == Collision::DAMAGE)
+	if (collision.target == Collision::PLAYER)
 	{
-		manageDamage();
+		if (collision.result == Collision::DAMAGE)
+		{
+			manageDamage();
+		}
 	}
 }
 
@@ -329,7 +320,7 @@ void Player::manageInvencible()
 	}
 }
 
-/*void Player::finishLevel()
+void Player::finishLevel()
 {
 	if (position.getX() >= flagPosition && game->getCurrentLevel() == 1)
 	{
@@ -347,4 +338,9 @@ void Player::manageInvencible()
 			game->loadLevel(to_string(game->getCurrentLevel()), "../assets/maps/world");
 		}
 	}
-}*/
+}
+
+//SceneObject* Player::clone() const
+//{
+//	return new Player(*this);
+//}

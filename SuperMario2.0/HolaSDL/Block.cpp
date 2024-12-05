@@ -113,10 +113,10 @@ void Block::manageCollisions(Collision col)
 
 }
 
-SceneObject* Block::clone() const
-{
-	return new Block(*this);
-}
+//SceneObject* Block::clone() const
+//{
+//	return new Block(*this);
+//}
 
 void Block::updateAnim()
 {

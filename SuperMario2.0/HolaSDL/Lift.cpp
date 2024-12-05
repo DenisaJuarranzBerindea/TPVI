@@ -23,10 +23,10 @@ void Lift::updateAnim()
 
 }
 
-SceneObject* Lift::clone() const
-{
-	return new Lift(*this);
-}
+//SceneObject* Lift::clone() const
+//{
+//	return new Lift(*this);
+//}
 
 Collision Lift::hit(const SDL_Rect& rect, Collision::Target t)
 {

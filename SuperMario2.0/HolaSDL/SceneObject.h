@@ -52,7 +52,7 @@ public:
 
 	virtual void update() override {}
 
-	virtual SceneObject* clone() const = 0;
+	//virtual SceneObject* clone() const = 0;
 
 	// Colisiones
 	virtual Collision hit(SDL_Rect, Collision::Target) = 0;

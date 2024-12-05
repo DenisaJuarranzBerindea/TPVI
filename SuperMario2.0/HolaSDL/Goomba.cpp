@@ -9,10 +9,10 @@ Goomba::Goomba(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s)
 	frameTimer = 0;
 }
 
-SceneObject* Goomba::clone() const
-{
-	return new Goomba(*this);
-}
+//SceneObject* Goomba::clone() const
+//{
+//	return new Goomba(*this);
+//}
 
 void Goomba::render()
 {

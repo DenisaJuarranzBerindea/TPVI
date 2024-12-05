@@ -21,13 +21,13 @@ void Coin::update()
 
 void Coin::triggerAction()
 {
-	game->givePoints(200);
+	game->addPoints(200);
 }
 
-SceneObject* Coin::clone() const
-{
-	return new Coin(*this);
-}
+//SceneObject* Coin::clone() const
+//{
+//	return new Coin(*this);
+//}
 
 void Coin::updateAnim()
 {

@@ -20,10 +20,10 @@ void Koopa::collisionResult()
 
 }
 
-SceneObject* Koopa::clone() const
-{
-	return new Koopa(*this);
-}
+//SceneObject* Koopa::clone() const
+//{
+//	return new Koopa(*this);
+//}
 
 void Koopa::render()
 {

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include "Texture.h"
+#include "Game.h"
 #include "SceneObject.h"
 
 using namespace std;
@@ -29,7 +30,7 @@ public:
 	Collision hit(const SDL_Rect& rect, Collision::Target t);
 
 	void manageCollisions(Collision c) override;
-	SceneObject* clone() const override;
+	//SceneObject* clone() const override;
 
 	void updateAnim() override {};
 };

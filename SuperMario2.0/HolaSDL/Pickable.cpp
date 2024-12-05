@@ -26,9 +26,9 @@ Collision Pickable::hit(const SDL_Rect& rect, Collision::Target t)
 
 void Pickable::manageCollisions(Collision c) {}
 
-SceneObject* Pickable::clone() const
-{
-	return nullptr;
-}
+//SceneObject* Pickable::clone() const
+//{
+//	return nullptr;
+//}
 
 void Pickable::updateAnim() {}

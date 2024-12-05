@@ -31,7 +31,7 @@ public:
 
 	void manageCollisions(Collision c) override;
 
-	SceneObject* clone() const override;
+	//SceneObject* clone() const override;
 
 protected:
 	virtual void triggerAction() = 0;

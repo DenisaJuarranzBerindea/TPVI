@@ -402,7 +402,7 @@ void Game::addVisibleEntities()
 
 	while (nextObject < objectQueue.size() && objectQueue[nextObject]->getPosition().getX() < rightThreshold)
 	{
-		addObject(objectQueue[nextObject++]->clone());
+		//addObject(objectQueue[nextObject++]->clone());
 	}
 }
 

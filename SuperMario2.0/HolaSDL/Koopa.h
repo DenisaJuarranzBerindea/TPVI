@@ -29,7 +29,7 @@ public:
 	void update() override;
 
 	virtual void collisionResult() override;
-	SceneObject* clone() const override;
+	//SceneObject* clone() const override;
 
 	void render() override;
 

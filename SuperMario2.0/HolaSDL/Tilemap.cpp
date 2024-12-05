@@ -134,7 +134,7 @@ void Tilemap::manageCollisions(Collision c)
 {
 }
 
-SceneObject* Tilemap::clone() const
-{
-	return new Tilemap(*this);
-}
+//SceneObject* Tilemap::clone() const
+//{
+//	return new Tilemap(*this);
+//}

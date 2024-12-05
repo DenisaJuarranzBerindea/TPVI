@@ -71,7 +71,7 @@ public:
 
 	virtual void manageCollisions(Collision col) override;
 
-	SceneObject* clone() const override;
+	//SceneObject* clone() const override;
 
 	void updateAnim() override;
 };
