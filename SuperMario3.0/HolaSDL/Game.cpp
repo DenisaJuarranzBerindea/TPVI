@@ -129,22 +129,26 @@ void Game::loadTextures()
 
 void Game::loadMap(std::ifstream& mapa)
 {
-	cout << "Tilemap creado (fichero Game.cpp)" << endl;
-
 	string line;
 
 	int i = 0;
 	while (getline(mapa, line)) {
 		stringstream lineStream(line);
+		
+		Point2D<double> pos;
+		double posX;
+		double posY;
+		char tipo;
 
 		// Color fondo
 		if (i == 0)
 		{
 			lineStream >> r >> g >> b;
+			// saltar a la siguiente linea del archivo
+			i++;
+			continue;
 		}
 
-		Point2D<double> pos;
-		char tipo;
 		lineStream >> tipo;
 
 		cout << "Tipo: " << tipo << endl;
@@ -152,20 +156,18 @@ void Game::loadMap(std::ifstream& mapa)
 		// Mario
 		if (tipo == 'M' && !fallen)
 		{
-			int lifes;
+			cout << 'M' << endl;
 			cout << fallen << endl;
-			lineStream >> pos;
 
-			pos.setX(pos.getX() * TILE_SIDE);
-			pos.setY(pos.getY() * TILE_SIDE - TILE_SIDE);
+			lineStream >> posX >> posY;
+			pos.setX(posX * TILE_SIDE);
+			pos.setY(posY * TILE_SIDE - TILE_SIDE);
 
+			int lifes;
 			lineStream >> lifes;
 
-			if (player == nullptr)
-			{
-				cout << "Nuevo jugador" << endl;
-				objectQueue.push_back(new Player(this, pos, getTexture(MARIO), lifes, Vector2D<double>(0, 0)));
-			}
+			cout << "Nuevo jugador" << endl;
+			objectQueue.push_back(new Player(this, pos, getTexture(MARIO), lifes, Vector2D<double>(0, 0)));
 		}
 		//Goomba
 		else if (tipo == 'G')
@@ -232,9 +234,7 @@ void Game::loadMap(std::ifstream& mapa)
 
 		}
 
-		getline(mapa, line);
-
-		i++;
+		//i++;
 	}
 }
 
@@ -250,8 +250,9 @@ void Game::loadLevel(const string& file, const string& root)
 	}
 
 	Point2D<double> pos = Point2D<double>(0, 0);
-
+	
 	objectQueue.push_back(new Tilemap(this, tiles, pos, getTexture(BACKGROUND)));
+	cout << "Tilemap creado (fichero Game.cpp)" << endl;
 	tiles.close();
 
 	// MAPA
@@ -379,11 +380,11 @@ void Game::addObject(SceneObject* o)
 	{
 		gameList.push_front(o);
 	}
-	else if (nextObject == 2)
-	{
-		player = o;
-		gameList.push_back(o);
-	}
+	//else if (nextObject == 2)
+	//{
+	//	player = o;
+	//	gameList.push_back(o);
+	//}
 	else
 	{
 		gameList.push_back(o);

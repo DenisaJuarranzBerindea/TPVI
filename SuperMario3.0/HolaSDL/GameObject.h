@@ -15,7 +15,7 @@ protected:
 
 public:
 	//Estos métodos no tienen implementación, se overridean desde cada GO.
-	GameObject();
+	//GameObject();
 	GameObject(Game* g) : game(g) {};
 
 	// Destructora virtual

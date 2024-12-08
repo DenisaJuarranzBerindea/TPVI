@@ -18,7 +18,7 @@ SceneObject::SceneObject(Game* g, Point2D<double> pos, Texture* texture, Vector2
     height = g->TILE_SIDE;
 }
 
-SceneObject::SceneObject(const SceneObject& s)
+SceneObject::SceneObject(const SceneObject& s) : GameObject(s.game)
 {
     game = s.game;
 
@@ -114,11 +114,6 @@ void SceneObject::render()
     }
 
     texture->renderFrame(colRect, 0, frame, 0, nullptr, flip);
-}
-
-void SceneObject::handleEvent(const SDL_Event& event)
-{
-
 }
 
 void SceneObject::manageCollisions(Collision c)

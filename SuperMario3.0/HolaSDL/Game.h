@@ -86,13 +86,13 @@ public:
 
 private:
 	// Interruptor para terminar el juego
-	bool exit;
+	bool exit = false;
 	// Desplazamiento del mapa
 	int mapOffset = 0;
 
 	// declaración de los elementos de juego
-	SceneObject* player;
-	SceneObject* tilemap;
+	Player* player;
+	Tilemap* tilemap;
 
 	GameList<SceneObject> gameList;
 

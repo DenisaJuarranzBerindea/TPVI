@@ -66,8 +66,6 @@ public:
 	SDL_Rect getCollisionRect() const;
 	SDL_Rect getRenderRect() const;
 
-	virtual void handleEvent(const SDL_Event& event);
-
 	Point2D<double> getPosition() { return position; }
 
 	GameList<SceneObject>::anchor _anchor; // Ancla a la lista de objetos del juego

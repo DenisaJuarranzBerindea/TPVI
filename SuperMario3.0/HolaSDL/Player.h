@@ -70,7 +70,7 @@ public:
 	void jump();
 
 
-	void handleEvent(const SDL_Event& event) override;
+	void handleEvent(const SDL_Event& event);
 
 	int marioState;
 	enum State {

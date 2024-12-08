@@ -22,8 +22,8 @@ int main(int argc, char* argv[])
 {
     try {
         // no hace falta borrarlo porque es estatico, se borra solo al salir de ambito (si fuese puntero: delete ay;)
-        Game game;
-        game.run();
+        Game* game = new Game();
+        game->run();
     }
 
     // GAME ERROR
