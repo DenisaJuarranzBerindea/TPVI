@@ -1,10 +1,10 @@
-#ifndef Block_h
-#define Block_h
+#ifndef BLOCK_H
+#define BLOCK_H
 
 #include "checkML.h"
 #include <SDL.h>
+#include "Vector2D.h"
 #include "Texture.h"
-#include "Collision.h"
 #include <istream>
 #include <iostream>
 #include <fstream>
@@ -12,7 +12,9 @@
 
 #include "Collision.h"
 #include "SceneObject.h"
+#include "PlayState.h"
 
+class PlayState;
 class Game;
 
 using uint = unsigned int;
@@ -20,60 +22,69 @@ using namespace std;
 
 class Block : public SceneObject
 {
-
+	// atributos privados
 private:
-
-	char tipoL;
 	int tipo;
 	enum Tipo // tipo de bloque
-		// ? -> sorpresa
-		// B -> ladrillo
-		// H -> oculto
 	{
 		LADRILLO, SORPRESA, OCULTO, VACIO
 	};
 
-	char accionL;
 	int accion;
 	enum Accion // accion
-		// P -> potenciador
-		// C -> moneda
 	{
 		POTENCIADOR, MONEDA
 	};
 
+	// Guia de bloques txt
+	// TIPO
+	// ? -> sorpresa
+	// B -> ladrillo
+	// H -> oculto
+	// ACCION
+	// P -> potenciador
+	// C -> moneda
+
 	bool alive;
 
-	// Colisiones bloque
-	SDL_Rect colRect = SDL_Rect();
-
 public:
+	Block(Game* g, Point2D<int> p, Texture* t, char tipoL, char accionL, PlayState* play);
 
-	Block(Game* g, Point2D<double> p, Texture* t, char tipoL, char accionL);
+	// -- render --
+	void render() const override;
 
-	void render() override;
-
+	// -- update --
 	void update() override;
 
-	Collision hit(SDL_Rect rect, Collision::Target t) override;
+	// -- hit --
+	Collision hit(const SDL_Rect& rect, Collision::Target t) override;
 
-	//Getters y setters
-	int getTipo() const { return tipo; }
-	bool getAlive() { return alive; }
-	Point2D<double> getPos() const { return position; }
+	bool getAlive() {
+		return alive;
+	}
 
-	// Setters
-	void setTipo(int t) { tipo = t; }
-	void setDead() { alive = false; }
+	int getTipo() {
+		return tipo;
+	}
 
-	// Auxiliar para que aparezca la seta
+	void setTipo(int t)
+	{
+		tipo = t;
+	}
+
 	void manageSorpresa();
+
+	void killBlock() { alive = false; }
+
+	Point2D<int> getPos() const { return position; }
 
 	virtual void manageCollisions(Collision col) override;
 
 	SceneObject* clone() const override;
 
 	void updateAnim() override;
+
+	//void updateRect() override;
 };
 
 #endif

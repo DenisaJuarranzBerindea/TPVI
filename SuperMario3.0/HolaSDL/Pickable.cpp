@@ -1,28 +1,27 @@
-#include "checkML.h"
 #include "Pickable.h"
 #include "Game.h"
 
-Pickable::Pickable(Game* g, Point2D<double> p, Texture* t)
-	: SceneObject(g, p, t)
+Pickable::Pickable(Game* g, Point2D<int> p, Texture* t, PlayState* play)
+	: SceneObject(g, p, t, play)
 {
-
+	
 }
 
 void Pickable::update() {}
 
-Collision Pickable::hit(SDL_Rect rect, Collision::Target t)
+Collision Pickable::hit(const SDL_Rect& rect, Collision::Target t)
 {
 	// Comprueba si hay colision
-	SDL_Rect colRect = getCollisionRect();
+	SDL_Rect ownRect = getCollisionRect();
 
 	// si la colision es con el mario (su target son los enemies)
-	if (t == Collision::ENEMIES && SDL_HasIntersection(&colRect, &rect))
+	if (t == Collision::ENEMIES && SDL_HasIntersection(&ownRect, &rect)) 
 	{
 		triggerAction();  // metodo que implementara la subclase
 		delete this;
 	}
 
-	return game->NO_COLLISION; // constante Collision{}
+	return NO_COLLISION; // constante Collision{}
 }
 
 void Pickable::manageCollisions(Collision c) {}

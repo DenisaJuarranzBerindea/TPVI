@@ -1,5 +1,5 @@
-#ifndef Mushroom_h
-#define Mushroom_h
+#ifndef MUSHROOM_H
+#define MUSHROOM_H
 
 #include "checkML.h"
 #include <SDL.h>
@@ -9,7 +9,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
 #include "Collision.h"
 #include "Pickable.h"
 
@@ -21,15 +20,15 @@ using namespace std;
 class Mushroom : public Pickable
 {
 private:
-
-	double moveDelay = 5;
+	int moveDelay = 5;
 
 public:
-	Mushroom(Game* g, Point2D<double> p, Texture* t);
+	Mushroom(Game* g, Point2D<int> p, Texture* t, PlayState* play);
 
-	void render() override;
+	void render() const override;
+
+	// -- update --
 	void update() override;
-	void updateAnim() override;
 
 	void moveSeta();
 
@@ -37,6 +36,7 @@ public:
 
 	SceneObject* clone() const override;
 
+	void updateAnim() override;
 };
 
 #endif

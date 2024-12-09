@@ -10,55 +10,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Block.h" />
-    <ClInclude Include="checkML.h" />
-    <ClInclude Include="Coin.h" />
-    <ClInclude Include="Collision.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="FileFormatError.h" />
-    <ClInclude Include="FileNotFoundError.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameError.h" />
-    <ClInclude Include="gameList.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Goomba.h" />
-    <ClInclude Include="Koopa.h" />
-    <ClInclude Include="Lift.h" />
-    <ClInclude Include="Mushroom.h" />
-    <ClInclude Include="Pickable.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="SceneObject.h" />
-    <ClInclude Include="SDLError.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="Tilemap.h" />
-    <ClInclude Include="Vector2D.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Block.cpp" />
-    <ClCompile Include="Coin.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="FileFormatError.cpp" />
-    <ClCompile Include="FileNotFoundError.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameError.cpp" />
-    <ClCompile Include="Goomba.cpp" />
-    <ClCompile Include="Koopa.cpp" />
-    <ClCompile Include="Lift.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mushroom.cpp" />
-    <ClCompile Include="Pickable.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="SceneObject.cpp" />
-    <ClCompile Include="SDLError.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Tilemap.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{28A4C5CD-307A-4FE6-81E4-4CE1F1E49AB4}</ProjectGuid>
     <RootNamespace>HolaSDL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>SuperMario1.0</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -93,7 +48,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -113,6 +67,72 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AnimationState.cpp" />
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="EndState.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="FileFormatError.cpp" />
+    <ClCompile Include="FileNotFoundError.cpp" />
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameError.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="GameStateMachine.cpp" />
+    <ClCompile Include="Goomba.cpp" />
+    <ClCompile Include="Infobar.cpp" />
+    <ClCompile Include="Koopa.cpp" />
+    <ClCompile Include="Lift.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="PauseState.cpp" />
+    <ClCompile Include="Pickable.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayState.cpp" />
+    <ClCompile Include="SceneObject.cpp" />
+    <ClCompile Include="SDLError.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TileMap.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnimationState.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="checkML.h" />
+    <ClInclude Include="Coin.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="EndState.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="FileFormatError.h" />
+    <ClInclude Include="FileNotFoundError.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameError.h" />
+    <ClInclude Include="gameList.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="GameStateMachine.h" />
+    <ClInclude Include="Goomba.h" />
+    <ClInclude Include="Infobar.h" />
+    <ClInclude Include="Koopa.h" />
+    <ClInclude Include="Lift.h" />
+    <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="PauseState.h" />
+    <ClInclude Include="Pickable.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayState.h" />
+    <ClInclude Include="SceneObject.h" />
+    <ClInclude Include="SDLError.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TileMap.h" />
+    <ClInclude Include="Vector2D.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

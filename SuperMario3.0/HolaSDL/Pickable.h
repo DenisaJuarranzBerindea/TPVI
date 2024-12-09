@@ -9,8 +9,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
 #include "Collision.h"
+
 #include "SceneObject.h"
 
 class Game;
@@ -21,17 +21,17 @@ using namespace std;
 class Pickable : public SceneObject
 {
 public:
-	Pickable(Game* g, Point2D<double> p, Texture* t);
+	Pickable(Game* g, Point2D<int> p, Texture* t, PlayState* play);
 
 	//virtual void render() override;
 	virtual void update() override;
-	virtual void updateAnim() override;
 
-	virtual Collision hit(SDL_Rect rect, Collision::Target t) override;
+	virtual Collision hit(const SDL_Rect& rect, Collision::Target t) override;
 
 	void manageCollisions(Collision c) override;
-
+	
 	SceneObject* clone() const override;
+	virtual void updateAnim() override;
 
 protected:
 	virtual void triggerAction() = 0;

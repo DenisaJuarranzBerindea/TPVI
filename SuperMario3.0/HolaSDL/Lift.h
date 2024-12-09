@@ -23,17 +23,21 @@ class Lift : public SceneObject
 private:
 
 public:
-	Lift(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s);
+	Lift(Game* g, Point2D<int> p, Texture* t, Vector2D<int> s, PlayState* play);
 
-	void render() override;
+	// -- render --
+	void render() const override;
+
+	// -- update --
 	void update() override;
+
 	void updateAnim() override;
 
-	Point2D<double> getPos() const { return position; }
+	Point2D<int> getPos() const { return position; }
 
 	SceneObject* clone() const override;
 
-	Collision hit(SDL_Rect rect, Collision::Target t) override;
+	Collision hit(const SDL_Rect& rect, Collision::Target t) override;
 
 	void manageCollisions(Collision c) override;
 

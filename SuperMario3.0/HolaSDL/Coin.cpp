@@ -1,28 +1,27 @@
-#include "checkML.h"
 #include "Coin.h"
 #include "Game.h"
 #include "Collision.h"
 
-Coin::Coin(Game* g, Point2D<double> p, Texture* t)
-	: Pickable(g, p, t)
+Coin::Coin(Game* g, Point2D<int> p, Texture* t, PlayState* play)
+	: Pickable(g, p, t, play)
 {
-
+	scale = 2;
 }
 
-void Coin::render()
+void Coin::render() const
 {
 	Pickable::render();
-	updateAnim();
 }
 
 void Coin::update()
 {
-
+	updateRect();
+	updateAnim();
 }
 
 void Coin::triggerAction()
 {
-	game->addPoints(200);
+	game->givePoints(200);
 }
 
 SceneObject* Coin::clone() const
@@ -51,4 +50,12 @@ void Coin::updateAnim()
 			frame = 3;
 		}
 	}
+}
+
+void Coin::updateRect()
+{
+	destRect.x = position.getX() - playState->getMapOffset();
+	destRect.h = texture->getFrameHeight() * scale;
+	destRect.w = texture->getFrameWidth() * scale;
+	destRect.y = position.getY();
 }

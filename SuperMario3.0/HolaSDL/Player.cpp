@@ -1,12 +1,13 @@
-#include "checkML.h"
 #include "Player.h"
-#include "Game.h"
 
-// Constructora
-Player::Player(Game* g, Point2D<double> p, Texture* t, int l, Vector2D<double> s)
-	: SceneObject(g, p, t, s), lifes(l)
+#include "AnimationState.h"
+#include "Game.h"
+#include "PlayState.h"
+
+Player::Player(Game* g, Point2D<int> p, Texture* t, int l, Vector2D<int> s, PlayState* play)
+	: SceneObject(g, p, t, s, play), lives(l)
 {
-	lifes = 3;
+	lives = 3;
 	canMove = true;
 	velX = 6;
 	grounded = false;
@@ -17,28 +18,31 @@ Player::Player(Game* g, Point2D<double> p, Texture* t, int l, Vector2D<double> s
 	flip = SDL_FLIP_NONE;
 
 	marioState = MARIO;
-	textureM = game->getTexture(Game::MARIO);	   // textura inicial de mario
+	textureM = game->getTexture(Game::MARIO);		// textura inicial de mario
 	textureS = game->getTexture(Game::SUPERMARIO); // textura supermario
 
 	invencible = false;
-	cout << "Player creado" << endl;
+	play->addEventListener(this);
+	
 }
 
-void Player::render() 
+void Player::render() const
 {
+
 	SceneObject::render();
-	updateAnim();
 }
 
-// Actualizacion a nivel logico
 void Player::update()
 {
-	if (speed.getY() < game->SPEED_LIMIT)
-		speed = speed + Vector2D<double>(0, game->GRAVITY);
+	updateRect();
+	updateAnim();
+
+	if (speed.getY() < SPEED_LIMIT)
+		speed = speed + Vector2D<int>(0, GRAVITY);
 
 	if (canMove)
 		c = tryToMove(speed, Collision::ENEMIES);
-	else if (!canMove && speed.getY() != 0)
+	else if(!canMove && speed.getY() != 0) 
 		c = tryToMove({ 0, speed.getY() }, Collision::ENEMIES);
 
 	if (c.vertical)
@@ -49,7 +53,7 @@ void Player::update()
 			jumping = false;
 		}
 
-		speed.setY(0);
+		speed.setY(0); 
 	}
 
 	if (speed.getX() > 0)
@@ -57,10 +61,10 @@ void Player::update()
 		flip = SDL_FLIP_NONE;
 
 		// Limites
-		if (position.getX() - game->getMapOffset() >= game->WIN_WIDTH / 2
-			&& game->getMapOffset() <= game->MAP_MAX_OFFSET)
+		if (position.getX() - playState->getMapOffset() >= game->getWinWidth() / 2
+			&& playState->getMapOffset() <= MAP_MAX_OFFSET)
 		{
-			game->setMapOffset((double)(game->getMapOffset() + speed.getX()));
+			playState->setMapOffset(playState->getMapOffset() + speed.getX());
 		}
 		canMove = true;
 	}
@@ -68,7 +72,7 @@ void Player::update()
 	{
 		flip = SDL_FLIP_HORIZONTAL;
 
-		if (position.getX() - game->getMapOffset() < game->TILE_SIDE) canMove = false;
+		if (position.getX() - playState->getMapOffset() < TILE_SIDE) canMove = false;
 	}
 
 	updateTexture();
@@ -78,12 +82,13 @@ void Player::update()
 	finishLevel();
 
 	marioState = game->getMarioState();
+
+	//cout << speed.getX() << endl;
 }
 
-// Actualizacion a nivel grafico
 void Player::updateTexture()
 {
-	if (marioState == MARIO)
+	if (marioState != SUPERMARIO) 
 	{
 		setScale(2);
 		texture = textureM;
@@ -95,97 +100,97 @@ void Player::updateTexture()
 	}
 }
 
-// Comprueba colisiones y las maneja
-Collision Player::hit(SDL_Rect region, Collision::Target target)
+Collision Player::hit(const SDL_Rect& region, Collision::Target target)
 {
 	// Comprueba si hay colision
-	SDL_Rect colRect = getCollisionRect();
+	SDL_Rect ownRect = getCollisionRect();
 
 	// si la colision es con los enemies
-	if (target == Collision::PLAYER && SDL_HasIntersection(&colRect, &region))
+	if (target == Collision::PLAYER && SDL_HasIntersection(&ownRect, &region) )
 	{
 		manageDamage();
+
+		const std::function<bool()> animation = [this]()->bool { return manageAnimation(); };
+		GameState* ps = new AnimationState(game, playState, animation );
+
+		// lo pasa al gsMachine que ya luego hace sus cosas
+		//game->getgsMachine()->pushState(ps);
 	}
 
-	return game->NO_COLLISION; // constante Collision{}
+	return NO_COLLISION; // constante Collision{}
 }
 
-// Input
-void Player::handleEvent(const SDL_Event& event)
+bool Player::manageAnimation()
 {
-	// Recibe tecla
-	SDL_Scancode key = event.key.keysym.scancode;
-
-	// pulsar
-	if (event.type == SDL_KEYDOWN)
+	// mientras la altura en y sea menor (aun no se cae) -> lo hace caer
+	if (position.getY() < deadH)
 	{
-		// Izqd (A)
-		if (key == SDL_SCANCODE_A)
-		{
-			speed.setX(-speed.getX());
-			keyA = true;
-		}
-		// Dcha (D)
-		else if (key == SDL_SCANCODE_D)
-		{
-			speed.setX(speed.getX());
-			keyD = true;
-		}
-		// Abajo (S)
-		else if (key == SDL_SCANCODE_S) keyS = true;
+		position.setY(position.getY()-10);
+		return true;
+	}
+	return false; // se ha caido
+}
 
-		// Salto (Space)
-		else if (key == SDL_SCANCODE_SPACE)
+void Player::manageDamage()
+{
+	if (!invencible)
+	{
+		if (marioState == SUPERMARIO)
 		{
-			keySpace = true;
-			if (!jumping && grounded)
+			marioState = MARIO;
+		}
+		else
+		{
+			if (lives > 0)
 			{
-				grounded = false;
-				jumping = true;
-
-				speed.setY(-30);
+				invencible = true;
+				lives--;
 			}
-		}
-		// Salir (S)
-		else if (key == SDL_SCANCODE_E) keyE = true;
 
-		// Offset mapa (->)
-		else if (key == SDL_SCANCODE_RIGHT) keyDcha = true;
+			if (lives <= 0) isAlive = false;
+		}
 	}
 
-	// No pulsar
-	else if (event.type == SDL_KEYUP)
+	invencible = true;
+}
+
+void Player::resetPosition(Vector2D<int> pos)
+{
+	position = pos;
+}
+
+void Player::finishLevel()
+{
+	cout << position.getX() << endl;
+	if (position.getX() >= flagPosition && game->getCurrentLevel() == 1)
 	{
-		// Izqd
-		if (key == SDL_SCANCODE_A)
+		velX = 0;
+		cout << "FINAL" << endl;
+		game->setCurrentLevel(game->getCurrentLevel()+1);
+		playState->setVictory(true);
+		int k = game->getCurrentLevel();
+		string level = std::to_string(k);
+		
+		
+
+		if(game->getCurrentLevel() > game->getMaxWorlds())
 		{
-			speed.setX(0);
-			keyA = false;
+			game->setExit(true);
+			
 		}
-		// Dcha
-		else if (key == SDL_SCANCODE_D)
+		else
 		{
-			speed.setX(0);
-			keyD = false;
+			playState->reloadWorld(level, "../assets/maps/world");
 		}
-		// Abjs
-		else if (key == SDL_SCANCODE_S) keyS = false;
-
-		// Salto
-		else if (key == SDL_SCANCODE_SPACE) keySpace = false;
-
-		// Salir
-		else if (key == SDL_SCANCODE_E) keyE = false;
-
-		// Offset mapa
-		else if (key == SDL_SCANCODE_RIGHT) keyDcha = false;
+	}
+	else if (position.getX() >= flag2Position && game->getCurrentLevel() == 2)
+	{
+		playState->setEndVictory(true);
 	}
 }
 
-// Actualizacion animaciones
 void Player::updateAnim()
 {
-	// Andando en el suelo
 	if (speed.getX() != 0 && grounded)
 	{
 		frameTimer++;
@@ -193,7 +198,7 @@ void Player::updateAnim()
 		{
 			frameTimer = 0;
 
-			int cycleLength = invencible ? 4 : 5;
+			int cycleLength = immune ? 4 : 5;
 			walkFrame = (walkFrame + 1) % cycleLength;
 
 			// Asigna el frame correspondiente
@@ -206,57 +211,19 @@ void Player::updateAnim()
 			else if (walkFrame == 2) {
 				frame = 4;
 			}
-			else if (invencible && walkFrame == 3) {
+			else if (immune && walkFrame == 3) {
 				frame = -1;
 			}
 		}
 	}
-	// Saltando 
 	else if (!grounded) {
 		frame = 6;
 	}
-	// Idle
 	else {
 		frame = 0;
 	}
 }
 
-// Mapa
-void Player::updateOffset()
-{
-	// No se sale por la izquierda
-	if ((position.getX()) * game->TILE_SIDE <= game->getMapOffset() && speed.getX() < 0) position.setX(game->getMapOffset() / (double)game->TILE_SIDE);
-
-	// si llega a la mitad actual en pantalla en ese momento
-	// actualiza el offset
-
-	double screenX = position.getX() * game->TILE_SIDE - game->getMapOffset();
-
-	if (screenX > game->TILE_SIDE * game->WIN_WIDTH / 2 && game->getMapOffset() < game->MAP_MAX_OFFSET)
-	{
-		game->addMapOffset(1);
-	}
-}
-
-// Caida por agujeros
-void Player::checkFall()
-{
-	// Si se ha caído por un agujero
-	if (position.getY() > deadH)
-	{
-		position.setY(10 * game->TILE_SIDE);
-		game->setFallen(true);
-
-		game->reloadWorld(to_string(game->getCurrentLevel()), "../assets/maps/world");
-		game->setFallen(false);
-		position.setX(20);
-		marioState = MARIO;
-		lifes--;
-
-	}
-}
-
-// Salto
 void Player::jump()
 {
 	if (!jumping && grounded)
@@ -264,78 +231,89 @@ void Player::jump()
 		grounded = false;
 		jumping = true;
 
-		speed.setY(-speed.getY());
+		speed.setY(-30);
 	}
 }
 
-// Gestion colisiones externas
+void Player::handleEvent(const SDL_Event& event)
+{
+	// escanea y evalua que tecla has tocado
+	SDL_Scancode key = event.key.keysym.scancode;
+
+	// pulsar
+	if (event.type == SDL_KEYDOWN)
+	{
+		// IZQ
+		if (key == SDL_SCANCODE_A)
+		{
+			speed.setX(-velX);
+			keyA = true;
+		}
+		// DER
+		else if (key == SDL_SCANCODE_D)
+		{
+			speed.setX(velX);
+			keyD = true;
+		}
+		// ABJ
+		else if (key == SDL_SCANCODE_S) keyS = true;
+
+		// SALTAR
+		else if (key == SDL_SCANCODE_SPACE)
+		{
+			keySpace = true;
+			if (!jumping && grounded)
+			{
+				grounded = false;
+				jumping = true;
+
+				speed.setY(-30);
+			}
+		}
+		// SALIR
+		else if (key == SDL_SCANCODE_E) keyE = true;
+
+		// OFFSET
+		else if (key == SDL_SCANCODE_RIGHT) keyDer = true;
+	}
+
+	// despulsar
+	else if (event.type == SDL_KEYUP)
+	{
+		// IZQ
+		if (key == SDL_SCANCODE_A)
+		{
+			speed.setX(0);
+			keyA = false;
+		}
+		// DER
+		else if (key == SDL_SCANCODE_D)
+		{
+			speed.setX(0);
+			keyD = false;
+		}
+		// ABJ
+		else if (key == SDL_SCANCODE_S) keyS = false;
+
+		// SALTAR
+		else if (key == SDL_SCANCODE_SPACE) keySpace = false;
+
+		// SALIR
+		else if (key == SDL_SCANCODE_E) keyE = false;
+
+		// OFFSET
+		else if (key == SDL_SCANCODE_RIGHT) keyDer = false;
+	}
+}
+
 void Player::manageCollisions(Collision collision)
 {
-	if (collision.target == Collision::PLAYER)
+	// si el target soy yo...
+	if(collision.target == Collision::PLAYER)
 	{
-		if (collision.result == Collision::DAMAGE)
+		if(collision.result == Collision::DAMAGE)
 		{
 			manageDamage();
-		}
-	}
-}
-
-// Gestion daño
-void Player::manageDamage()
-{
-	// No lo acaban de pegar
-	if (!invencible)
-	{
-		if (marioState == SUPERMARIO)
-		{
-			marioState = MARIO;
-		}
-		else
-		{
-			if (lifes > 0)
-			{
-				invencible = true;
-				lifes--;
-			}
-
-			if (lifes <= 0) isAlive = false;
-		}
-	}
-
-	// Como le acaban de pegar...
-	invencible = true;
-}
-
-// Gestion invencible (tras colision)
-void Player::manageInvencible()
-{
-	if ((invCounter < maxInvCounter) && invencible)
-	{
-		invCounter++;
-	}
-	else
-	{
-		invCounter = 0;
-		invencible = false;
-	}
-}
-
-void Player::finishLevel()
-{
-	if (position.getX() >= flagPosition && game->getCurrentLevel() == 1)
-	{
-		cout << "FINAL" << endl;
-		game->setCurrentLevel(game->getCurrentLevel() + 1);
-		game->setVictory(true);
-
-		if (game->getCurrentLevel() > game->getMaxWorlds())
-		{
-			game->EndGame();
-
-		}
-		else
-		{
-			game->loadLevel(to_string(game->getCurrentLevel()), "../assets/maps/world");
 		}
 	}
 }
@@ -343,4 +321,50 @@ void Player::finishLevel()
 SceneObject* Player::clone() const
 {
 	return new Player(*this);
+}
+
+void Player::updateOffset()
+{
+	// si llega a la mitad actual en pantalla en ese momento
+	// actualiza el offset
+
+	// CONVERSION DE COOR:
+	// COOR TOTALES => la pos de mario sin convertir
+	// COOR DE LA VISTA => COOR TOTALES - MAPOFFSET
+
+	int screenX = position.getX() * TILE_SIDE - playState->getMapOffset();
+
+	if (screenX > TILE_SIDE * WINDOW_WIDTH / 2 && playState->getMapOffset() < MAP_MAX_OFFSET)
+	{
+		playState->addMapOffset(1);
+	}
+}
+
+void Player::checkFall()
+{
+	// para ver si se ha caido a un agujero
+	if (position.getY() > deadH)
+	{
+		position.setY(10 * TILE_SIDE);
+		playState->setFalled(true);
+		
+		playState->reloadWorld(to_string(game->getCurrentLevel()), "../assets/maps/world");
+		playState->setFalled(false);
+		position.setX(40);
+		marioState = MARIO;
+		lives--;
+	}
+}
+
+void Player::manageInvencible()
+{
+	if ((invCounter < maxInvCounter) && invencible)
+	{
+		invCounter++;
+	}
+	else 
+	{
+		invCounter = 0;
+		invencible = false;
+	}
 }

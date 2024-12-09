@@ -1,17 +1,16 @@
-#include "checkML.h"
 #include "Mushroom.h"
 #include "Game.h"
 #include "Collision.h"
 
-Mushroom::Mushroom(Game* g, Point2D<double> p, Texture* t)
-	: Pickable(g, p, t)
+Mushroom::Mushroom(Game* g, Point2D<int> p, Texture* t, PlayState* play)
+	: Pickable(g, p, t, play)
 {
 	setScale(2);
 	speed.setX(5);
 	speed.setY(0);
 }
 
-void Mushroom::render()
+void Mushroom::render() const
 {
 	Pickable::render();
 }
@@ -19,21 +18,21 @@ void Mushroom::render()
 void Mushroom::update()
 {
 	cout << position.getY() << endl;
-
+	updateRect();
 	moveSeta();
 }
 
 void Mushroom::moveSeta()
 {
 	// Acelra la velocidad con la gravedad
-	if (speed.getY() < game->SPEED_LIMIT)
-		speed = speed + Vector2D<double>(0, game->GRAVITY);
+	if (speed.getY() < SPEED_LIMIT)
+		speed = speed + Vector2D<int>(0, GRAVITY);
 
 	// Velocidad en este ciclo (no siempre avanza lateralmente)
-	Vector2D<double> realSpeed = speed;
+	Vector2D<int> realSpeed = speed;
 
 	if (moveDelay-- == 0)
-		moveDelay = game->MOVE_PERIOD;
+		moveDelay = MOVE_PERIOD;
 	else
 		realSpeed.setX(0);
 

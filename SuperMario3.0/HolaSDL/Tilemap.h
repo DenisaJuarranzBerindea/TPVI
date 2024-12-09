@@ -1,40 +1,37 @@
-#ifndef TILEMAP_H
-#define TILEMAP_H
-
+#pragma once
 #include "checkML.h"
 
-#include <vector>
-#include <iostream>
-#include <fstream>
 #include <string>
+#include <vector>
 #include "Texture.h"
 #include "Game.h"
+#include <iostream>
 #include "SceneObject.h"
-
 using namespace std;
+using uint = unsigned int;
+
 class Game;
-class Tilemap : public SceneObject
+
+// dibuja el fondo y los obstaculos segun avanza el personaje
+class TileMap : public SceneObject
 {
 private:
 	vector<vector<int>> indices;
-	int x, y;
 
 public:
-	//Tilemap();
-	Tilemap(Game* g, std::istream& in, Point2D<double> p, Texture* t);
-	~Tilemap();
+	//TileMap();
+	TileMap(Game* g, std::istream& in, Point2D<int> p, Texture* t, PlayState* play);
+	~TileMap();
 
-	void render() override;
+	void render() const override;
 	void update() override;
 	void load(std::istream& file);
 
 	// detecta colisiones
-	virtual Collision hit(SDL_Rect rect, Collision::Target t);
+	Collision hit(const SDL_Rect& rect, Collision::Target t);
 
 	void manageCollisions(Collision c) override;
 	SceneObject* clone() const override;
 
 	void updateAnim() override {};
 };
-
-#endif	

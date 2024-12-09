@@ -1,76 +1,70 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "checkML.h"
-#include <SDL.h>
-#include "Vector2D.h"
-#include "Texture.h"
-#include <istream>
-#include <iostream>
-#include <fstream>
-#include <string>
-
+#include "EventHandler.h"
 #include "SceneObject.h"
 
-//// para evitar inclusiones cruzadas
-//class Game;
+class PlayState;
 
 
-class Player : public SceneObject
+class Player : public SceneObject, EventHandler
 {
-
 private:
-	Texture* texture;	
-
-	int lifes;
+	int lives;
 	bool immune;
 
-	// Invencibilidad
+	bool grounded, jumping;
+
+	int walkFrame;
+
+	// INPUT
+	// flags para control de input
+	bool keyA = false, keyD = false, keyS = false, keySpace = false, keyE = false, keyDer = false;
+
+	bool flipSprite = false;
+
+	// invencibilidad
 	int invCounter = 0;
 	int maxInvCounter = 5;
 	bool invencible = false;
 
-	// Gestión de movimiento
-	bool grounded, jumping;
+	double deadH = 14*32;
+	int bgSpeed = 1;
+	int marioFrame;
+	int velX;
 
-	// Animación
-	int walkFrame;
-	bool flipSprite = false;
-	int marioFrame = 0;
-
-	double deadH = 14 * 32;
-	double bgSpeed = 1.0;
-	int velX = 1;
-
-	// INPUT
-	bool keyA = false; //Izqd
-	bool keyD = false; //Dcha
-	bool keyS = false; //Abajo
-	bool keySpace = false; //Salto
-	bool keyE = false; //Salir
-	bool keyDcha = false; //Offset mapa
 
 public:
-		
-	Player(Game* game, Vector2D<double> pos, Texture* t, int l, Vector2D<double> s);
+	Player(Game* game, Vector2D<int> pos, Texture* t, int l, Vector2D<int> s, PlayState* play);
 
-	void render() override;
+	void render() const override;
 	void update() override;
-	void updateAnim() override;
 
 	void updateTexture();
 
-	virtual Collision hit(SDL_Rect region, Collision::Target target) override;
-	virtual void manageCollisions(Collision c) override;
-	void manageInvencible();
-	void manageDamage();
-
+	Collision hit(const SDL_Rect& region, Collision::Target target) override;
+	bool manageAnimation();
 	SceneObject* clone() const override;
 
+	void updateAnim() override;
 	void jump();
 
+	int getLives() { return lives; }
+	void setLives(int n) { lives = n; }
 
-	void handleEvent(const SDL_Event& event);
+	void decreaseLives() { lives--; }
+
+	int getFrame() { return marioFrame; }
+
+	void handleEvent(const SDL_Event& event) override;
+
+	virtual void manageCollisions(Collision c) override;
+
+	void manageInvencible();
+
+	void manageDamage();
+
+	void resetPosition(Vector2D<int> pos);
 
 	int marioState;
 	enum State {
@@ -83,18 +77,23 @@ public:
 	Texture* textureS = nullptr;
 
 	int flagPosition = 6306;
+	int flag2Position = 6305;
 
 	void updateOffset();
 
-	int getLifes() { return lifes; }
-	int getState() { return marioState;	}
+	int getState() {
+		return marioState;
+	}
 
-	void setLifes(int n) { lifes = n; }
-	void setState(int s) { marioState = s; }
-	void setGrounded(bool g) { grounded = g; }
+	void setState(int s) {
+		marioState = s;
+	}
+
+	void setGrounded(bool g) {
+		grounded = g;
+	}
 
 	void checkFall();
-
 };
 
-#endif	
+#endif

@@ -1,49 +1,63 @@
-#include "checkML.h"
 #include "Enemy.h"
 #include "Game.h"
 
-Enemy::Enemy(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s)
-	: SceneObject(g, p, t, s)
+Enemy::Enemy(Game* g, Point2D<int> p, Texture* t, Vector2D<int> s, PlayState* play)
+	: SceneObject(g, p, t, s, play)
 {
 	setScale(2);
 }
-
-void Enemy::update()
+  
+void Enemy::update() 
 {
 	// Acelra la velocidad con la gravedad
-	if (speed.getY() < game->SPEED_LIMIT)
-		speed = speed + Vector2D<double>(0, game->GRAVITY);
+	if (speed.getY() < SPEED_LIMIT)
+		speed = speed + Vector2D<int>(0, GRAVITY);
 
 	// Velocidad en este ciclo (no siempre avanza lateralmente)
-	Vector2D<double> realSpeed = speed;
+	Vector2D<int> realSpeed = speed;
 
 	if (moveDelay-- == 0)
-		moveDelay = game->MOVE_PERIOD;
+		moveDelay = MOVE_PERIOD;
 	else
 		realSpeed.setX(0);
 
 	// Intenta moverse
 	Collision collision = tryToMove(realSpeed, Collision::PLAYER);
 
-	// Si toca un objeto en horizontal cambia de dirección
-	if (collision.horizontal) speed.setX(-speed.getX());
+	// Si toca un objeto en horizontal cambia de direcciÃ³n
+	if (collision.horizontal)
+	{
+		if (flip == SDL_FLIP_HORIZONTAL)
+		{
+			speed.setX(-speed.getX());
+			flip = SDL_FLIP_NONE;
+		}
+		else if(flip == SDL_FLIP_NONE)
+		{
+			speed.setX(-speed.getX());
+			flip = SDL_FLIP_HORIZONTAL;
+		}
+		
+	}
 
-	// Si toca un objeto en vertical anula la velocidad
-	if (collision.vertical) speed.setY(0);
+
+	// Si toca un objeto en vertical anula la velocidad (para que no se acumule la gravedad)
+	if (collision.vertical)
+		speed.setY(0);
 
 	// SceneObject::update(); // si hiciera falta
 }
 
-Collision Enemy::hit(SDL_Rect rect, Collision::Target t)
+Collision Enemy::hit(const SDL_Rect& rect, Collision::Target t)
 {
 	// Calcula la interseccion
 	SDL_Rect intersection;
-	SDL_Rect colRect = getCollisionRect();
-	bool hasIntersection = SDL_IntersectRect(&colRect, &rect, &intersection);
+	SDL_Rect ownRect = getCollisionRect();
+	bool hasIntersection = SDL_IntersectRect(&ownRect, &rect, &intersection);
 
-	if (hasIntersection)
+	if (hasIntersection) 
 	{
-		Collision c{ Collision::EMPTY, Collision::NONE, intersection.w, intersection.h };
+		Collision c{Collision::EMPTY, Collision::NONE, intersection.w, intersection.h };
 
 		// si se origina en mario...
 		if (t == Collision::ENEMIES)
@@ -51,25 +65,26 @@ Collision Enemy::hit(SDL_Rect rect, Collision::Target t)
 			c.result = Collision::DAMAGE;
 
 			// si la colision es por: arr -> muere el enemigo
-			if (((rect.y) >= colRect.y - colRect.h) && rect.y != colRect.y)
+			if (((rect.y) >= destRect.y - destRect.h) && rect.y != destRect.y)
 			{
-				t = Collision::ENEMIES;
+				c.target = Collision::ENEMIES;
 				delete this;
-				cout << "Enemigo golpeado" << endl;
+				cout << "pega enemigo arriba" << endl;
 			}
 
 			// otra colision -> hiere a mario
 			else
 			{
-				t = Collision::PLAYER;
-				cout << "Mario golpeado" << endl;
+				c.target = Collision::PLAYER;
+				playState->getPlayer()->decreaseLives();
+				cout << "au" << endl;
 			}
 		}
-
+		
 		return c;
 	}
 
-	return game->NO_COLLISION;
+	return NO_COLLISION;
 }
 
 void Enemy::collisionResult()
@@ -85,9 +100,4 @@ void Enemy::manageCollisions(Collision c)
 void Enemy::updateAnim()
 {
 
-}
-
-SceneObject* Enemy::clone() const
-{
-	return nullptr;
 }

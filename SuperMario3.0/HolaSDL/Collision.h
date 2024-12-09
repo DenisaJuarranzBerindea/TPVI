@@ -1,45 +1,31 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-#include <SDL.h>
-#include "Vector2D.h"
-
 struct Collision {
-	//bool collides = false;
-	//bool damages = false;        // indica si la colision implica danio
 
-	SDL_Rect intersection = SDL_Rect();       // rectangulo de interseccion de la colision
-	void* collider = nullptr;    // puntero al objeto con el que se colisiono
-
-	// BLOQUES
-	bool killBrick = false;
-
-	// SETAS
-	bool evolMario = false;
-	bool spawnSeta = false;
-
-	// ¿A quién afecta esta colisión? Se puede usar en lugar del
-	// bool fromPlayer para objetos que atacan tanto a enemigos
-	// como al jugador (caparaszón opciona).
+	// TARGET
+	// A quien afecta esta colision
+	// (usar en lugar de fromPlayer para objetos que atacan a enemigos y a jugador)
 	enum Target {
-		EMPTY = 0,
-		ENEMIES = 1,	// afecta a enemigos
-		PLAYER = 2,	// afecta al jugador
-		BOTH = 3,	// afecta a ambos
+		EMPTY = 1,		// para colision vacia
+		ENEMIES = 2,	// afecta a enemigos
+		PLAYER = 3,		// afecta al jugador
+		BOTH = 4,		// afecta a ambos
 	};
-
-	// Tipo de resultado de la colisión
+	
+	// RESULT
+	// Tipo de resultado de la colision
 	enum Result {
-		NONE,		// no ha habido colisión
-		DAMAGE,		// la colisión produce daño
-		OBSTACLE,	// la colisión impide el movimiento
-		ACTION,
+		NONE,		// no ha habido colision
+		DAMAGE,		// la colision hiere (a mario)
+		OBSTACLE,	// la colision impide el movimiento
+		ACTION
 	};
 
 	Target target = EMPTY;
 	Result result = NONE;
-	double horizontal = 0;   // profundidad de la colisión horizontal
-	double vertical = 0;     // profundidad de la colisión vertical
+	int horizontal = 0;   // profundidad de la colision horizontal
+	int vertical = 0;     // profundidad de la colision vertical
 
 	operator bool() const {
 		bool c = false;
@@ -47,6 +33,9 @@ struct Collision {
 			return true;
 		}
 	};
+
+	SDL_Rect intersectionRect;
+
 };
 
-#endif
+#endif // COLLISION_H

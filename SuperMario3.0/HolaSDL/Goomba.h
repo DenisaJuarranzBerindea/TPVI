@@ -1,5 +1,5 @@
-#ifndef Goomba_h
-#define Goomba_h
+#ifndef GOOMBA_H
+#define GOOMBA_H
 
 #include "checkML.h"
 #include <SDL.h>
@@ -21,19 +21,21 @@ using namespace std;
 class Goomba : public Enemy
 {
 private:
+	
 
 public:
-	Goomba(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s);
+	Goomba(Game* g, Point2D<int> p, Texture* t, Vector2D<int> s, PlayState* play);
 
-	void render() override;
+	// -- update --
 	void update() override;
+
+	void render() const override;
 
 	SceneObject* clone() const override;
 
 	virtual void collisionResult() override;
 
 	virtual void updateAnim() override;
-
 };
 
 #endif

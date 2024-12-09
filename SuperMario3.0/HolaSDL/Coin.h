@@ -20,10 +20,11 @@ using namespace std;
 class Coin : public Pickable
 {
 public:
-	Coin(Game* g, Point2D<double> p, Texture* t);
+	Coin(Game* g, Point2D<int> p, Texture* t, PlayState* play);
 
-	void render() override;
+	void render() const override;
 
+	// -- update --
 	void update() override;
 
 	void triggerAction() override;
@@ -31,6 +32,8 @@ public:
 	SceneObject* clone() const override;
 
 	void updateAnim() override;
+
+	virtual void updateRect() override;
 private:
 	int coinFrame;
 };

@@ -1,6 +1,8 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+#include "SceneObject.h"
+
 #include "checkML.h"
 #include <SDL.h>
 #include "Vector2D.h"
@@ -10,9 +12,11 @@
 #include <fstream>
 #include <string>
 
-#include "SceneObject.h"
 #include "Collision.h"
 
+#include "PlayState.h"
+
+class PlayState;
 class Game;
 
 using uint = unsigned int;
@@ -22,28 +26,28 @@ class Enemy : public SceneObject
 {
 private:
 
-	bool frozen; 
+	bool frozen; // para llevar control de objetos inactivos
 	bool alive;
 
 	bool grounded;
-	double moveDelay = 5;
+	int moveDelay = 5;
 
 public:
-	// Constructora
-	Enemy(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s);
+	Enemy(Game* g, Point2D<int> p, Texture* t, Vector2D<int> s, PlayState* play);
 
-	// Update
+	// -- update --
 	virtual void update() override;
 
-	// Hit
-	virtual Collision hit(SDL_Rect rect, Collision::Target t) override;
-
+	// -- hit --
+	virtual Collision hit(const SDL_Rect& rect, Collision::Target t) override;
+	
+	//virtual Collision tryToMove(Vector2D<int>& v, Collision::Target t) override;
+	
 	virtual void collisionResult();
 
 	virtual void manageCollisions(Collision c) override;
 
-	SceneObject* clone() const override;
-
+	//SceneObject* clone() const override;
 	virtual void updateAnim() override;
 };
 

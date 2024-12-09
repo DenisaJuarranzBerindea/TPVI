@@ -1,30 +1,35 @@
-#ifndef Vector2D_h
-#define Vector2D_h
+#ifndef VECTOR2D_H
+#define VECTOR2D_H
 
-#include <iostream>
+#include <ostream>
+
+// !!! por las plantillas usar definiciones de funciones en el h ->
+// el codigo depende del argumento que le pases (codigo no cerrado)
 
 template <class T>
 class Vector2D
 {
-	
+	// variables privadas
 private:
 	T x, y;
 
-
+	// metodos publicos
 public:
-	// Constructoras
+	// ---- CONSTRUCTORAS ----
 	Vector2D() {}
-	Vector2D(T x, T y)
-		: x(x), y(y) {}
+	Vector2D(T _x, T _y)
+		: x(_x), y(_y) {}
 
-	// Getters
+	// ---- SETTERS Y GETTERS ----
+	// ---- getters ----
 	T getX() const { return x; }
 	T getY() const { return y; }
-	// Setters
+	// ---- setters ----
 	void setX(T newX) { x = newX; }
 	void setY(T newY) { y = newY; }
 
-	// Operador +
+	// ---- OPERADORES ----
+	// operador +
 	Vector2D operator+(const Vector2D& v) const
 	{
 		Vector2D suma;
@@ -35,15 +40,7 @@ public:
 		return suma;
 	}
 
-	Vector2D<T>& operator+=(const Vector2D<T>& v) {
-		x += v.x;
-		y += v.y;
-		return *this;
-	}
-
-
-
-	// Operador -
+	// operador -
 	Vector2D operator-(const Vector2D& v) const
 	{
 		Vector2D resta;
@@ -54,31 +51,31 @@ public:
 		return resta;
 	}
 
-	// Operador producto escalar *
-	Vector2D operator*(int i) const
+	// operador producto escalar *
+	Vector2D operator*(double d) const
 	{
 		Vector2D escalar;
 
-		escalar.x = x * i;
-		escalar.y = y * i;
+		escalar.x = x * d;
+		escalar.y = y * d;
 
 		return escalar;
 	}
 
-	// Operador producto vector-escalar *
-	T operator*(const Vector2D& i) const
+	// operador producto vector-escalar *
+	T operator*(const Vector2D& d) const
 	{
-		return i.x * x + i.y * y;
+		return d.x * x + d.y * y;
 	}
 
-	// Operador salida consola <<
-	friend std::ostream& operator<<(std::ostream& pos, const Vector2D& v)
+	// operador salida consola <<
+	friend std::ostream& operator<<(std::ostream& os, const Vector2D& v)
 	{
-		pos << "(" << v.x << "," << v.y << ")";
-		return pos;
+		os << "(" << v.x << "," << v.y << ")";
+		return os;
 	}
 
-	// Operador entrada consola >>
+	// operador entrada consola >>
 	friend std::istream& operator>>(std::istream& is, Vector2D& v)
 	{
 		is >> v.x >> v.y;
@@ -86,8 +83,8 @@ public:
 	}
 };
 
-// Using Point2D
-template <class T>
-using Point2D = Vector2D<T>;
+// establecer alias Point2D
+// igualar T a int o double??
+template <class T> using Point2D = Vector2D<T>;
 
 #endif

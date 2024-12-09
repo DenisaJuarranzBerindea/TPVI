@@ -1,11 +1,9 @@
-#include "checkML.h"
 #include "Block.h"
 #include "Game.h"
 
-Block::Block(Game* g, Point2D<double> position, Texture* t, char tipoL, char accionL)
-	: SceneObject(g, position, t)
+Block::Block(Game* g, Point2D<int> position, Texture* t, char tipoL, char accionL, PlayState* play)
+	: SceneObject(g, position, t, play)
 {
-	cout << "Llamando constructor block" << endl;
 	setScale(2);
 	frame = 0;
 	frameTimer = 0;
@@ -26,7 +24,7 @@ Block::Block(Game* g, Point2D<double> position, Texture* t, char tipoL, char acc
 		break;
 	}
 
-	// Asignamos la acci�n del bloque basado en el car�cter le�do
+	// Asignamos la acci�n del bloque basado en el caracter leido
 	switch (accionL) {
 	case 'P':
 		accion = POTENCIADOR;
@@ -35,31 +33,31 @@ Block::Block(Game* g, Point2D<double> position, Texture* t, char tipoL, char acc
 		accion = MONEDA;
 		break;
 	}
-	alive = true;
 
-	texture = game->getTexture(Game::BLOCK); // textura inicial del bloque
-	
+	alive = true;
 }
 
-void Block::render()
+void Block::render() const
 {
+
 	SceneObject::render();
-	updateAnim();
+
 }
 
 void Block::update()
 {
-
+	updateRect();
+	updateAnim();
 }
 
-Collision Block::hit(SDL_Rect rect, Collision::Target t)
+Collision Block::hit(const SDL_Rect& rect, Collision::Target t)
 {
 	// Calcula la interseccion
 	SDL_Rect intersection;
 	SDL_Rect ownRect = getCollisionRect();
 	bool hasIntersection = SDL_IntersectRect(&ownRect, &rect, &intersection);
-	Collision c;
-	if (hasIntersection)
+
+	if (hasIntersection) 
 	{
 		Collision c{ Collision::EMPTY, Collision::OBSTACLE, intersection.w, intersection.h };
 
@@ -67,7 +65,7 @@ Collision Block::hit(SDL_Rect rect, Collision::Target t)
 		if (t == Collision::ENEMIES)
 		{
 			// si la colision es por: abj 
-			if ((rect.y) >= (colRect.y + colRect.h) - 8)
+			if ((rect.y) >= (destRect.y + destRect.h) - 8)
 			{
 				if (tipo == LADRILLO && game->getMarioState() == 1)
 				{
@@ -82,14 +80,14 @@ Collision Block::hit(SDL_Rect rect, Collision::Target t)
 					manageSorpresa();
 
 					// seta
-					if (accion == POTENCIADOR)
+					if (accion == POTENCIADOR) 
 					{
-						game->createSeta(position);
+						playState->createSeta(position);
 					}
 					// moneda
-					else
+					else 
 					{
-						game->addPoints(200);
+						game->givePoints(200);
 					}
 				}
 			}
@@ -98,10 +96,8 @@ Collision Block::hit(SDL_Rect rect, Collision::Target t)
 		return c;
 	}
 
-	return game->NO_COLLISION;
+	return NO_COLLISION;
 }
-
-
 
 void Block::manageSorpresa()
 {

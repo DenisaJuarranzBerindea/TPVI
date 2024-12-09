@@ -1,13 +1,19 @@
-#include "checkML.h"
 #include "Goomba.h"
 #include "Game.h"
-#include "Block.h"
 
-Goomba::Goomba(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s)
-	: Enemy(g, p, t, s)
+Goomba::Goomba(Game* g, Point2D<int> p, Texture* t, Vector2D<int> s, PlayState* play)
+	: Enemy(g, p, t, s, play)
 {
 	frame = 0;
 	frameTimer = 0;
+	flip = SDL_FLIP_NONE;
+}
+
+void Goomba::update()
+{
+	updateRect();
+	updateAnim();
+	Enemy::update();
 }
 
 SceneObject* Goomba::clone() const
@@ -15,16 +21,9 @@ SceneObject* Goomba::clone() const
 	return new Goomba(*this);
 }
 
-void Goomba::render()
+void Goomba::render() const
 {
-	Enemy::render();
-	updateAnim();
-}
-
-
-void Goomba::update()
-{
-	Enemy::update();
+	SceneObject::render();
 }
 
 void Goomba::collisionResult()

@@ -1,5 +1,5 @@
-#ifndef Koopa_h
-#define Koopa_h
+#ifndef KOOPA_H
+#define KOOPA_H
 
 #include "checkML.h"
 #include <SDL.h>
@@ -9,8 +9,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
 #include "Collision.h"
+
 #include "Enemy.h"
 
 class Game;
@@ -22,20 +22,20 @@ class Koopa : public Enemy
 {
 private:
 
-
 public:
-	Koopa(Game* g, Point2D<double> p, Texture* t, Vector2D<double> s);
+	Koopa(Game* g, Point2D<int> p, Texture* t, Vector2D<int> s, PlayState* play);
 
-	SceneObject* clone() const override;
-
+	// -- update --
 	void update() override;
 
-	void render() override;
+	virtual void collisionResult() override;
+	SceneObject* clone() const override;
+
+	void render() const override;
 
 	virtual void updateAnim() override;
 
-	virtual void collisionResult() override;
-
+	virtual void updateRect() override;
 };
 
 #endif
